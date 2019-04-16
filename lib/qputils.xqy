@@ -22,6 +22,24 @@ declare namespace plan="http://marklogic.com/plan";
 declare namespace xsi="http://www.w3.org/2001/XMLSchema-instance";
 using namespace "http://www.w3.org/2005/xpath-functions";
 
+declare variable $time-attrs := ("local-time","remote-time");
+declare variable $memory-attrs := ("local-max-memory","remote-max-memory");
+
+declare function format-time($v)
+{
+  fn:round-half-to-even(($v div 10000),2) || "ms"
+};
+
+declare function format-memory($v)
+{
+  let $n := xs:double($v)
+  return switch(true())
+  case $n > (1024 * 1024 * 1024) return fn:round-half-to-even($n div (1024 * 1024 * 1024),2) || "Gb"
+  case $n > (1024 * 1024) return fn:round-half-to-even($n div (1024 * 1024),2) || "Mb"
+  case $n > (1024) return fn:round-half-to-even($n div (1024),2) || "Kb"
+  default return $n || "b"
+};
+
 declare function attrs9($map,$node)
 {
   fn:fold-left(function($map, $a) {
@@ -40,7 +58,10 @@ declare function attrs9($map,$node)
 declare function attrs($map,$node,$skip)
 {
   fn:fold-left(function($map, $a) {
-      $map=>map:with(local-name($a), string($a))
+      switch(true())
+      case local-name($a) = $time-attrs return $map=>map:with(local-name($a), format-time($a))
+      case local-name($a) = $memory-attrs return $map=>map:with(local-name($a), format-memory($a))
+      default return $map=>map:with(local-name($a), string($a))
     },
     $map,$node/@*[not(local-name(.) = $skip)])
   =>(function($map){
@@ -58,14 +79,14 @@ declare function attrs($map,$node)
 declare function nameAndAttrs($map,$node)
 {
   $map
-  =>map:with("graphName",local-name($node))
+  =>map:with("_name",local-name($node))
   =>attrs($node)
 };
 
 declare function makeTemplateViewGraph($node as element(), $id as xs:string)
 {
   map:map()
-  =>map:with("id",$id)
+  =>map:with("_id",$id)
   =>nameAndAttrs($node)
   =>(
     fn:fold-left(function($map,$n) {
@@ -80,7 +101,7 @@ declare function makeTemplateViewGraph($node as element(), $id as xs:string)
   return (
     let $maps := makeGraph($c,$newID)
     return (
-      head($maps)=>map:with("parent",$id),
+      head($maps)=>map:with("_parent",$id),
       tail($maps)
     )
   )
@@ -89,8 +110,8 @@ declare function makeTemplateViewGraph($node as element(), $id as xs:string)
 declare function makeLiteralGraph($node as element(), $id as xs:string)
 {
   map:map()
-  =>map:with("id",$id)
-  =>map:with("graphName","literal")
+  =>map:with("_id",$id)
+  =>map:with("_name","literal")
   =>map:with("value",string($node/plan:value))
   =>map:with("type",string($node/plan:value/@xsi:type))
 };
@@ -98,7 +119,7 @@ declare function makeLiteralGraph($node as element(), $id as xs:string)
 declare function makeJoinFilter($node as element(), $id as xs:string)
 {
   map:map()
-  =>map:with("id",$id)
+  =>map:with("_id",$id)
   =>nameAndAttrs($node)
   =>(
     fn:fold-left(function($map,$n) {
@@ -122,7 +143,7 @@ declare function makeJoinFilter($node as element(), $id as xs:string)
   return (
     let $maps := makeGraph($c,$newID)
     return (
-      head($maps)=>map:with("parent",$id),
+      head($maps)=>map:with("_parent",$id),
       tail($maps)
     )
   )
@@ -131,7 +152,7 @@ declare function makeJoinFilter($node as element(), $id as xs:string)
 declare function makeTripleGraph($node as element(), $id as xs:string)
 {
   map:map()
-  =>map:with("id",$id)
+  =>map:with("_id",$id)
   =>nameAndAttrs($node)
   =>(
     switch(version($node))
@@ -150,7 +171,7 @@ declare function makeTripleGraph($node as element(), $id as xs:string)
   return (
     let $maps := makeGraph($c,$newID)
     return (
-      head($maps)=>map:with("parent",$id),
+      head($maps)=>map:with("_parent",$id),
       tail($maps)
     )
   )
@@ -159,7 +180,7 @@ declare function makeTripleGraph($node as element(), $id as xs:string)
 declare function makeOrderGraph($node as element(), $id as xs:string)
 {
   map:map()
-  =>map:with("id",$id)
+  =>map:with("_id",$id)
   =>nameAndAttrs($node),
 
   for $c at $pos in $node/*[not(local-name(.) = ("order-spec"))]
@@ -167,7 +188,7 @@ declare function makeOrderGraph($node as element(), $id as xs:string)
   return (
     let $maps := makeGraph($c,$newID)
     return (
-      head($maps)=>map:with("parent",$id),
+      head($maps)=>map:with("_parent",$id),
       tail($maps)
     )
   )
@@ -184,7 +205,7 @@ declare %private function version($node)
 declare function makeProjectGraph($node as element(), $id as xs:string)
 {
   map:map()
-  =>map:with("id",$id)
+  =>map:with("_id",$id)
   =>nameAndAttrs($node),
 
   let $children :=
@@ -197,7 +218,7 @@ declare function makeProjectGraph($node as element(), $id as xs:string)
   return (
     let $maps := makeGraph($c,$newID)
     return (
-      head($maps)=>map:with("parent",$id),
+      head($maps)=>map:with("_parent",$id),
       tail($maps)
     )
   )
@@ -206,8 +227,8 @@ declare function makeProjectGraph($node as element(), $id as xs:string)
 declare function makeJoinGraph($node as element(), $id as xs:string)
 {
   map:map()
-  =>map:with("id",$id)
-  =>map:with("graphName",string($node/(@type|@join-type)))
+  =>map:with("_id",$id)
+  =>map:with("_name",string($node/(@type|@join-type)))
   =>attrs($node,("static-type","type","join-type"))
   =>map:with("condition", string-join(
     let $conditions :=
@@ -235,12 +256,12 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
   return (
     let $maps := makeGraph($lhs,$lhsID)
     return (
-      head($maps)=>map:with("parent",$id)=>map:with("edgeLabel","left"),
+      head($maps)=>map:with("_parent",$id)=>map:with("_parentLabel","left"),
       tail($maps)
     ),
     let $maps := makeGraph($rhs,$rhsID)
     return (
-      head($maps)=>map:with("parent",$id)=>map:with("edgeLabel","right"),
+      head($maps)=>map:with("_parent",$id)=>map:with("_parentLabel","right"),
       tail($maps)
     )
   )
@@ -249,7 +270,7 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
 declare function makeGenericGraph($node as element(), $id as xs:string)
 {
   map:map()
-  =>map:with("id",$id)
+  =>map:with("_id",$id)
   =>nameAndAttrs($node),
 
   for $c at $pos in $node/*
@@ -257,7 +278,7 @@ declare function makeGenericGraph($node as element(), $id as xs:string)
   return (
     let $maps := makeGraph($c,$newID)
     return (
-      head($maps)=>map:with("parent",$id),
+      head($maps)=>map:with("_parent",$id),
       tail($maps)
     )
   )
@@ -267,7 +288,7 @@ declare function makeGraph($node as element(), $id as xs:string)
 {
   switch(true())
   case exists($node/self::plan:join-filter) return makeJoinFilter($node,$id)
-  case contains(local-name($node),"join") return makeJoinGraph($node,$id)
+  case contains(local-name($node),"join") and local-name($node)!="star-join" return makeJoinGraph($node,$id)
   case exists($node/self::plan:project) return makeProjectGraph($node,$id)
   case exists($node/self::plan:order-by) return makeOrderGraph($node,$id)
   case exists($node/self::plan:triple-index) return makeTripleGraph($node,$id)

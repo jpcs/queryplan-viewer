@@ -2,29 +2,17 @@ jQuery.fn.outerHTML = function() {
 	return jQuery('<div />').append(this.eq(0).clone()).html();
 };
 
-var timestampToTimeString = function(timestamp) {
-	timestamp = Math.floor(timestamp);
-	var date = new Date(timestamp);
-	var hours = date.getHours();
-	var minutes = date.getMinutes();
-	minutes = minutes < 10 ? '0'+minutes : minutes;
-	var seconds = date.getSeconds();
-	seconds = seconds < 10 ? '0'+seconds : seconds;
-	var milliseconds = date.getMilliseconds();
-	milliseconds = milliseconds < 10 ? '00'+milliseconds : milliseconds < 100 ? '0'+milliseconds : milliseconds;
-	return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
-}
-
 var DirectedAcyclicGraphTooltip = function(gravity) {
 
     var tooltip = Tooltip(gravity).title(function(d) {
         var formatValue = function(val,node) {
-	    var reserved = ["type","name","schema","view","column","row","fragment","content","column-index",
+	    var reserved = ["id","type","name","schema","view","column","row","fragment","content","column-index",
                             "value","op","permutation","descending","dedup",
                             "subject","predicate","object","graph","left","right",
-                            "order","num-sorted","cost","estimated-count",
-                            "mem-cost","dmem-cost"];
-	    var excluded = ["parent","id","graphName","condition","edgeLabel"];
+                            "order","num-sorted",
+                            "count","local-time","remote-time","local-max-memory","remote-max-memory",
+                            "cost","estimated-count","mem-cost","dmem-cost"];
+	    var excluded = ["_id","_name","_parent","_parentLabel","condition"];
 
             var rows = 0;
 

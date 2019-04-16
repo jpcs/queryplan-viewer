@@ -999,7 +999,91 @@ let $in4 :=
   </plan:select>
 </plan:plan>
 
+let $in5 := <plan:plan xmlns:plan="http://marklogic.com/plan"><plan:filter is-empty="false"><plan:filters><plan:value-compare op="GT"><plan:expr><plan:column-ref schema="" view="" column="freq" column-index="1" column-number="0" in-match="false"><plan:qname name="freq" uri="" prfx="" ltrl="freq"/></plan:column-ref></plan:expr><plan:term><plan:literal><plan:value xsi:type="xs:integer" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">1</plan:value></plan:literal></plan:term></plan:value-compare></plan:filters><plan:group type="hash-group" order=""><plan:order-spec descending="false" nulls-first="false" type="column-ref" column="id" column-number="0" column-index="0"/><plan:aggregate-bind><plan:aggregate-function name="sample" distinct="false"><plan:column-ref schema="" view="" column="id" column-index="0" column-number="0" in-match="false"><plan:qname name="id" uri="" prfx="" ltrl="id"/></plan:column-ref></plan:aggregate-function><plan:column type="column-def" column="id" column-number="0" column-index="0"/></plan:aggregate-bind><plan:aggregate-bind><plan:aggregate-function name="sample" distinct="false"><plan:column-ref schema="" view="" column="id" column-index="0" column-number="0" in-match="false"><plan:qname name="id" uri="" prfx="" ltrl="id"/></plan:column-ref></plan:aggregate-function><plan:column type="column-def" column="id" column-number="0" column-index="0"/></plan:aggregate-bind><plan:aggregate-bind><plan:aggregate-function name="count" distinct="false"/><plan:column type="column-def" column="freq" column-number="0" column-index="1"/></plan:aggregate-bind><plan:lexicon-index permutation="unknown" order=""><plan:range-index-val key="12468471373648044180" scalar-type="int" nullable="false"/><plan:value type="column-def" column="id" column-number="0" column-index="0"/><plan:fragment type="column-def" column="__docid" column-number="1" column-index="1" hidden="true"/></plan:lexicon-index></plan:group></plan:filter></plan:plan>
+
+let $in6 := 
+<plan:plan xmlns:plan="http://marklogic.com/plan">
+  <plan:select>
+    <plan:distinct>
+      <plan:project order="">
+        <plan:column type="var" name="name1" column-index="0"/>
+        <plan:column type="var" name="name2" column-index="1"/>
+        <plan:join type="parallel-hash-join" order="3,6" local-max-memory="31205168" remote-max-memory="0" local-time="18831420" remote-time="0" count="2652911">
+          <plan:hash left="6" right="6" op="="/>
+          <plan:join type="parallel-hash-join" order="2,4" local-max-memory="11620320" remote-max-memory="0" local-time="1128150" remote-time="0" count="83706">
+            <plan:hash left="4" right="4" op="="/>
+            <plan:triple-index permutation="PSO" dedup="true" order="4,0" local-max-memory="1900016" remote-max-memory="0" local-time="966810" remote-time="0" count="82685">
+              <plan:subject type="var" name="author1" column-index="4"/>
+              <plan:predicate type="iri">http://xmlns.com/foaf/0.1/name</plan:predicate>
+              <plan:object type="var" name="name1" column-index="0"/>
+            </plan:triple-index>
+            <plan:join type="parallel-hash-join" order="2,4" local-max-memory="10285728" remote-max-memory="0" local-time="836340" remote-time="0" count="83706">
+              <plan:hash left="2" right="2" op="="/>
+              <plan:triple-index permutation="PSO" dedup="true" order="2,6" local-max-memory="2301248" remote-max-memory="0" local-time="239600" remote-time="0" count="56904">
+                <plan:subject type="var" name="article1" column-index="2"/>
+                <plan:predicate type="iri">http://swrc.ontoware.org/ontology#journal</plan:predicate>
+                <plan:object type="var" name="journal" column-index="6"/>
+              </plan:triple-index>
+              <plan:join type="bloom-join" order="2,4" local-max-memory="3469312" remote-max-memory="0" local-time="1050860" remote-time="0" count="83706">
+                <plan:hash left="2" right="2" op="="/>
+                <plan:scatter left="2" right="2" op="bloom"/>
+                <plan:triple-index permutation="OPS" dedup="true" order="2" local-max-memory="2438688" remote-max-memory="0" local-time="206470" remote-time="0" count="56904">
+                  <plan:subject type="var" name="article1" column-index="2"/>
+                  <plan:predicate type="iri">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+                  <plan:object type="iri">http://localhost/vocabulary/bench/Article</plan:object>
+                </plan:triple-index>
+                <plan:triple-index permutation="PSO" dedup="true" order="2,4" local-max-memory="2148144" remote-max-memory="0" local-time="637070" remote-time="0" count="83706">
+                  <plan:subject type="var" name="article1" column-index="2"/>
+                  <plan:predicate type="iri">http://purl.org/dc/elements/1.1/creator</plan:predicate>
+                  <plan:object type="var" name="author1" column-index="4"/>
+                </plan:triple-index>
+              </plan:join>
+            </plan:join>
+          </plan:join>
+          <plan:join type="bloom-join" order="3,6" local-max-memory="11620320" remote-max-memory="0" local-time="1480510" remote-time="0" count="83706">
+            <plan:hash left="5" right="5" op="="/>
+            <plan:scatter left="5" right="5" op="bloom"/>
+            <plan:triple-index permutation="PSO" dedup="true" order="5,1" local-max-memory="1893776" remote-max-memory="0" local-time="935170" remote-time="0" count="82685">
+              <plan:subject type="var" name="author2" column-index="5"/>
+              <plan:predicate type="iri">http://xmlns.com/foaf/0.1/name</plan:predicate>
+              <plan:object type="var" name="name2" column-index="1"/>
+            </plan:triple-index>
+            <plan:join type="parallel-sort-merge-join" order="3,6" local-max-memory="0" remote-max-memory="0" local-time="641770" remote-time="0" count="83706" left-num-sorted="1" right-num-sorted="1">
+              <plan:hash left="3" right="3" op="="/>
+              <plan:triple-index permutation="PSO" dedup="true" order="3,5" local-max-memory="1780976" remote-max-memory="0" local-time="661530" remote-time="0" count="167414">
+                <plan:subject type="var" name="article2" column-index="3"/>
+                <plan:predicate type="iri">http://purl.org/dc/elements/1.1/creator</plan:predicate>
+                <plan:object type="var" name="author2" column-index="5"/>
+              </plan:triple-index>
+              <plan:join type="parallel-sort-merge-join" order="3,6" local-max-memory="0" remote-max-memory="0" local-time="453150" remote-time="0" count="113808" left-num-sorted="1" right-num-sorted="1">
+                <plan:hash left="3" right="3" op="="/>
+                <plan:triple-index permutation="OPS" dedup="true" order="3" local-max-memory="2488976" remote-max-memory="0" local-time="141890" remote-time="0" count="113808">
+                  <plan:subject type="var" name="article2" column-index="3"/>
+                  <plan:predicate type="iri">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+                  <plan:object type="iri">http://localhost/vocabulary/bench/Article</plan:object>
+                </plan:triple-index>
+                <plan:triple-index permutation="PSO" dedup="true" order="3,6" local-max-memory="2354720" remote-max-memory="0" local-time="175880" remote-time="0" count="113808">
+                  <plan:subject type="var" name="article2" column-index="3"/>
+                  <plan:predicate type="iri">http://swrc.ontoware.org/ontology#journal</plan:predicate>
+                  <plan:object type="var" name="journal" column-index="6"/>
+                </plan:triple-index>
+              </plan:join>
+            </plan:join>
+          </plan:join>
+          <plan:filters>
+            <plan:join-filter op="&lt;">
+              <plan:left type="var" name="name1" column-index="0"/>
+              <plan:right type="var" name="name2" column-index="1"/>
+            </plan:join-filter>
+          </plan:filters>
+        </plan:join>
+      </plan:project>
+    </plan:distinct>
+  </plan:select>
+</plan:plan>
+
+
 return (
   xdmp:set-response-content-type("text/html"),
-  qputils:makeHTML($in4)
+  qputils:makeHTML($in6)
 )

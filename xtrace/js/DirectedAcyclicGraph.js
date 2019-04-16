@@ -106,10 +106,10 @@ function DirectedAcyclicGraph() {
             new_nodes.each(newnodetransition);
             new_edges.attr("d", graph.splineGenerator).classed("visible", true);
             new_edges.each(function(d) {
-                if(d.target.report.edgeLabel == "left") {
+                if(d.target.report["_parentLabel"] == "left") {
                     d3.select(this).attr("marker-start", "url(#leftMarker)");
                 }
-                else if(d.target.report.edgeLabel == "right") {
+                else if(d.target.report["_parentLabel"] == "right") {
                     d3.select(this).attr("marker-start", "url(#rightMarker)");
                 }
             });
@@ -130,7 +130,7 @@ function DirectedAcyclicGraph() {
     var height = d3.functor("100%");
     var edgeid = function(d) { return d.source.id + "-" + d.target.id; }
     var nodeid = function(d) { return d.id; }
-    var nodename = function(d) { return d.report.graphName; }
+    var nodename = function(d) { return d.report["_name"]; }
     var getnodes = function(d) { return d.getVisibleNodes(); }
     var getedges = function(d) { return d.getVisibleLinks(); }
     var bbox = function(d) {
@@ -145,7 +145,7 @@ function DirectedAcyclicGraph() {
 
         // Attach the DOM elements
         var rect = d3.select(this).append("rect");
-        if(d.report.graphName == "literal") {
+        if(d.report["_name"] == "literal") {
             rect.classed("literal",true);
         }
         var text = d3.select(this).append("text").attr("x", 0).attr("text-anchor", "middle");
@@ -156,7 +156,7 @@ function DirectedAcyclicGraph() {
         if(d.report.hasOwnProperty("value")) {
             formatKeyValue("value",d.report.value,text);
         }
-        if(d.report.graphName == "template-view") {
+        if(d.report["_name"] == "template-view") {
             formatKeyValue("iri",d.report.iri,text);
         }
 

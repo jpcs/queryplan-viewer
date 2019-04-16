@@ -30,10 +30,10 @@ function QueryPlan(attachPoint, reports, /*optional*/ params) {
     var nodes = {};
     for(var i = 0; i < reports.length; i++) {
         var report = reports[i];
-        if (!report.hasOwnProperty("id")) {
+        if (!report.hasOwnProperty("_id")) {
             console.error("Bad report found with no ID:", report);
         }
-        var id = report["id"];
+        var id = report["_id"];
         nodes[id] = new Node(id);
         nodes[id].report = report;
     }
@@ -42,8 +42,8 @@ function QueryPlan(attachPoint, reports, /*optional*/ params) {
     console.info("Linking graph nodes");
     for (var nodeid in nodes) {
         var node = nodes[nodeid];
-        if(node.report.hasOwnProperty("parent")) {
-            var parentid = node.report.parent;
+        if(node.report.hasOwnProperty("_parent")) {
+            var parentid = node.report["_parent"];
             if (nodes[parentid]) {
                 nodes[parentid].addChild(node);
                 node.addParent(nodes[parentid]);
