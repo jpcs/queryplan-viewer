@@ -49,9 +49,12 @@ declare function attrs9($map,$node)
     },
     $map,$node/@*[not(local-name(.) = ("static-type"))])
   =>(function($map){
-    if($node/* or empty($node/text())) then $map
-    else $map
-      =>map:with("value",string($node))
+    if($node/plan:rdf-val and not($node/@name)) then (
+      attrs($map,$node/plan:rdf-val),
+      if($node/plan:rdf-val/* or empty($node/plan:rdf-val/text())) then $map
+      else $map
+        =>map:with("value",string($node/plan:rdf-val))
+    ) else $map
   })()
 };
 
@@ -88,15 +91,22 @@ declare function makeTemplateViewGraph($node as element(), $id as xs:string)
   map:map()
   =>map:with("_id",$id)
   =>nameAndAttrs($node)
+  =>( (: v9 :)
+    fn:fold-left(function($map,$n) {
+      let $key := "column"
+      let $val := attrs(map:map(),$n)=>attrs($n/plan:graph-node)
+      return $map=>map:with($key,($map=>map:get($key),$val))
+    },?,$node/*[local-name(.) = ("template-column")])
+  )()
   =>(
     fn:fold-left(function($map,$n) {
       let $key := local-name($n)
-      let $val := attrs(map:map(),$n)=>attrs($n/plan:name)
+      let $val := attrs(map:map(),$n)=>attrs($n/(plan:name|plan:graph-node))
       return $map=>map:with($key,($map=>map:get($key),$val))
     },?,$node/*[local-name(.) = ("column","row","fragment","content")])
   )(),
 
-  for $c at $pos in $node/*[not(local-name(.) = ("column","row","fragment","content"))]
+  for $c at $pos in $node/*[not(local-name(.) = ("template-column","column","row","fragment","content"))]
   let $newID := concat($id, "_", $pos)
   return (
     let $maps := makeGraph($c,$newID)
@@ -245,8 +255,8 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
   let $subs :=
     switch(version($node))
     case 9 return ($node/plan:elems/*,
-      if(contains($node/@type,"right")) then $node/(plan:optional/plan:*,plan:expr/plan:*)
-      else $node/(plan:expr/plan:*,plan:optional/plan:*)
+      if(contains($node/@type,"right")) then $node!((plan:optional|plan:negation-expr)/plan:*,plan:expr/plan:*)
+      else $node!(plan:expr/plan:*,(plan:optional|plan:negation-expr)/plan:*)
     )
     default return $node/*[not(local-name(.) = ("hash","scatter"))]
   let $lhs := $subs[1]

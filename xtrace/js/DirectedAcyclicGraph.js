@@ -175,10 +175,13 @@ function DirectedAcyclicGraph() {
                     return result;
                 }
             }
+            else if(val.type == "global-variable") {
+                return val.name + " (global)";
+            }
             return val.value;
         };
 
-        if(d.report.hasOwnProperty("column")) {
+        if(d.report.hasOwnProperty("column") && Array.isArray(d.report.column)) {
             for(var i=0; i<d.report.column.length; ++i) {
                 var val = d.report.column[i];
                 var format = valFormat(val);
