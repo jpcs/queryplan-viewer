@@ -138,9 +138,12 @@ function DirectedAcyclicGraph() {
     }
     var drawnode = function(d) {
         var formatKeyValue = function(key, value, text) {
+            if(value.length > 100) {
+                value = value.substring(0,100).concat("...");
+            }
             var tspan = text.append("tspan").attr("x", 0).attr("dy", "1.2em");
             tspan.append("tspan").attr("x",0).attr("style","font-weight: bold").text(key + ": ");
-            tspan.append("tspan").attr("dx",0).text(value);
+            tspan.append("tspan").attr("dx",0).html(value);
         };
 
         // Attach the DOM elements
@@ -150,51 +153,23 @@ function DirectedAcyclicGraph() {
         }
         var text = d3.select(this).append("text").attr("x", 0).attr("text-anchor", "middle");
         text.append("tspan").attr("x", 0).attr("dy", "1em").text(nodename);
-        if(d.report.hasOwnProperty("condition")) {
-            formatKeyValue("condition",d.report.condition,text);
-        }
-        if(d.report.hasOwnProperty("value")) {
-            formatKeyValue("value",d.report.value,text);
-        }
         if(d.report["_name"] == "template-view") {
             formatKeyValue("iri",d.report.iri,text);
         }
 
-        var valFormat = function(val) {
-            if(val.hasOwnProperty("column-index")) {
-                if(val.hasOwnProperty("name")) {
-                    return val["column-index"] + " (" + val.name + ")";
-                } else {
-                    var result = val["column-index"] + " (";
-                    if(val.view !== undefined) {
-                        if(val.schema !== undefined)
-                            result += val.schema + ".";
-                        result += val.view + ".";
-                    }
-                    result += val.column + ")";
-                    return result;
-                }
-            }
-            else if(val.type == "global-variable") {
-                return val.name + " (global)";
-            }
-            return val.value;
-        };
-
-        if(d.report.hasOwnProperty("column") && Array.isArray(d.report.column)) {
-            for(var i=0; i<d.report.column.length; ++i) {
-                var val = d.report.column[i];
-                var format = valFormat(val);
-                if(val.nullable == true) format += " [nullable]";
-                formatKeyValue("column",format,text);
-            }
-        }
-        var gnProps = ["subject","predicate","object","graph","row","fragment","content"];
+        // The same list as in Tooltip.js
+        var gnProps = ["column","order-spec","subject","predicate","object","graph","row","value","fragment","content","expr","condition","join-filter","cross-product"];
 	for(var i = 0; i < gnProps.length; i++) {
 	    var key = gnProps[i];
             if(d.report.hasOwnProperty(key)) {
                 var val = d.report[key];
-                formatKeyValue(key,valFormat(val),text);
+                if(Array.isArray(val)) {
+                    for(var j=0; j<val.length; ++j) {
+                        formatKeyValue(key,val[j],text);
+                    }
+                } else {
+                    formatKeyValue(key,val,text);
+                }
             }
         }
 

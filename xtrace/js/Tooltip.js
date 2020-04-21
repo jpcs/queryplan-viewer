@@ -6,13 +6,16 @@ var DirectedAcyclicGraphTooltip = function(gravity) {
 
     var tooltip = Tooltip(gravity).title(function(d) {
         var formatValue = function(val,node) {
-	    var reserved = ["id","type","name","schema","view","column","row","fragment","content","column-index",
-                            "value","op","permutation","descending","dedup",
-                            "subject","predicate","object","graph","left","right",
+	    var reserved = ["id","type","name","schema","view","column-index",
+                            "op","permutation","descending","dedup",
+                            "left","right",
+                            "aggregate",
                             "order","num-sorted",
                             "count","local-time","remote-time","local-max-memory","remote-max-memory",
                             "cost","estimated-count","mem-cost","dmem-cost"];
-	    var excluded = ["_id","_name","_parent","_parentLabel","condition"];
+	    var excluded = ["_id","_name","_parent","_parentLabel"];
+            // The same list as in DirectedAcyclicGraph.js
+            var gnProps = ["column","order-spec","subject","predicate","object","graph","row","value","fragment","content","expr","condition","join-filter","cross-product"];
 
             var rows = 0;
 
@@ -44,6 +47,12 @@ var DirectedAcyclicGraphTooltip = function(gravity) {
 	            var key = excluded[i];
                     seen[key] = true;
                 }
+	        for(var i = 0; i < gnProps.length; i++) {
+	            var key = gnProps[i];
+	            if (val.hasOwnProperty(key) && val[key].length <= 100) {
+                      seen[key] = true;
+                    }
+                }
 
 	        // Do the reserved first
 	        for (var i = 0; i < reserved.length; i++) {
@@ -69,13 +78,13 @@ var DirectedAcyclicGraphTooltip = function(gravity) {
             // else if(jQuery.isArray(val)) {
             // }
             else {
-                node.text(val);
+                node.html(val);
                 return 1;
             }
         }
 
 	var tooltip = $("<div>").attr("class", "xtrace-tooltip");
-        formatValue(d.report,tooltip);
+        if(formatValue(d.report,tooltip) == 0) return false;
 	return tooltip.outerHTML();
     });
 
@@ -111,14 +120,17 @@ var Tooltip = function(gravity) {
 		gravity = $.fn.tipsy.autoWE;
 
 	var tooltip = function(selection) {
-		selection.each(function(d) {
-			$(this).tipsy({
-				gravity: gravity,
-				html: true,
-				title: function() { return title(d); },
-				opacity: 1
-			});
-		});
+	    selection.each(function(d) {
+                var tooltip = title(d);
+                if(tooltip != false) {
+		    $(this).tipsy({
+			gravity: gravity,
+			html: true,
+			title: function() { return tooltip; },
+			opacity: 1
+		    });
+                }
+	    });
 	}
 
 	var title = function(d) { return ""; };

@@ -40,22 +40,197 @@ declare function format-memory($v)
   default return $n || "b"
 };
 
-declare function attrs9($map,$node)
+declare function prefixFor($uri as xs:string)
 {
-  fn:fold-left(function($map, $a) {
-      let $key := local-name($a)
-      let $key := if($node/@type = "iri" and $key = "name") then "value" else $key
-      return $map=>map:with($key, string($a))
-    },
-    $map,$node/@*[not(local-name(.) = ("static-type"))])
-  =>(function($map){
-    if($node/plan:rdf-val and not($node/@name)) then (
-      attrs($map,$node/plan:rdf-val),
-      if($node/plan:rdf-val/* or empty($node/plan:rdf-val/text())) then $map
-      else $map
-        =>map:with("value",string($node/plan:rdf-val))
-    ) else $map
-  })()
+  switch($uri)
+  case "http://www.w3.org/2005/xpath-functions" return "fn:"
+  case "http://marklogic.com/semantics" return "sem:"
+  case "http://marklogic.com/xdmp" return "xdmp:"
+  case "http://marklogic.com/xdmp/math" return "math:"
+  case "http://marklogic.com/xdmp/json" return "json:"
+  case "http://marklogic.com/xdmp/sql" return "sql:"
+  case "http://www.w3.org/2001/XMLSchema" return "xs:"
+  case "http://marklogic.com/cts" return "cts:"
+  default return "Q{" || $uri || "}"
+};
+
+declare function makeLiteralExpr($type as xs:QName, $value)
+{
+  switch($type)
+  case xs:QName("xs:string") return (
+    '"' || string($value) || '"'
+  )
+  case xs:QName("sem:iri") return (
+    '<' || string($value) || '>'
+  )
+  case xs:QName("xs:double")
+  case xs:QName("xs:decimal")
+  case xs:QName("xs:float")
+  case xs:QName("xs:integer") return (
+    string($value)
+  )
+  default return (
+    prefixFor(namespace-uri-from-QName($type)) || local-name-from-QName($type) || '("' ||
+    string($value) || '")'
+  )
+};
+
+declare function makeLiteralSequenceExpr($values)
+{
+  if(empty($values)) then "()"
+  else if(empty(tail($values))) then makeLiteralExpr($values/@xsi:type,$values)
+  else (
+    "(" ||
+    string-join($values ! makeLiteralExpr(@xsi:type,.),", ") ||
+    ")"
+  )
+};
+
+declare function makeRDFValExpr($node)
+{
+  if($node/@datatype) then (
+    makeLiteralExpr(sem:iri-to-QName($node/@datatype),$node)
+  )
+  else if($node/@column) then (
+    $node/@column || " (" ||
+    $node/@columnID || ")"
+  )
+  else (
+    "<" || $node || ">"
+  )
+};
+
+declare function makeExpr($node)
+{
+  (: TBD Scalar sub-selects - jpcs :)
+  (: TBD Precedence - jpcs :)
+  switch(true())
+  (: Binary Operators :)
+  case exists($node/self::plan:or) return (
+    makeExpr($node/plan:expr/*) ||
+    " or " ||
+    makeExpr($node/plan:term/*)
+  )
+  case exists($node/self::plan:and) return (
+    makeExpr($node/plan:expr/*) ||
+    " and " ||
+    makeExpr($node/plan:term/*)
+  )
+  case exists($node/self::plan:multiply) return (
+    makeExpr($node/plan:expr/*) ||
+    (switch(string($node/@op))
+    case "*" return " * "
+    case "/" return " div "
+    case "int-div" return " idiv "
+    case "%" return " mod "
+    default return "??") ||
+    makeExpr($node/plan:term/*)
+  )
+  case exists($node/self::plan:add) return (
+    makeExpr($node/plan:expr/*) ||
+    (switch(string($node/@op))
+    case "ADD" return " + "
+    case "MINUS" return " - "
+    default return "??") ||
+    makeExpr($node/plan:term/*)
+  )
+  (: Comparisons :)
+  case exists($node/self::plan:value-compare) return (
+    makeExpr($node/plan:expr/*) ||
+    " " || lower-case($node/@op) || " " ||
+    makeExpr($node/plan:term/*)
+  )
+  case exists($node/self::plan:general-compare) return (
+    makeExpr($node/plan:expr/*) || " " ||
+    (switch(string($node/@op))
+    case "EQ" return "="
+    case "NE" return "!="
+    case "LT" return "<"
+    case "GT" return ">"
+    case "LE" return "<="
+    case "GE" return ">="
+    default return "??") ||
+    " " || makeExpr($node/plan:term/*)
+  )
+  (: Aggregates :)
+  case exists($node/self::plan:aggregate-function) return (
+    $node/@name || "(" ||
+    (if($node/@distinct = "true") then "distinct " else ()) ||
+    (if(empty($node/plan:*)) then "*" else makeExpr($node/plan:*)) ||
+    ")"
+  )
+  (: Function Calls :)
+  case exists($node/self::plan:builtin) return (
+    prefixFor($node/@uri) || $node/@name || "(" ||
+    string-join($node/plan:* ! makeExpr(.),", ") ||
+    ")"
+  )
+  (: Sequences :)
+  case exists($node/self::plan:expr-sequence) return (
+    let $children := $node/plan:*
+    let $count := count($children)
+    return (
+      (if($count gt 1) then "(" else "") ||
+      string-join($children ! makeExpr(.),", ") ||
+      (if($count gt 1) then ")" else "")
+    )
+  )
+  (: Variable References :)
+  case exists($node/self::plan:column-ref) return (
+    (if($node/@schema != "") then ($node/@schema || ".") else ()) ||
+    (if($node/@view != "") then ($node/@view || ".") else ()) ||
+    $node/@column
+  )
+  case exists($node/self::plan:sparql-variable) return (
+    "?" || $node/plan:qname/@ltrl
+  )
+  case exists($node/self::plan:global-variable) return (
+    "$" || $node/@qname
+  )
+  (: Literals :)
+  case exists($node/self::plan:literal) return (
+    makeLiteralSequenceExpr($node/plan:value)
+  )
+  default return "??"
+};
+
+declare function makeGraphNodeExpr($node)
+{
+  switch($node/@type)
+  case "iri" return ("<" || $node || ">")
+  case "blank" return ("_:" || $node/@name)
+  case "var" return ("?" || $node/@name)
+  case "global-variable" return ("$" || $node/@name)
+  case "column-ref"
+  case "column-def" return (
+    (if($node/@schema != "") then ($node/@schema || ".") else ()) ||
+    (if($node/@view != "") then ($node/@view || ".") else ()) ||
+    $node/@column
+  )
+  default return "??"
+};
+
+declare function makeGraphNodeInfo($node)
+{
+  switch($node/@type)
+  case "iri" return ("<" || $node || ">")
+  case "blank" return ($node/@column-index || " (_:" || $node/@name || ")")
+  case "var" return ($node/@column-index || " (?" || $node/@name || ")")
+  case "global-variable" return ("$" || $node/@name)
+  case "column-ref"
+  case "column-def" return (
+    $node/@column-index || " (" ||
+    (if($node/@schema != "") then ($node/@schema || ".") else ()) ||
+    (if($node/@view != "") then ($node/@view || ".") else ()) ||
+    $node/@column ||
+    (: (if($node/@type = "column-def") then " (def)" else ()) || :)
+    ")"
+  )
+  case "literal" return (
+    if($node/plan:rdf-val) then makeRDFValExpr($node/plan:rdf-val)
+    else makeRDFValExpr($node)
+  )
+  default return "??"
 };
 
 declare function attrs($map,$node,$skip)
@@ -93,16 +268,16 @@ declare function makeTemplateViewGraph($node as element(), $id as xs:string)
   =>nameAndAttrs($node)
   =>( (: v9 :)
     fn:fold-left(function($map,$n) {
-      let $key := "column"
-      let $val := attrs(map:map(),$n)=>attrs($n/plan:graph-node)
-      return $map=>map:with($key,($map=>map:get($key),$val))
+      $map=>map-append("column",
+        makeGraphNodeInfo($n/plan:graph-node) ||
+        (if($n/@nullable = "true") then " [nullable]" else ""))
     },?,$node/*[local-name(.) = ("template-column")])
   )()
   =>(
     fn:fold-left(function($map,$n) {
-      let $key := local-name($n)
-      let $val := attrs(map:map(),$n)=>attrs($n/(plan:name|plan:graph-node))
-      return $map=>map:with($key,($map=>map:get($key),$val))
+      $map=>map-append(local-name($n),
+        (if($n/(plan:name|plan:graph-node)) then makeGraphNodeInfo($n/(plan:name|plan:graph-node)) else makeGraphNodeInfo($n)) ||
+        (if($n/@nullable = "true") then " [nullable]" else ""))
     },?,$node/*[local-name(.) = ("column","row","fragment","content")])
   )(),
 
@@ -122,11 +297,20 @@ declare function makeLiteralGraph($node as element(), $id as xs:string)
   map:map()
   =>map:with("_id",$id)
   =>map:with("_name","literal")
-  =>map:with("value",string($node/plan:value))
-  =>map:with("type",string($node/plan:value/@xsi:type))
+  =>map:with("value",string-join($node/plan:value!string(.),", "))
+  =>map:with("type",string-join($node/plan:value/@xsi:type!string(.),","))
 };
 
-declare function makeJoinFilter($node as element(), $id as xs:string)
+declare function makeJoinFilterExpr($node as element())
+{
+  makeGraphNodeExpr($node/(plan:left|plan:left-graph-node/plan:graph-node)) ||
+  $node/@op ||
+  (if($node/(plan:right|plan:right-graph-node))
+  then makeGraphNodeExpr($node/(plan:right|plan:right-graph-node/plan:graph-node))
+  else makeExpr($node/plan:right-expr/plan:*))
+};
+
+declare function makeJoinFilterGraph($node as element(), $id as xs:string)
 {
   map:map()
   =>map:with("_id",$id)
@@ -141,22 +325,7 @@ declare function makeJoinFilter($node as element(), $id as xs:string)
       $map=>map:with(local-name($n/..),attrs(map:map(),$n))
     },?,$node/(plan:left-graph-node|plan:right-graph-node)/plan:graph-node)
   )()
-  =>map:with("condition", string-join((
-      string($node/(plan:left|plan:left-graph-node/plan:graph-node)/@column-index), string($node/@op),
-      if($node/(plan:right|plan:right-graph-node))
-      then string($node/(plan:right|plan:right-graph-node/plan:graph-node)/@column-index)
-      else "expr"
-    ))),
-
-  for $c at $pos in $node/plan:right-expr/plan:*
-  let $newID := concat($id, "_", $pos)
-  return (
-    let $maps := makeGraph($c,$newID)
-    return (
-      head($maps)=>map:with("_parent",$id),
-      tail($maps)
-    )
-  )
+  =>map:with("condition",makeJoinFilterExpr($node))
 };
 
 declare function makeTripleGraph($node as element(), $id as xs:string)
@@ -168,11 +337,11 @@ declare function makeTripleGraph($node as element(), $id as xs:string)
     switch(version($node))
     case 9 return 
       fn:fold-left(function($map,$n) {
-        $map=>map:with(local-name($n/..),attrs9(map:map(),$n))
+        $map=>map:with(local-name($n/..),makeGraphNodeInfo($n))
       },?,$node/*[local-name(.) = ("subject","predicate","object","graph","fragment")]/plan:graph-node)
     default return
       fn:fold-left(function($map,$n) {
-        $map=>map:with(local-name($n),attrs(map:map(),$n))
+        $map=>map:with(local-name($n),makeGraphNodeInfo($n))
       },?,$node/*[local-name(.) = ("subject","predicate","object","graph","fragment")])
   )(),
 
@@ -187,11 +356,43 @@ declare function makeTripleGraph($node as element(), $id as xs:string)
   )
 };
 
+declare function makeLexiconGraph($node as element(), $id as xs:string)
+{
+  map:map()
+  =>map:with("_id",$id)
+  =>nameAndAttrs($node)
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map:with(local-name($n),makeGraphNodeInfo($n))
+    },?,$node/*[local-name(.) = ("value","fragment")])
+  )()
+  =>map:with("key",$node/plan:range-index-val/@key)
+  =>map:with("scalar-type",$node/plan:range-index-val/@scalar-type),
+
+  for $c at $pos in $node/*[not(local-name(.) = ("value","fragment","range-index-val"))]
+  let $newID := concat($id, "_", $pos)
+  return (
+    let $maps := makeGraph($c,$newID)
+    return (
+      head($maps)=>map:with("_parent",$id),
+      tail($maps)
+    )
+  )
+};
+
 declare function makeOrderGraph($node as element(), $id as xs:string)
 {
   map:map()
   =>map:with("_id",$id)
-  =>nameAndAttrs($node),
+  =>nameAndAttrs($node)
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map-append("order-spec",
+        (if($n/plan:graph-node) then makeGraphNodeInfo($n/plan:graph-node) else makeGraphNodeInfo($n)) ||
+        (if($n/@descending = "true") then " [desc]" else "") ||
+        (if($n/@nulls-first = "true") then " [nulls-first]" else ""))
+    },?,$node/plan:order-spec)
+  )(),
 
   for $c at $pos in $node/*[not(local-name(.) = ("order-spec"))]
   let $newID := concat($id, "_", $pos)
@@ -216,7 +417,12 @@ declare function makeProjectGraph($node as element(), $id as xs:string)
 {
   map:map()
   =>map:with("_id",$id)
-  =>nameAndAttrs($node),
+  =>nameAndAttrs($node)
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map-append("column",makeGraphNodeInfo($n))
+    },?,$node/(plan:column|plan:vars/plan:graph-node))
+  )(),
 
   let $children :=
     switch(version($node))
@@ -250,7 +456,12 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
     return (
       if($pos=1) then () else " and ",
       string($c/@left), string($c/(@op|@operator)), string($c/@right)
-    ))),
+    )))
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map-append("join-filter",makeJoinFilterExpr($n))
+    },?,$node/plan:filters/plan:join-filter)
+  )(),
 
   let $subs :=
     switch(version($node))
@@ -277,6 +488,165 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
   )
 };
 
+declare function map-append($map,$key,$val)
+{
+  $map=>map:with($key,($map=>map:get($key),$val))
+};
+
+declare function makeGroupGraph($node as element(), $id as xs:string)
+{
+  map:map()
+  =>map:with("_id",$id)
+  =>nameAndAttrs($node)
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map-append("order-spec",
+        if($n/plan:graph-node) then makeGraphNodeInfo($n/plan:graph-node)
+        else makeGraphNodeInfo($n))
+    },?,$node/plan:order-spec)
+  )()
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map-append("aggregate",
+        makeExpr($n/plan:aggregate-function) || " as " || makeGraphNodeExpr($n/(plan:column|plan:var/plan:graph-node)))
+    },?,$node/plan:aggregate-bind)
+  )(),
+
+  let $children := $node/*[not(self::plan:order-spec|self::plan:aggregate-bind)]
+
+  for $c at $pos in $children
+  let $newID := concat($id, "_", $pos)
+  return (
+    let $maps := makeGraph($c,$newID)
+    return (
+      head($maps)=>map:with("_parent",$id),
+      tail($maps)
+    )
+  )
+};
+
+declare function makeBindGraph($node as element(), $id as xs:string)
+{
+  map:map()
+  =>map:with("_id",$id)
+  =>nameAndAttrs($node)
+  =>(function($map){
+    if($node/plan:column) then (
+      $map=>map:with("expr", makeExpr($node/plan:expr/plan:*) || " as " ||
+        makeGraphNodeExpr($node/plan:column))
+    )
+    else (
+      $map=>map:with("expr", makeExpr($node/plan:bind-expr/plan:*) || " as " ||
+        makeGraphNodeExpr($node/plan:var/plan:graph-node))
+    )
+  })(),
+
+  let $children := if($node/plan:column) then (
+    $node/*[not(self::plan:column|self::plan:expr)]
+  ) else (
+    $node/plan:expr/*
+  )
+
+  for $c at $pos in $children
+  let $newID := concat($id, "_", $pos)
+  return (
+    let $maps := makeGraph($c,$newID)
+    return (
+      head($maps)=>map:with("_parent",$id),
+      tail($maps)
+    )
+  )
+};
+
+declare function makeFilterGraph($node as element(), $id as xs:string)
+{
+  map:map()
+  =>map:with("_id",$id)
+  =>nameAndAttrs($node)
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map-append("condition",makeExpr($n))
+    },?,$node/plan:filters/plan:*)
+  )(),
+
+  for $c at $pos in $node/*[not(self::plan:filters)]
+  let $newID := concat($id, "_", $pos)
+  return (
+    let $maps := makeGraph($c,$newID)
+    return (
+      head($maps)=>map:with("_parent",$id),
+      tail($maps)
+    )
+  )
+};
+
+declare function makeLimitGraph($node as element(), $id as xs:string)
+{
+  map:map()
+  =>map:with("_id",$id)
+  =>nameAndAttrs($node)
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map:with(local-name($n),
+        if($n/plan:graph-node) then makeGraphNodeInfo($n/plan:graph-node)
+        else makeGraphNodeInfo($n))
+    },?,$node/*[local-name(.) = ("limit","offset")])
+  )(),
+
+  for $c at $pos in $node/plan:expr/*
+  let $newID := concat($id, "_", $pos)
+  return (
+    let $maps := makeGraph($c,$newID)
+    return (
+      head($maps)=>map:with("_parent",$id),
+      tail($maps)
+    )
+  )
+};
+
+declare function makeZeroOrOneGraph($node as element(), $id as xs:string)
+{
+  map:map()
+  =>map:with("_id",$id)
+  =>nameAndAttrs($node)
+  =>map:with("subject", makeGraphNodeInfo($node/plan:graph-node[1]))
+  =>map:with("object", makeGraphNodeInfo($node/plan:graph-node[2])),
+
+  for $c at $pos in $node/*[not(self::plan:graph-node)][1]
+  let $newID := concat($id, "_", $pos)
+  return (
+    let $maps := makeGraph($c,$newID)
+    return (
+      head($maps)=>map:with("_parent",$id),
+      tail($maps)
+    )
+  )
+};
+
+declare function makeValuesRows($map,$values,$rowCount)
+{
+  if(empty($values)) then () else (
+    $map=>map-append("bindings", string-join(
+      for $v in subsequence($values,1,$rowCount)
+      return makeRDFValExpr($v),
+      ", ")),
+    makeValuesRows($map,subsequence($values,$rowCount+1),$rowCount)
+  )
+};
+
+declare function makeValuesGraph($node as element(), $id as xs:string)
+{
+  map:map()
+  =>map:with("_id",$id)
+  =>nameAndAttrs($node)
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map:with("column",makeGraphNodeInfo($n))
+    },?,$node/plan:graph-node)
+  )()
+  =>makeValuesRows($node/plan:bindings/plan:rdf-val,count($node/plan:graph-node))
+};
+
 declare function makeGenericGraph($node as element(), $id as xs:string)
 {
   map:map()
@@ -297,13 +667,20 @@ declare function makeGenericGraph($node as element(), $id as xs:string)
 declare function makeGraph($node as element(), $id as xs:string)
 {
   switch(true())
-  case exists($node/self::plan:join-filter) return makeJoinFilter($node,$id)
+  case exists($node/self::plan:join-filter) return makeJoinFilterGraph($node,$id)
   case contains(local-name($node),"join") and local-name($node)!="star-join" return makeJoinGraph($node,$id)
   case exists($node/self::plan:project) return makeProjectGraph($node,$id)
   case exists($node/self::plan:order-by) return makeOrderGraph($node,$id)
   case exists($node/self::plan:triple-index) return makeTripleGraph($node,$id)
+  case exists($node/self::plan:lexicon-index) return makeLexiconGraph($node,$id)
   case exists($node/self::plan:template-view) return makeTemplateViewGraph($node,$id)
   case exists($node/self::plan:literal) return makeLiteralGraph($node,$id)
+  case exists($node/self::plan:group) return makeGroupGraph($node,$id)
+  case exists($node/self::plan:bind) return makeBindGraph($node,$id)
+  case exists($node/self::plan:filter) return makeFilterGraph($node,$id)
+  case exists($node/self::plan:limit) return makeLimitGraph($node,$id)
+  case exists($node/self::plan:zero-or-one) return makeZeroOrOneGraph($node,$id)
+  case exists($node/self::plan:values) return makeValuesGraph($node,$id)
   case exists($node/self::plan:plan) return makeGraph($node/plan:*[1],$id)
   default return makeGenericGraph($node,$id)
 };
