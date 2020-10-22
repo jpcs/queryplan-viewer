@@ -425,9 +425,7 @@ declare function makeProjectGraph($node as element(), $id as xs:string)
   )(),
 
   let $children :=
-    switch(version($node))
-    case 9 return $node/plan:expr/*
-    default return $node/*[not(self::plan:column)]
+    if($node/plan:expr) then $node/plan:expr/* else $node/*[not(self::plan:column)]
 
   for $c at $pos in $children
   let $newID := concat($id, "_", $pos)
@@ -448,9 +446,8 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
   =>attrs($node,("static-type","type","join-type"))
   =>map:with("condition", string-join(
     let $conditions :=
-      switch(version($node))
-      case 9 return $node/plan:join-info/plan:hash
-      default return $node/plan:hash
+      if($node/plan:join-info) then $node/plan:join-info/plan:hash
+      else $node/plan:hash
 
     for $c at $pos in $conditions
     return (
@@ -593,7 +590,13 @@ declare function makeLimitGraph($node as element(), $id as xs:string)
     },?,$node/*[local-name(.) = ("limit","offset")])
   )(),
 
-  for $c at $pos in $node/plan:expr/*
+  let $children := if($node/plan:expr) then (
+    $node/plan:expr/*
+  ) else (
+    $node/*[not(self::plan:limit|self::plan:offset)]
+  )  
+
+  for $c at $pos in $children
   let $newID := concat($id, "_", $pos)
   return (
     let $maps := makeGraph($c,$newID)
