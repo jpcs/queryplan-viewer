@@ -158,7 +158,9 @@ function DirectedAcyclicGraph() {
         }
 
         // The same list as in Tooltip.js
-        var gnProps = ["column","order-spec","subject","predicate","object","graph","row","value","fragment","content","expr","condition","join-filter","cross-product"];
+        var gnProps = ["column","order-spec","subject","predicate","object","graph","row",
+                       "value","fragment","content","expr","condition","join-filter","cross-product",
+                       "default-graph","named-graph","varIn","varOut"];
 	for(var i = 0; i < gnProps.length; i++) {
 	    var key = gnProps[i];
             if(d.report.hasOwnProperty(key)) {

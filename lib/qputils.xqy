@@ -409,6 +409,8 @@ declare %private function version($node)
 {
   if($node/plan:expr) then 9
   else if($node/plan:elems) then 9
+  else if($node/plan:zero-or-one/plan:graph-node) then 10
+  else if($node/plan:one-or-more/plan:graph-node) then 10
   else if($node/plan:*/plan:graph-node) then 9
   else 10
 };
@@ -626,6 +628,27 @@ declare function makeZeroOrOneGraph($node as element(), $id as xs:string)
   )
 };
 
+declare function makeOneOrMoreGraph($node as element(), $id as xs:string)
+{
+  map:map()
+  =>map:with("_id",$id)
+  =>nameAndAttrs($node)
+  =>map:with("subject", makeGraphNodeInfo($node/plan:graph-node[1]))
+  =>map:with("varIn", makeGraphNodeInfo($node/plan:graph-node[2]))
+  =>map:with("varOut", makeGraphNodeInfo($node/plan:graph-node[3]))
+  =>map:with("object", makeGraphNodeInfo($node/plan:graph-node[4])),
+
+  for $c at $pos in $node/*[not(self::plan:graph-node)][1]
+  let $newID := concat($id, "_", $pos)
+  return (
+    let $maps := makeGraph($c,$newID)
+    return (
+      head($maps)=>map:with("_parent",$id),
+      tail($maps)
+    )
+  )
+};
+
 declare function makeValuesRows($map,$values,$rowCount)
 {
   if(empty($values)) then () else (
@@ -648,6 +671,18 @@ declare function makeValuesGraph($node as element(), $id as xs:string)
     },?,$node/plan:graph-node)
   )()
   =>makeValuesRows($node/plan:bindings/plan:rdf-val,count($node/plan:graph-node))
+};
+
+declare function makeFromGraph($node as element(), $id as xs:string)
+{
+  map:map()
+  =>map:with("_id",$id)
+  =>nameAndAttrs($node)
+  =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map-append(local-name($n/..),string($n))
+    },?,$node/plan:*/plan:value)
+  )()
 };
 
 declare function makeGenericGraph($node as element(), $id as xs:string)
@@ -683,7 +718,9 @@ declare function makeGraph($node as element(), $id as xs:string)
   case exists($node/self::plan:filter) return makeFilterGraph($node,$id)
   case exists($node/self::plan:limit) return makeLimitGraph($node,$id)
   case exists($node/self::plan:zero-or-one) return makeZeroOrOneGraph($node,$id)
+  case exists($node/self::plan:one-or-more) return makeOneOrMoreGraph($node,$id)
   case exists($node/self::plan:values) return makeValuesGraph($node,$id)
+  case exists($node/self::plan:from) return makeFromGraph($node,$id)
   case exists($node/self::plan:plan) return makeGraph($node/plan:*[1],$id)
   default return makeGenericGraph($node,$id)
 };

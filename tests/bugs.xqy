@@ -344,4 +344,261 @@ map:entry("name","sc27362")
 '{"dedup":"true", "order":"2,0,3", "subject":"0 (?id)", "_name":"triple-index", "is-column":"false", "descending":"false", "_parentLabel":"right", "predicate":"2 (?p)", "_id":"N_1_1_1_1_1_L_R", "_parent":"N_1_1_1_1_1_L", "permutation":"PSO", "object":"3 (?o)", "graph":"<https://data.pearson.com/graph/ontology/1>"}',
 '{"dedup":"true", "order":"2,0,3", "subject":"0 (?id)", "_name":"triple-index", "is-column":"false", "descending":"false", "_parentLabel":"right", "predicate":"2 (?p)", "_id":"N_1_1_1_1_1_R", "_parent":"N_1_1_1_1_1", "permutation":"PSO", "object":"3 (?o)", "graph":"<https://data.pearson.com/graph/systemconfiguration/1>"}'
 ))
+,
+map:entry("name","one-or-more")
+=>map:with("plan",
+<plan:plan xmlns:plan='http://marklogic.com/plan'>
+  <plan:select>
+    <plan:from>
+      <plan:default-graph>
+        <plan:value>http://marklogic.com/semantics#default-graph</plan:value>
+        <plan:value>https://content.com/collection/ontology</plan:value>
+        <plan:value>https://content.com/collection/content/ImageObject/en-US</plan:value>
+        <plan:value>https://content.com/collection/content/ImageObject/subclassed/en-US</plan:value>
+        <plan:value>https://content.com/collection/content/Thing/subclassed</plan:value>
+        <plan:value>https://content.com/collection/gin/Thing/subclassed</plan:value>
+        <plan:value>https://content.com/collection/gin/Classification/subclassed</plan:value>
+        <plan:value>https://content.com/collection/gin/AssetType</plan:value>
+        <plan:value>https://content.com/collection/gin/AssetType/subclassed</plan:value>
+      </plan:default-graph>
+    </plan:from>
+    <plan:distinct>
+      <plan:project order=''>
+        <plan:column column-index='0' name='subject' type='var' />
+        <plan:order-by num-sorted='0' order='last(5),desc(last(4))'>
+          <plan:order-spec column-index='5' descending='false' hidden='true' name='ANON2266679090434743153' nulls-first='false' type='var' />
+          <plan:order-spec column-index='4' descending='true' name='4' nulls-first='false' type='var' />
+          <plan:bind>
+            <plan:column column-index='5' hidden='true' name='ANON2266679090434743153' type='var' />
+            <plan:expr>
+              <plan:builtin name='not' uri='http://www.w3.org/2005/xpath-functions'>
+                <plan:builtin name='exists' uri='http://www.w3.org/2005/xpath-functions'>
+                  <plan:sparql-variable column-index='4'>
+                    <plan:qname ltrl='4' name='4' prfx='' uri='' />
+                  </plan:sparql-variable>
+                </plan:builtin>
+              </plan:builtin>
+            </plan:expr>
+            <plan:left-join order='' type='left-scatter-join'>
+              <plan:hash left='0' op='=' right='0' />
+              <plan:scatter left='0' op='=' right='0' />
+              <plan:join order='' type='scatter-join'>
+                <plan:hash left='0' op='=' right='0' />
+                <plan:scatter left='0' op='=' right='0' />
+                <plan:join order='' type='scatter-join'>
+                  <plan:hash left='0' op='=' right='0' />
+                  <plan:scatter left='0' op='=' right='0' />
+                  <plan:join order='0' type='scatter-join'>
+                    <plan:hash left='0' op='=' right='0' />
+                    <plan:scatter left='0' op='=' right='0' />
+                    <plan:join order='1,0' type='scatter-join'>
+                      <plan:hash left='1' op='=' right='1' />
+                      <plan:scatter left='1' op='=' right='1' />
+                      <plan:triple-index dedup='true' order='1' permutation='OPS'>
+                        <plan:subject column-index='1' hidden='true' name='ANON3064792102711755591' type='blank' />
+                        <plan:predicate type='iri'>https://content.com/id</plan:predicate>
+                        <plan:object name='0' type='global-variable' />
+                      </plan:triple-index>
+                      <plan:triple-index dedup='true' order='1,0' permutation='POS'>
+                        <plan:subject column-index='0' name='subject' type='var' />
+                        <plan:predicate type='iri'>https://content.com/mainEntity</plan:predicate>
+                        <plan:object column-index='1' hidden='true' name='ANON3064792102711755591' type='blank' />
+                      </plan:triple-index>
+                    </plan:join>
+                    <plan:triple-index dedup='true' order='0' permutation='OPS'>
+                      <plan:subject column-index='0' name='subject' type='var' />
+                      <plan:predicate type='iri'>https://content.com/locale</plan:predicate>
+                      <plan:object name='3' type='global-variable' />
+                    </plan:triple-index>
+                  </plan:join>
+                  <plan:sparql-union order='' type='concat-union'>
+                    <plan:triple-index dedup='true' order='0,2' permutation='PSO'>
+                      <plan:subject column-index='0' name='subject' type='var' />
+                      <plan:predicate type='iri'>https://content.com/assetType</plan:predicate>
+                      <plan:object column-index='2' name='1' type='var' />
+                      <plan:join-filter op='='>
+                        <plan:left column-index='2' name='1' type='var' />
+                        <plan:right-expr>
+                          <plan:literal>
+                            <plan:value xmlns:sem='http://marklogic.com/semantics' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='sem:iri'>https://content.com/data/AssetType/t-screenshot</plan:value>
+                            <plan:value xmlns:sem='http://marklogic.com/semantics' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='sem:iri'>https://content.com/data/AssetType/ig-screenshot</plan:value>
+                          </plan:literal>
+                        </plan:right-expr>
+                      </plan:join-filter>
+                    </plan:triple-index>
+                    <plan:sparql-exists-join order='' type='right-hash'>
+                      <plan:hash left='0' op='=' right='0' />
+                      <plan:expr>
+                        <plan:join order='' type='scatter-join'>
+                          <plan:hash left='0' op='=' right='0' />
+                          <plan:scatter left='0' op='=' right='0' />
+                          <plan:join order='0' type='scatter-join'>
+                            <plan:hash left='0' op='=' right='0' />
+                            <plan:scatter left='0' op='=' right='0' />
+                            <plan:join order='3,0' type='scatter-join'>
+                              <plan:hash left='3' op='=' right='3' />
+                              <plan:scatter left='3' op='=' right='3' />
+                              <plan:triple-index dedup='true' order='3' permutation='OPS'>
+                                <plan:subject column-index='3' hidden='true' name='ANON16715473614359753352' type='blank' />
+                                <plan:predicate type='iri'>https://content.com/id</plan:predicate>
+                                <plan:object name='0' type='global-variable' />
+                              </plan:triple-index>
+                              <plan:triple-index dedup='true' order='3,0' permutation='POS'>
+                                <plan:subject column-index='0' name='subject' type='var' />
+                                <plan:predicate type='iri'>https://content.com/mainEntity</plan:predicate>
+                                <plan:object column-index='3' hidden='true' name='ANON16715473614359753352' type='blank' />
+                              </plan:triple-index>
+                            </plan:join>
+                            <plan:triple-index dedup='true' order='0' permutation='OPS'>
+                              <plan:subject column-index='0' name='subject' type='var' />
+                              <plan:predicate type='iri'>https://content.com/locale</plan:predicate>
+                              <plan:object name='3' type='global-variable' />
+                            </plan:triple-index>
+                          </plan:join>
+                          <plan:distinct>
+                            <plan:project order=''>
+                              <plan:column column-index='0' name='subject' type='var' />
+                              <plan:sparql-union order='' type='concat-union'>
+                                <plan:triple-index dedup='true' order='0' permutation='OPS'>
+                                  <plan:subject column-index='0' name='subject' type='var' />
+                                  <plan:predicate type='iri'>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+                                  <plan:object type='iri'>https://content.com/ImageObject</plan:object>
+                                </plan:triple-index>
+                                <plan:join order='3,0' type='scatter-join'>
+                                  <plan:hash left='3' op='=' right='3' />
+                                  <plan:scatter left='3' op='=' right='3' />
+                                  <plan:one-or-more order='' type='SCATTER'>
+                                    <plan:graph-node column-index='3' hidden='true' name='ANON9473490927005035661' type='blank' />
+                                    <plan:graph-node column-index='0' hidden='true' name='ANON14681692922891278890' type='var' />
+                                    <plan:graph-node column-index='1' hidden='true' name='ANON10602977668939359507' type='var' />
+                                    <plan:graph-node type='iri'>https://content.com/ImageObject</plan:graph-node>
+                                    <plan:triple-index dedup='true' order='0,1' permutation='PSO'>
+                                      <plan:subject column-index='0' hidden='true' name='ANON14681692922891278890' type='var' />
+                                      <plan:predicate type='iri'>http://www.w3.org/2000/01/rdf-schema#subClassOf</plan:predicate>
+                                      <plan:object column-index='1' hidden='true' name='ANON10602977668939359507' type='var' />
+                                    </plan:triple-index>
+                                  </plan:one-or-more>
+                                  <plan:triple-index dedup='true' order='3,0' permutation='POS'>
+                                    <plan:subject column-index='0' name='subject' type='var' />
+                                    <plan:predicate type='iri'>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+                                    <plan:object column-index='3' hidden='true' name='ANON9473490927005035661' type='blank' />
+                                  </plan:triple-index>
+                                </plan:join>
+                              </plan:sparql-union>
+                            </plan:project>
+                          </plan:distinct>
+                        </plan:join>
+                      </plan:expr>
+                      <plan:exists>
+                        <plan:join order='4,0' type='scatter-join'>
+                          <plan:hash left='4' op='=' right='4' />
+                          <plan:scatter left='4' op='=' right='4' />
+                          <plan:triple-index dedup='true' order='4' permutation='OPS'>
+                            <plan:subject column-index='4' hidden='true' name='ANON3088863675916099189' type='blank' />
+                            <plan:predicate type='iri'>https://content.com/id</plan:predicate>
+                            <plan:object name='2' type='global-variable' />
+                          </plan:triple-index>
+                          <plan:triple-index dedup='true' order='4,0' permutation='POS'>
+                            <plan:subject column-index='0' name='subject' type='var' />
+                            <plan:predicate type='iri'>https://content.com/classification</plan:predicate>
+                            <plan:object column-index='4' hidden='true' name='ANON3088863675916099189' type='blank' />
+                          </plan:triple-index>
+                        </plan:join>
+                      </plan:exists>
+                      <plan:filters />
+                      <plan:ljfilters />
+                    </plan:sparql-exists-join>
+                  </plan:sparql-union>
+                </plan:join>
+                <plan:distinct>
+                  <plan:project order=''>
+                    <plan:column column-index='0' name='subject' type='var' />
+                    <plan:sparql-union order='' type='concat-union'>
+                      <plan:triple-index dedup='true' order='0' permutation='OPS'>
+                        <plan:subject column-index='0' name='subject' type='var' />
+                        <plan:predicate type='iri'>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+                        <plan:object type='iri'>https://content.com/ImageObject</plan:object>
+                      </plan:triple-index>
+                      <plan:join order='1,0' type='scatter-join'>
+                        <plan:hash left='1' op='=' right='1' />
+                        <plan:scatter left='1' op='=' right='1' />
+                        <plan:one-or-more order='' type='SCATTER'>
+                          <plan:graph-node column-index='1' hidden='true' name='ANON18246697083136543884' type='blank' />
+                          <plan:graph-node column-index='0' hidden='true' name='ANON16421309367134413032' type='var' />
+                          <plan:graph-node column-index='1' hidden='true' name='ANON16852300872775477243' type='var' />
+                          <plan:graph-node type='iri'>https://content.com/ImageObject</plan:graph-node>
+                          <plan:triple-index dedup='true' order='0,1' permutation='PSO'>
+                            <plan:subject column-index='0' hidden='true' name='ANON16421309367134413032' type='var' />
+                            <plan:predicate type='iri'>http://www.w3.org/2000/01/rdf-schema#subClassOf</plan:predicate>
+                            <plan:object column-index='1' hidden='true' name='ANON16852300872775477243' type='var' />
+                          </plan:triple-index>
+                        </plan:one-or-more>
+                        <plan:triple-index dedup='true' order='1,0' permutation='POS'>
+                          <plan:subject column-index='0' name='subject' type='var' />
+                          <plan:predicate type='iri'>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+                          <plan:object column-index='1' hidden='true' name='ANON18246697083136543884' type='blank' />
+                        </plan:triple-index>
+                      </plan:join>
+                    </plan:sparql-union>
+                  </plan:project>
+                </plan:distinct>
+              </plan:join>
+              <plan:triple-index dedup='true' order='0,4' permutation='PSO'>
+                <plan:subject column-index='0' name='subject' type='var' />
+                <plan:predicate type='iri'>https://content.com/dateCreated</plan:predicate>
+                <plan:object column-index='4' name='4' type='var' />
+              </plan:triple-index>
+              <plan:filters />
+              <plan:ljfilters />
+            </plan:left-join>
+          </plan:bind>
+        </plan:order-by>
+      </plan:project>
+    </plan:distinct>
+  </plan:select>
+</plan:plan>
+)
+=>map:with("expected",(
+'{"_id":"N", "_name":"select"}',
+'{"_id":"N_1", "_parent":"N", "default-graph":["http://marklogic.com/semantics#default-graph", "https://content.com/collection/ontology", "https://content.com/collection/content/ImageObject/en-US", "https://content.com/collection/content/ImageObject/subclassed/en-US", "https://content.com/collection/content/Thing/subclassed", "https://content.com/collection/gin/Thing/subclassed", "https://content.com/collection/gin/Classification/subclassed", "https://content.com/collection/gin/AssetType", "https://content.com/collection/gin/AssetType/subclassed"], "_name":"from"}',
+'{"_id":"N_2", "_parent":"N", "_name":"distinct"}',
+'{"order":"", "_id":"N_2_1", "_parent":"N_2", "_name":"project", "column":"0 (?subject)"}',
+'{"order":"last(5),desc(last(4))", "_id":"N_2_1_1", "_parent":"N_2_1", "order-spec":["5 (?ANON2266679090434743153)", "4 (?4) [desc]"], "_name":"order-by", "num-sorted":"0"}',
+'{"_id":"N_2_1_1_1", "expr":"fn:not(fn:exists(?4)) as ?ANON2266679090434743153", "_parent":"N_2_1_1", "_name":"bind"}',
+'{"order":"", "_id":"N_2_1_1_1_1", "_parent":"N_2_1_1_1", "condition":"0=0", "_name":"left-scatter-join"}',
+'{"_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L", "_parent":"N_2_1_1_1_1", "condition":"0=0", "_name":"scatter-join"}',
+'{"_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L_L", "_parent":"N_2_1_1_1_1_L", "condition":"0=0", "_name":"scatter-join"}',
+'{"_parentLabel":"left", "order":"0", "_id":"N_2_1_1_1_1_L_L_L", "_parent":"N_2_1_1_1_1_L_L", "condition":"0=0", "_name":"scatter-join"}',
+'{"_parentLabel":"left", "order":"1,0", "_id":"N_2_1_1_1_1_L_L_L_L", "_parent":"N_2_1_1_1_1_L_L_L", "condition":"1=1", "_name":"scatter-join"}',
+'{"dedup":"true", "_parentLabel":"left", "predicate":"<https://content.com/id>", "order":"1", "_id":"N_2_1_1_1_1_L_L_L_L_L", "_parent":"N_2_1_1_1_1_L_L_L_L", "permutation":"OPS", "subject":"1 (_:ANON3064792102711755591)", "_name":"triple-index", "object":"$0"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/mainEntity>", "order":"1,0", "_id":"N_2_1_1_1_1_L_L_L_L_R", "_parent":"N_2_1_1_1_1_L_L_L_L", "permutation":"POS", "subject":"0 (?subject)", "_name":"triple-index", "object":"1 (_:ANON3064792102711755591)"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/locale>", "order":"0", "_id":"N_2_1_1_1_1_L_L_L_R", "_parent":"N_2_1_1_1_1_L_L_L", "permutation":"OPS", "subject":"0 (?subject)", "_name":"triple-index", "object":"$3"}',
+'{"_parentLabel":"right", "order":"", "_id":"N_2_1_1_1_1_L_L_R", "type":"concat-union", "_parent":"N_2_1_1_1_1_L_L", "_name":"sparql-union"}',
+'{"dedup":"true", "predicate":"<https://content.com/assetType>", "order":"0,2", "_id":"N_2_1_1_1_1_L_L_R_1", "_parent":"N_2_1_1_1_1_L_L_R", "permutation":"PSO", "subject":"0 (?subject)", "_name":"triple-index", "object":"2 (?1)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_1_1", "_parent":"N_2_1_1_1_1_L_L_R_1", "condition":"?1=(<https://content.com/data/AssetType/t-screenshot>, <https://content.com/data/AssetType/ig-screenshot>)", "left":{"type":"var", "column-index":"2", "name":"1"}, "_name":"join-filter", "op":"="}',
+'{"order":"", "_id":"N_2_1_1_1_1_L_L_R_2", "_parent":"N_2_1_1_1_1_L_L_R", "condition":"0=0", "_name":"right-hash"}',
+'{"_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L_L_R_2_L", "_parent":"N_2_1_1_1_1_L_L_R_2", "condition":"0=0", "_name":"scatter-join"}',
+'{"_parentLabel":"left", "order":"0", "_id":"N_2_1_1_1_1_L_L_R_2_L_L", "_parent":"N_2_1_1_1_1_L_L_R_2_L", "condition":"0=0", "_name":"scatter-join"}',
+'{"_parentLabel":"left", "order":"3,0", "_id":"N_2_1_1_1_1_L_L_R_2_L_L_L", "_parent":"N_2_1_1_1_1_L_L_R_2_L_L", "condition":"3=3", "_name":"scatter-join"}',
+'{"dedup":"true", "_parentLabel":"left", "predicate":"<https://content.com/id>", "order":"3", "_id":"N_2_1_1_1_1_L_L_R_2_L_L_L_L", "_parent":"N_2_1_1_1_1_L_L_R_2_L_L_L", "permutation":"OPS", "subject":"3 (_:ANON16715473614359753352)", "_name":"triple-index", "object":"$0"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/mainEntity>", "order":"3,0", "_id":"N_2_1_1_1_1_L_L_R_2_L_L_L_R", "_parent":"N_2_1_1_1_1_L_L_R_2_L_L_L", "permutation":"POS", "subject":"0 (?subject)", "_name":"triple-index", "object":"3 (_:ANON16715473614359753352)"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/locale>", "order":"0", "_id":"N_2_1_1_1_1_L_L_R_2_L_L_R", "_parent":"N_2_1_1_1_1_L_L_R_2_L_L", "permutation":"OPS", "subject":"0 (?subject)", "_name":"triple-index", "object":"$3"}',
+'{"_parentLabel":"right", "_id":"N_2_1_1_1_1_L_L_R_2_L_R", "_parent":"N_2_1_1_1_1_L_L_R_2_L", "_name":"distinct"}',
+'{"order":"", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R", "_name":"project", "column":"0 (?subject)"}',
+'{"order":"", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1", "type":"concat-union", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1", "_name":"sparql-union"}',
+'{"dedup":"true", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"0", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_1", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1", "permutation":"OPS", "subject":"0 (?subject)", "_name":"triple-index", "object":"<https://content.com/ImageObject>"}',
+'{"order":"3,0", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1", "condition":"3=3", "_name":"scatter-join"}',
+'{"varOut":"1 (?ANON10602977668939359507)", "_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2_L", "type":"SCATTER", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2", "subject":"3 (_:ANON9473490927005035661)", "object":"<https://content.com/ImageObject>", "_name":"one-or-more", "varIn":"0 (?ANON14681692922891278890)"}',
+'{"dedup":"true", "predicate":"<http://www.w3.org/2000/01/rdf-schema#subClassOf>", "order":"0,1", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2_L_1", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2_L", "permutation":"PSO", "subject":"0 (?ANON14681692922891278890)", "_name":"triple-index", "object":"1 (?ANON10602977668939359507)"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"3,0", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2_R", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2", "permutation":"POS", "subject":"0 (?subject)", "_name":"triple-index", "object":"3 (_:ANON9473490927005035661)"}',
+'{"_parentLabel":"right", "_id":"N_2_1_1_1_1_L_R", "_parent":"N_2_1_1_1_1_L", "_name":"distinct"}',
+'{"order":"", "_id":"N_2_1_1_1_1_L_R_1", "_parent":"N_2_1_1_1_1_L_R", "_name":"project", "column":"0 (?subject)"}',
+'{"order":"", "_id":"N_2_1_1_1_1_L_R_1_1", "type":"concat-union", "_parent":"N_2_1_1_1_1_L_R_1", "_name":"sparql-union"}',
+'{"dedup":"true", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"0", "_id":"N_2_1_1_1_1_L_R_1_1_1", "_parent":"N_2_1_1_1_1_L_R_1_1", "permutation":"OPS", "subject":"0 (?subject)", "_name":"triple-index", "object":"<https://content.com/ImageObject>"}',
+'{"order":"1,0", "_id":"N_2_1_1_1_1_L_R_1_1_2", "_parent":"N_2_1_1_1_1_L_R_1_1", "condition":"1=1", "_name":"scatter-join"}',
+'{"varOut":"1 (?ANON16852300872775477243)", "_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L_R_1_1_2_L", "type":"SCATTER", "_parent":"N_2_1_1_1_1_L_R_1_1_2", "subject":"1 (_:ANON18246697083136543884)", "object":"<https://content.com/ImageObject>", "_name":"one-or-more", "varIn":"0 (?ANON16421309367134413032)"}',
+'{"dedup":"true", "predicate":"<http://www.w3.org/2000/01/rdf-schema#subClassOf>", "order":"0,1", "_id":"N_2_1_1_1_1_L_R_1_1_2_L_1", "_parent":"N_2_1_1_1_1_L_R_1_1_2_L", "permutation":"PSO", "subject":"0 (?ANON16421309367134413032)", "_name":"triple-index", "object":"1 (?ANON16852300872775477243)"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"1,0", "_id":"N_2_1_1_1_1_L_R_1_1_2_R", "_parent":"N_2_1_1_1_1_L_R_1_1_2", "permutation":"POS", "subject":"0 (?subject)", "_name":"triple-index", "object":"1 (_:ANON18246697083136543884)"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/dateCreated>", "order":"0,4", "_id":"N_2_1_1_1_1_R", "_parent":"N_2_1_1_1_1", "permutation":"PSO", "subject":"0 (?subject)", "_name":"triple-index", "object":"4 (?4)"}'
+))
 };
