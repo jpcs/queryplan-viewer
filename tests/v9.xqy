@@ -584,5 +584,95 @@ map:entry("name","v9_3")
 '{"dedup":"false", "_parentLabel":"right", "predicate":"dhlfinal.Piece.PieceShippedDate (13364940964188105577)", "order":"1[NULLS_IRRELEVANT],15[NULLS_IRRELEVANT]", "_id":"N_1_1_1_1_1_1_1_R", "_parent":"N_1_1_1_1_1_1_1", "permutation":"POS", "subject":"15 (dhlfinal.Piece.rowid)", "_name":"triple-index", "is-column":"true", "descending":"false", "object":"1 (ITBL.PieceShippedDate)"}',
 '{"left-graph-node":{"view":"ITBL", "type":"column-def", "column-index":"1", "schema":"", "column":"PieceShippedDate", "name":"ITBL.PieceShippedDate"}, "_id":"N_1_1_1_1_1_1_1_R_1", "_parent":"N_1_1_1_1_1_1_1_R", "condition":"ITBL.PieceShippedDate<=xs:date(\"2020-02-01\")", "_name":"join-filter", "op":"<="}',
 '{"left-graph-node":{"view":"ITBL", "type":"column-def", "column-index":"1", "schema":"", "column":"PieceShippedDate", "name":"ITBL.PieceShippedDate"}, "_id":"N_1_1_1_1_1_1_1_R_2", "_parent":"N_1_1_1_1_1_1_1_R", "condition":"ITBL.PieceShippedDate>=xs:date(\"2019-01-01\")", "_name":"join-filter", "op":">="}'
+)),
+map:entry("name","v9_values")
+=>map:with("plan",
+<plan:plan xmlns:plan="http://marklogic.com/plan">
+  <plan:select>
+    <plan:limit id="10263067757173796057" order="" cost="1.14014e+07" estimated-count="5" io-cost="0/70.2285/215199/632.056/1.93679e+06" nw-cost="101/104/342830/1233/1.2047e+06" cpu-cost="0/26.7192/178898/26.7192/178898" dcpu-cost="0/1.23381/480114/11.1043/4.32103e+06" mem-cost="9.00001" dmem-cost="0.333333" cardinalities="(5,430722),(5,420981),(5,2863),(5,306821),(1,1)">
+      <plan:limit type="literal" datatype="http://www.w3.org/2001/XMLSchema#integer">5</plan:limit>
+      <plan:distinct>
+	<plan:project id="6601389750537747770" order="">
+	  <plan:column type="var" name="symbol" column-index="0"/>
+	  <plan:column type="var" name="description" column-index="1"/>
+	  <plan:join type="sort-merge-join" id="10181986044156425385" order="3,1" cost="1.13748e+09" estimated-count="306822" io-cost="0/70.2285/2.14852e+07/632.056/1.93367e+08" nw-cost="101/104/3.42277e+07/1233/1.20276e+08" cpu-cost="0/26.7192/1.7861e+07/26.7192/1.7861e+07" dcpu-cost="0/1.23381/4.79341e+07/11.1043/4.31407e+08" mem-cost="9.00001" dmem-cost="0.333333" cardinalities="(306822,430722),(306822,420981),(2863,2863),(306821,306821),(1,1)" left-num-sorted="1" right-num-sorted="1">
+	    <plan:hash left="3" right="3" op="="/>
+	    <plan:triple-index permutation="PSO" dedup="true" id="176078972951302481" order="3,0" cost="5.01102e+07" estimated-count="431260" io-cost="0/13.6561/844243/122.905/7.59818e+06" nw-cost="101/0/862520/303/7.76268e+06" cpu-cost="0/0/7762.68/0/7762.68" dcpu-cost="0/0/550579/0/4.95521e+06" mem-cost="0" dmem-cost="0" cardinalities="(430722,430722),(0,0),(0,0),(431259,431259)">
+	      <plan:subject type="var" name="assessment" column-index="3"/>
+	      <plan:predicate type="iri">http://www.w3.org/2004/02/skos/core#prefLabel</plan:predicate>
+	      <plan:object type="var" name="symbol" column-index="0"/>
+	      <plan:graph type="iri">https://data.example.com/product</plan:graph>
+	    </plan:triple-index>
+	    <plan:join type="sort-merge-join" id="9185937043842146228" order="3,1" cost="1.08655e+09" estimated-count="306822" io-cost="0/56.5724/2.0641e+07/509.151/1.85769e+08" nw-cost="101/104/3.33652e+07/930/1.12513e+08" cpu-cost="0/26.7192/1.7028e+07/26.7192/1.7028e+07" dcpu-cost="0/1.23381/4.73835e+07/11.1043/4.26452e+08" mem-cost="7" dmem-cost="0.333333" cardinalities="(0,0),(306822,420981),(2863,2863),(306821,306821),(1,1)" left-num-sorted="1" right-num-sorted="1">
+	      <plan:hash left="3" right="3" op="="/>
+	      <plan:join type="nested-loop-join" id="7115551669620881242" order="3,2" cost="1.03675e+09" estimated-count="306822" io-cost="0/42.9163/1.98153e+07/386.247/1.78338e+08" nw-cost="101/104/3.25229e+07/627/1.04932e+08" cpu-cost="0/26.7192/1.61951e+07/26.7192/1.61951e+07" dcpu-cost="0/1.23381/4.68402e+07/11.1043/4.21562e+08" mem-cost="5" dmem-cost="0.333333" cardinalities="(0,0),(0,0),(2863,2863),(306821,306821),(1,1)">
+		<plan:hash left="2" right="2" op="="/>
+		<plan:scatter left="2" right="2" op="="/>
+		<plan:triple-index permutation="PSO" dedup="true" id="15549280923627179241" order="3,2" cost="3.55713e+07" estimated-count="306821" io-cost="0/13.6561/597716/122.905/5.37944e+06" nw-cost="101/0/613642/303/5.52278e+06" cpu-cost="0/0/5522.78/0/5522.78" dcpu-cost="0/0/378558/0/3.40703e+06" mem-cost="0" dmem-cost="0" cardinalities="(0,0),(0,0),(2863,2863),(306821,306821)">
+		  <plan:subject type="var" name="assessment" column-index="3"/>
+		  <plan:predicate type="iri">https://ontologies.example.com/product/providesInformationAbout</plan:predicate>
+		  <plan:object type="var" name="product" column-index="2"/>
+		  <plan:graph type="iri">https://data.example.com/product</plan:graph>
+		</plan:triple-index>
+		<plan:project id="12320572833841344215" order="2">
+		  <plan:column type="var" name="product" column-index="2"/>
+		  <plan:join type="hash-join" cross-product="true" id="3355642798263997567" order="2,3" cost="3451.49" estimated-count="1" io-cost="0/27.3121/35.3224/245.809/317.902" nw-cost="0/102/2/306/18" cpu-cost="0/10.4579/12.0142/10.4579/12.0142" dcpu-cost="0/0/151.429/0/1362.86" mem-cost="2" dmem-cost="0.333333" cardinalities="(0,0),(0,0),(1,1),(1,1),(1,1)">
+		    <plan:values>
+		      <plan:graph-node type="var" name="productName" column-index="4"/>
+		      <plan:bindings>
+			<plan:value datatype="http://www.w3.org/2001/XMLSchema#string">My Product Name</plan:value>
+		      </plan:bindings>
+		    </plan:values>
+		    <plan:triple-index permutation="PSO" dedup="true" id="3645081164621359263" order="2,3" cost="3427.99" estimated-count="1" io-cost="0/27.3121/35.3224/245.809/317.902" nw-cost="102/0/2/306/18" cpu-cost="0/0/0.018/0/0.018" dcpu-cost="0/0/151.429/0/1362.86" mem-cost="0" dmem-cost="0.333333" cardinalities="(0,0),(0,0),(1,1),(1,1)">
+		      <plan:subject type="var" name="product" column-index="2"/>
+		      <plan:predicate type="iri">http://www.w3.org/2004/02/skos/core#prefLabel</plan:predicate>
+		      <plan:object type="var" name="pname" column-index="3"/>
+		      <plan:graph type="iri">https://data.example.com/product</plan:graph>
+		    </plan:triple-index>
+		    <plan:filters>
+		      <plan:join-filter op="=">
+			<plan:left type="var" name="productName" column-index="4"/>
+			<plan:right-expr>
+			  <plan:builtin uri="http://www.w3.org/2005/xpath-functions" name="lower-case">
+			    <plan:sparql-variable column-index="3">
+			      <plan:qname name="pname" uri="" prfx="" ltrl="pname"/>
+			    </plan:sparql-variable>
+			  </plan:builtin>
+			</plan:right-expr>
+		      </plan:join-filter>
+		    </plan:filters>
+		  </plan:join>
+		</plan:project>
+	      </plan:join>
+	      <plan:triple-index permutation="PSO" dedup="true" id="2172984895493128607" order="3,1" cost="4.89696e+07" estimated-count="421149" io-cost="0/13.6561/825694/122.905/7.43124e+06" nw-cost="101/0/842298/303/7.58068e+06" cpu-cost="0/0/7580.68/0/7580.68" dcpu-cost="0/0/543271/0/4.88944e+06" mem-cost="0" dmem-cost="0" cardinalities="(0,0),(420981,420981),(0,0),(421149,421149)">
+		<plan:subject type="var" name="assessment" column-index="3"/>
+		<plan:predicate type="iri">http://www.w3.org/2004/02/skos/core#description</plan:predicate>
+		<plan:object type="var" name="description" column-index="1"/>
+		<plan:graph type="iri">https://data.example.com/product</plan:graph>
+	      </plan:triple-index>
+	    </plan:join>
+	  </plan:join>
+	</plan:project>
+      </plan:distinct>
+    </plan:limit>
+  </plan:select>
+</plan:plan>
+)
+=>map:with("expected",(
+'{"_id":"N", "_name":"select"}',
+'{"cost":"1.14014e+07", "nw-cost":"101/104/342830/1233/1.2047e+06", "cpu-cost":"0/26.7192/178898/26.7192/178898", "limit":"5", "order":"", "_name":"limit", "dcpu-cost":"0/1.23381/480114/11.1043/4.32103e+06", "id":"10263067757173796057", "_id":"N_1", "_parent":"N", "mem-cost":"9.00001", "io-cost":"0/70.2285/215199/632.056/1.93679e+06", "estimated-count":"5", "dmem-cost":"0.333333", "cardinalities":"(5,430722),(5,420981),(5,2863),(5,306821),(1,1)"}',
+'{"_id":"N_1_1", "_parent":"N_1", "_name":"distinct"}',
+'{"order":"", "_id":"N_1_1_1", "_parent":"N_1_1", "_name":"project", "column":["0 (?symbol)", "1 (?description)"], "id":"6601389750537747770"}',
+'{"cost":"1.13748e+09", "nw-cost":"101/104/3.42277e+07/1233/1.20276e+08", "cpu-cost":"0/26.7192/1.7861e+07/26.7192/1.7861e+07", "order":"3,1", "right-num-sorted":"1", "condition":"3=3", "_name":"sort-merge-join", "dcpu-cost":"0/1.23381/4.79341e+07/11.1043/4.31407e+08", "left-num-sorted":"1", "id":"10181986044156425385", "_id":"N_1_1_1_1", "_parent":"N_1_1_1", "mem-cost":"9.00001", "io-cost":"0/70.2285/2.14852e+07/632.056/1.93367e+08", "estimated-count":"306822", "dmem-cost":"0.333333", "cardinalities":"(306822,430722),(306822,420981),(2863,2863),(306821,306821),(1,1)"}',
+'{"dedup":"true", "cost":"5.01102e+07", "nw-cost":"101/0/862520/303/7.76268e+06", "cpu-cost":"0/0/7762.68/0/7762.68", "order":"3,0", "graph":"<https://data.example.com/product>", "subject":"3 (?assessment)", "_name":"triple-index", "dcpu-cost":"0/0/550579/0/4.95521e+06", "id":"176078972951302481", "_parentLabel":"left", "predicate":"<http://www.w3.org/2004/02/skos/core#prefLabel>", "_id":"N_1_1_1_1_L", "_parent":"N_1_1_1_1", "mem-cost":"0", "permutation":"PSO", "estimated-count":"431260", "io-cost":"0/13.6561/844243/122.905/7.59818e+06", "dmem-cost":"0", "cardinalities":"(430722,430722),(0,0),(0,0),(431259,431259)", "object":"0 (?symbol)"}',
+'{"cost":"1.08655e+09", "nw-cost":"101/104/3.33652e+07/930/1.12513e+08", "cpu-cost":"0/26.7192/1.7028e+07/26.7192/1.7028e+07", "order":"3,1", "right-num-sorted":"1", "condition":"3=3", "_name":"sort-merge-join", "dcpu-cost":"0/1.23381/4.73835e+07/11.1043/4.26452e+08", "left-num-sorted":"1", "id":"9185937043842146228", "_parentLabel":"right", "_id":"N_1_1_1_1_R", "_parent":"N_1_1_1_1", "mem-cost":"7", "io-cost":"0/56.5724/2.0641e+07/509.151/1.85769e+08", "estimated-count":"306822", "dmem-cost":"0.333333", "cardinalities":"(0,0),(306822,420981),(2863,2863),(306821,306821),(1,1)"}',
+'{"cost":"1.03675e+09", "nw-cost":"101/104/3.25229e+07/627/1.04932e+08", "cpu-cost":"0/26.7192/1.61951e+07/26.7192/1.61951e+07", "order":"3,2", "condition":"2=2", "_name":"nested-loop-join", "dcpu-cost":"0/1.23381/4.68402e+07/11.1043/4.21562e+08", "id":"7115551669620881242", "_parentLabel":"left", "_id":"N_1_1_1_1_R_L", "_parent":"N_1_1_1_1_R", "mem-cost":"5", "io-cost":"0/42.9163/1.98153e+07/386.247/1.78338e+08", "estimated-count":"306822", "dmem-cost":"0.333333", "cardinalities":"(0,0),(0,0),(2863,2863),(306821,306821),(1,1)"}',
+'{"dedup":"true", "cost":"3.55713e+07", "nw-cost":"101/0/613642/303/5.52278e+06", "cpu-cost":"0/0/5522.78/0/5522.78", "order":"3,2", "graph":"<https://data.example.com/product>", "subject":"3 (?assessment)", "_name":"triple-index", "dcpu-cost":"0/0/378558/0/3.40703e+06", "id":"15549280923627179241", "_parentLabel":"left", "predicate":"<https://ontologies.example.com/product/providesInformationAbout>", "_id":"N_1_1_1_1_R_L_L", "_parent":"N_1_1_1_1_R_L", "mem-cost":"0", "permutation":"PSO", "estimated-count":"306821", "io-cost":"0/13.6561/597716/122.905/5.37944e+06", "dmem-cost":"0", "cardinalities":"(0,0),(0,0),(2863,2863),(306821,306821)", "object":"2 (?product)"}',
+'{"_parentLabel":"right", "order":"2", "_id":"N_1_1_1_1_R_L_R", "_parent":"N_1_1_1_1_R_L", "_name":"project", "column":"2 (?product)", "id":"12320572833841344215"}',
+'{"cost":"3451.49", "nw-cost":"0/102/2/306/18", "cpu-cost":"0/10.4579/12.0142/10.4579/12.0142", "order":"2,3", "join-filter":"?productName=fn:lower-case(?pname)", "_name":"hash-join", "dcpu-cost":"0/0/151.429/0/1362.86", "id":"3355642798263997567", "_id":"N_1_1_1_1_R_L_R_1", "_parent":"N_1_1_1_1_R_L_R", "mem-cost":"2", "io-cost":"0/27.3121/35.3224/245.809/317.902", "estimated-count":"1", "dmem-cost":"0.333333", "cross-product":"true", "cardinalities":"(0,0),(0,0),(1,1),(1,1),(1,1)"}',
+'{"_parentLabel":"left", "_id":"N_1_1_1_1_R_L_R_1_L", "_parent":"N_1_1_1_1_R_L_R_1", "bindings":"\"My Product Name\"", "_name":"values", "column":"4 (?productName)"}',
+'{"_parentLabel":"left", "_id":"N_1_1_1_1_R_L_R_1_L", "_parent":"N_1_1_1_1_R_L_R_1", "bindings":"\"My Product Name\"", "_name":"values", "column":"4 (?productName)"}',
+'{"dedup":"true", "cost":"3427.99", "nw-cost":"102/0/2/306/18", "cpu-cost":"0/0/0.018/0/0.018", "order":"2,3", "graph":"<https://data.example.com/product>", "subject":"2 (?product)", "_name":"triple-index", "dcpu-cost":"0/0/151.429/0/1362.86", "id":"3645081164621359263", "_parentLabel":"right", "predicate":"<http://www.w3.org/2004/02/skos/core#prefLabel>", "_id":"N_1_1_1_1_R_L_R_1_R", "_parent":"N_1_1_1_1_R_L_R_1", "mem-cost":"0", "permutation":"PSO", "estimated-count":"1", "io-cost":"0/27.3121/35.3224/245.809/317.902", "dmem-cost":"0.333333", "cardinalities":"(0,0),(0,0),(1,1),(1,1)", "object":"3 (?pname)"}',
+'{"dedup":"true", "cost":"4.89696e+07", "nw-cost":"101/0/842298/303/7.58068e+06", "cpu-cost":"0/0/7580.68/0/7580.68", "order":"3,1", "graph":"<https://data.example.com/product>", "subject":"3 (?assessment)", "_name":"triple-index", "dcpu-cost":"0/0/543271/0/4.88944e+06", "id":"2172984895493128607", "_parentLabel":"right", "predicate":"<http://www.w3.org/2004/02/skos/core#description>", "_id":"N_1_1_1_1_R_R", "_parent":"N_1_1_1_1_R", "mem-cost":"0", "permutation":"PSO", "estimated-count":"421149", "io-cost":"0/13.6561/825694/122.905/7.43124e+06", "dmem-cost":"0", "cardinalities":"(0,0),(420981,420981),(0,0),(421149,421149)", "object":"1 (?description)"}'
 ))
 };

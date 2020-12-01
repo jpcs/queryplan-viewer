@@ -409,9 +409,7 @@ declare %private function version($node)
 {
   if($node/plan:expr) then 9
   else if($node/plan:elems) then 9
-  else if($node/plan:zero-or-one/plan:graph-node) then 10
-  else if($node/plan:one-or-more/plan:graph-node) then 10
-  else if($node/plan:*/plan:graph-node) then 9
+  else if($node/plan:*[not(local-name() = ("zero-or-one","one-or-more","values"))]/plan:graph-node) then 9
   else 10
 };
 
@@ -446,16 +444,21 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
   =>map:with("_id",$id)
   =>map:with("_name",string($node/(@type|@join-type)))
   =>attrs($node,("static-type","type","join-type"))
-  =>map:with("condition", string-join(
+  =>(function($m) {
     let $conditions :=
       if($node/plan:join-info) then $node/plan:join-info/plan:hash
       else $node/plan:hash
-
-    for $c at $pos in $conditions
-    return (
-      if($pos=1) then () else " and ",
-      string($c/@left), string($c/(@op|@operator)), string($c/@right)
-    )))
+    return
+      if(empty($conditions)) then $m 
+      else $m=>map:with("condition",
+        string-join(
+          for $c at $pos in $conditions
+          return (
+            if($pos=1) then () else " and ",
+            string($c/@left), string($c/(@op|@operator)), string($c/@right)
+          )
+        ))
+  })()
   =>(
     fn:fold-left(function($map,$n) {
       $map=>map-append("join-filter",makeJoinFilterExpr($n))
@@ -651,7 +654,7 @@ declare function makeOneOrMoreGraph($node as element(), $id as xs:string)
 
 declare function makeValuesRows($map,$values,$rowCount)
 {
-  if(empty($values)) then () else (
+  if(empty($values)) then $map else (
     $map=>map-append("bindings", string-join(
       for $v in subsequence($values,1,$rowCount)
       return makeRDFValExpr($v),
@@ -670,7 +673,7 @@ declare function makeValuesGraph($node as element(), $id as xs:string)
       $map=>map:with("column",makeGraphNodeInfo($n))
     },?,$node/plan:graph-node)
   )()
-  =>makeValuesRows($node/plan:bindings/plan:rdf-val,count($node/plan:graph-node))
+  =>makeValuesRows($node/plan:bindings/(plan:rdf-val|plan:value),count($node/plan:graph-node))
 };
 
 declare function makeFromGraph($node as element(), $id as xs:string)
