@@ -674,5 +674,125 @@ map:entry("name","v9_values")
 '{"_parentLabel":"left", "_id":"N_1_1_1_1_R_L_R_1_L", "_parent":"N_1_1_1_1_R_L_R_1", "bindings":"\"My Product Name\"", "_name":"values", "column":"4 (?productName)"}',
 '{"dedup":"true", "cost":"3427.99", "nw-cost":"102/0/2/306/18", "cpu-cost":"0/0/0.018/0/0.018", "order":"2,3", "graph":"<https://data.example.com/product>", "subject":"2 (?product)", "_name":"triple-index", "dcpu-cost":"0/0/151.429/0/1362.86", "id":"3645081164621359263", "_parentLabel":"right", "predicate":"<http://www.w3.org/2004/02/skos/core#prefLabel>", "_id":"N_1_1_1_1_R_L_R_1_R", "_parent":"N_1_1_1_1_R_L_R_1", "mem-cost":"0", "permutation":"PSO", "estimated-count":"1", "io-cost":"0/27.3121/35.3224/245.809/317.902", "dmem-cost":"0.333333", "cardinalities":"(0,0),(0,0),(1,1),(1,1)", "object":"3 (?pname)"}',
 '{"dedup":"true", "cost":"4.89696e+07", "nw-cost":"101/0/842298/303/7.58068e+06", "cpu-cost":"0/0/7580.68/0/7580.68", "order":"3,1", "graph":"<https://data.example.com/product>", "subject":"3 (?assessment)", "_name":"triple-index", "dcpu-cost":"0/0/543271/0/4.88944e+06", "id":"2172984895493128607", "_parentLabel":"right", "predicate":"<http://www.w3.org/2004/02/skos/core#description>", "_id":"N_1_1_1_1_R_R", "_parent":"N_1_1_1_1_R", "mem-cost":"0", "permutation":"PSO", "estimated-count":"421149", "io-cost":"0/13.6561/825694/122.905/7.43124e+06", "dmem-cost":"0", "cardinalities":"(0,0),(420981,420981),(0,0),(421149,421149)", "object":"1 (?description)"}'
+)),
+map:entry("name","v10_one_or_more")
+=>map:with("plan",
+<plan:plan xmlns:plan="http://marklogic.com/plan">
+  <plan:select>
+    <plan:project id="16191132215522033798" order="">
+      <plan:column type="var" name="s" column-index="0"/>
+      <plan:column type="var" name="r" column-index="1"/>
+      <plan:join type="scatter-join" id="4558154028018208070" order="">
+	<plan:hash left="2" right="2" op="="/>
+	<plan:scatter left="2" right="2" op="="/>
+	<plan:join type="scatter-join" id="9723901435102303291" order="5,2">
+	  <plan:hash left="5" right="5" op="="/>
+	  <plan:scatter left="5" right="5" op="="/>
+	  <plan:join type="parallel-sort-merge-join" id="16883905606349647211" order="4" left-num-sorted="0" right-num-sorted="0">
+	    <plan:hash left="4" right="4" op="="/>
+	    <plan:join type="parallel-sort-merge-join" id="17941565634021713625" order="3" left-num-sorted="0" right-num-sorted="0">
+	      <plan:hash left="3" right="3" op="="/>
+	      <plan:join type="scatter-join" id="8205247229733111265" order="0,3">
+		<plan:hash left="0" right="0" op="="/>
+		<plan:scatter left="0" right="0" op="="/>
+		<plan:triple-index permutation="OPS" dedup="true" id="2226501999897959730" order="0">
+		  <plan:subject type="var" name="s" column-index="0"/>
+		  <plan:predicate type="iri">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+		  <plan:object type="global-variable" name="userType"/>
+		</plan:triple-index>
+		<plan:triple-index permutation="PSO" dedup="true" id="5809329000148166512" order="0,3">
+		  <plan:subject type="var" name="s" column-index="0"/>
+		  <plan:predicate type="iri">http://semantics-rec.com/facts#likes</plan:predicate>
+		  <plan:object type="blank" name="ANON5123057094852503139" column-index="3" hidden="true"/>
+		</plan:triple-index>
+	      </plan:join>
+	      <plan:triple-index permutation="POS" dedup="true" id="6528065752109430533" order="4,3">
+		<plan:subject type="blank" name="ANON5123057094852503139" column-index="3" hidden="true"/>
+		<plan:predicate type="iri">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+		<plan:object type="var" name="movieType" column-index="4"/>
+	      </plan:triple-index>
+	    </plan:join>
+	    <plan:join type="scatter-join" id="3452680825310753540" order="5,4">
+	      <plan:hash left="5" right="5" op="="/>
+	      <plan:scatter left="5" right="5" op="="/>
+	      <plan:triple-index permutation="OPS" dedup="true" id="9240439485623648056" order="5">
+		<plan:subject type="blank" name="ANON3513370129417832017" column-index="5" hidden="true"/>
+		<plan:predicate type="iri">http://semantics-rec.com/facts#userType</plan:predicate>
+		<plan:object type="global-variable" name="userType"/>
+	      </plan:triple-index>
+	      <plan:triple-index permutation="PSO" dedup="true" id="13333961771575891752" order="5,4">
+		<plan:subject type="blank" name="ANON3513370129417832017" column-index="5" hidden="true"/>
+		<plan:predicate type="iri">http://semantics-rec.com/facts#movieType</plan:predicate>
+		<plan:object type="var" name="movieType" column-index="4"/>
+	      </plan:triple-index>
+	    </plan:join>
+	  </plan:join>
+	  <plan:triple-index permutation="PSO" dedup="true" id="10451956881615253963" order="5,2">
+	    <plan:subject type="blank" name="ANON3513370129417832017" column-index="5" hidden="true"/>
+	    <plan:predicate type="iri">http://semantics-rec.com/facts#recommend</plan:predicate>
+	    <plan:object type="var" name="recType" column-index="2"/>
+	  </plan:triple-index>
+	</plan:join>
+	<plan:distinct>
+	  <plan:project id="16741501438168372011" order="">
+	    <plan:column type="var" name="r" column-index="1"/>
+	    <plan:column type="var" name="recType" column-index="2"/>
+	    <plan:sparql-union type="concat-union" id="3821378330673152952" order="">
+	      <plan:triple-index permutation="POS" dedup="true" id="142858270302135959" order="2,1">
+		<plan:subject type="var" name="r" column-index="1"/>
+		<plan:predicate type="iri">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+		<plan:object type="var" name="recType" column-index="2"/>
+	      </plan:triple-index>
+	      <plan:join type="scatter-join" id="5019402030766166148" order="3,1">
+		<plan:hash left="3" right="3" op="="/>
+		<plan:scatter left="3" right="3" op="="/>
+		<plan:one-or-more type="SCATTER" id="5826471072527071647" order="">
+		  <plan:subject type="var" name="recType" column-index="2"/>
+		  <plan:var-in type="var" name="ANON406276384947455280" column-index="1" hidden="true"/>
+		  <plan:var-out type="var" name="ANON9115384319499955078" column-index="0" hidden="true"/>
+		  <plan:object type="blank" name="ANON11576587883646650253" column-index="3" hidden="true"/>
+		  <plan:triple-index permutation="POS" dedup="true" id="15959696247602275551" order="1,0" count="0" local-time="0" remote-time="0" local-max-memory="0" remote-max-memory="0">
+		    <plan:subject type="var" name="ANON9115384319499955078" column-index="0" hidden="true"/>
+		    <plan:predicate type="iri">http://www.w3.org/2000/01/rdf-schema#subClassOf</plan:predicate>
+		    <plan:object type="var" name="ANON406276384947455280" column-index="1" hidden="true"/>
+		  </plan:triple-index>
+		</plan:one-or-more>
+		<plan:triple-index permutation="POS" dedup="true" id="17483039936035650581" order="3,1" count="0" local-time="220" remote-time="0" local-max-memory="0" remote-max-memory="0">
+		  <plan:subject type="var" name="r" column-index="1"/>
+		  <plan:predicate type="iri">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</plan:predicate>
+		  <plan:object type="blank" name="ANON11576587883646650253" column-index="3" hidden="true"/>
+		</plan:triple-index>
+	      </plan:join>
+	    </plan:sparql-union>
+	  </plan:project>
+	</plan:distinct>
+      </plan:join>
+    </plan:project>
+  </plan:select>
+</plan:plan>
+)
+=>map:with("expected",(
+'{"_id":"N", "_name":"select"}',
+'{"order":"", "_id":"N_1", "_parent":"N", "_name":"project", "column":["0 (?s)", "1 (?r)"], "id":"16191132215522033798"}',
+'{"order":"", "_id":"N_1_1", "_parent":"N_1", "condition":"2=2", "_name":"scatter-join", "id":"4558154028018208070"}',
+'{"_parentLabel":"left", "order":"5,2", "_id":"N_1_1_L", "_parent":"N_1_1", "condition":"5=5", "_name":"scatter-join", "id":"9723901435102303291"}',
+'{"_parentLabel":"left", "order":"4", "right-num-sorted":"0", "_id":"N_1_1_L_L", "_parent":"N_1_1_L", "condition":"4=4", "_name":"parallel-sort-merge-join", "left-num-sorted":"0", "id":"16883905606349647211"}',
+'{"_parentLabel":"left", "order":"3", "right-num-sorted":"0", "_id":"N_1_1_L_L_L", "_parent":"N_1_1_L_L", "condition":"3=3", "_name":"parallel-sort-merge-join", "left-num-sorted":"0", "id":"17941565634021713625"}',
+'{"_parentLabel":"left", "order":"0,3", "_id":"N_1_1_L_L_L_L", "_parent":"N_1_1_L_L_L", "condition":"0=0", "_name":"scatter-join", "id":"8205247229733111265"}',
+'{"dedup":"true", "_parentLabel":"left", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"0", "_id":"N_1_1_L_L_L_L_L", "_parent":"N_1_1_L_L_L_L", "permutation":"OPS", "subject":"0 (?s)", "_name":"triple-index", "object":"$userType", "id":"2226501999897959730"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<http://semantics-rec.com/facts#likes>", "order":"0,3", "_id":"N_1_1_L_L_L_L_R", "_parent":"N_1_1_L_L_L_L", "permutation":"PSO", "subject":"0 (?s)", "_name":"triple-index", "object":"3 (_:ANON5123057094852503139)", "id":"5809329000148166512"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"4,3", "_id":"N_1_1_L_L_L_R", "_parent":"N_1_1_L_L_L", "permutation":"POS", "subject":"3 (_:ANON5123057094852503139)", "_name":"triple-index", "object":"4 (?movieType)", "id":"6528065752109430533"}',
+'{"_parentLabel":"right", "order":"5,4", "_id":"N_1_1_L_L_R", "_parent":"N_1_1_L_L", "condition":"5=5", "_name":"scatter-join", "id":"3452680825310753540"}',
+'{"dedup":"true", "_parentLabel":"left", "predicate":"<http://semantics-rec.com/facts#userType>", "order":"5", "_id":"N_1_1_L_L_R_L", "_parent":"N_1_1_L_L_R", "permutation":"OPS", "subject":"5 (_:ANON3513370129417832017)", "_name":"triple-index", "object":"$userType", "id":"9240439485623648056"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<http://semantics-rec.com/facts#movieType>", "order":"5,4", "_id":"N_1_1_L_L_R_R", "_parent":"N_1_1_L_L_R", "permutation":"PSO", "subject":"5 (_:ANON3513370129417832017)", "_name":"triple-index", "object":"4 (?movieType)", "id":"13333961771575891752"}',
+'{"dedup":"true", "_parentLabel":"right", "predicate":"<http://semantics-rec.com/facts#recommend>", "order":"5,2", "_id":"N_1_1_L_R", "_parent":"N_1_1_L", "permutation":"PSO", "subject":"5 (_:ANON3513370129417832017)", "_name":"triple-index", "object":"2 (?recType)", "id":"10451956881615253963"}',
+'{"_parentLabel":"right", "_id":"N_1_1_R", "_parent":"N_1_1", "_name":"distinct"}',
+'{"order":"", "_id":"N_1_1_R_1", "_parent":"N_1_1_R", "_name":"project", "column":["1 (?r)", "2 (?recType)"], "id":"16741501438168372011"}',
+'{"order":"", "_id":"N_1_1_R_1_1", "type":"concat-union", "_parent":"N_1_1_R_1", "_name":"sparql-union", "id":"3821378330673152952"}',
+'{"dedup":"true", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"2,1", "_id":"N_1_1_R_1_1_1", "_parent":"N_1_1_R_1_1", "permutation":"POS", "subject":"1 (?r)", "_name":"triple-index", "object":"2 (?recType)", "id":"142858270302135959"}',
+'{"order":"3,1", "_id":"N_1_1_R_1_1_2", "_parent":"N_1_1_R_1_1", "condition":"3=3", "_name":"scatter-join", "id":"5019402030766166148"}',
+'{"varOut":"0 (?ANON9115384319499955078)", "_parentLabel":"left", "order":"", "_id":"N_1_1_R_1_1_2_L", "type":"SCATTER", "_parent":"N_1_1_R_1_1_2", "subject":"2 (?recType)", "object":"3 (_:ANON11576587883646650253)", "_name":"one-or-more", "varIn":"1 (?ANON406276384947455280)", "id":"5826471072527071647"}',
+'{"dedup":"true", "local-max-memory":"0b", "order":"1,0", "count":"0", "subject":"0 (?ANON9115384319499955078)", "_name":"triple-index", "remote-time":"0ms", "remote-max-memory":"0b", "local-time":"0ms", "id":"15959696247602275551", "predicate":"<http://www.w3.org/2000/01/rdf-schema#subClassOf>", "_id":"N_1_1_R_1_1_2_L_1", "_parent":"N_1_1_R_1_1_2_L", "permutation":"POS", "object":"1 (?ANON406276384947455280)"}',
+'{"dedup":"true", "local-max-memory":"0b", "order":"3,1", "count":"0", "subject":"1 (?r)", "_name":"triple-index", "remote-time":"0ms", "remote-max-memory":"0b", "local-time":"0.02ms", "id":"17483039936035650581", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "_parentLabel":"right", "_id":"N_1_1_R_1_1_2_R", "_parent":"N_1_1_R_1_1_2", "permutation":"POS", "object":"3 (_:ANON11576587883646650253)"}'
 ))
 };

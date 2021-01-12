@@ -636,12 +636,13 @@ declare function makeOneOrMoreGraph($node as element(), $id as xs:string)
   map:map()
   =>map:with("_id",$id)
   =>nameAndAttrs($node)
-  =>map:with("subject", makeGraphNodeInfo($node/plan:graph-node[1]))
-  =>map:with("varIn", makeGraphNodeInfo($node/plan:graph-node[2]))
-  =>map:with("varOut", makeGraphNodeInfo($node/plan:graph-node[3]))
-  =>map:with("object", makeGraphNodeInfo($node/plan:graph-node[4])),
+  =>map:with("subject", makeGraphNodeInfo(($node/(plan:subject|plan:graph-node[1]))[1]))
+  =>map:with("varIn", makeGraphNodeInfo(($node/(plan:var-in|plan:graph-node[2]))[1]))
+  =>map:with("varOut", makeGraphNodeInfo(($node/(plan:var-out|plan:graph-node[3]))[1]))
+  =>map:with("object", makeGraphNodeInfo(($node/(plan:object|plan:graph-node[4]))[1])),
 
-  for $c at $pos in $node/*[not(self::plan:graph-node)][1]
+  for $c at $pos in $node/*[not(self::plan:graph-node|self::plan:subject|
+    self::plan:var-in|self::plan:var-out|self::plan:object)][1]
   let $newID := concat($id, "_", $pos)
   return (
     let $maps := makeGraph($c,$newID)
