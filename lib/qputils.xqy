@@ -27,7 +27,10 @@ declare variable $memory-attrs := ("local-max-memory","remote-max-memory");
 
 declare function format-time($v)
 {
-  fn:round-half-to-even(($v div 10000),2) || "ms"
+  let $n := xs:double($v)
+  return switch(true())
+  case $n > (10000000) return fn:round-half-to-even(($v div 10000000),2) || "s"
+  default return fn:round-half-to-even(($v div 10000),2) || "ms"
 };
 
 declare function format-memory($v)
@@ -38,6 +41,17 @@ declare function format-memory($v)
   case $n > (1024 * 1024) return fn:round-half-to-even($n div (1024 * 1024),2) || "Mb"
   case $n > (1024) return fn:round-half-to-even($n div (1024),2) || "Kb"
   default return $n || "b"
+};
+
+declare function hex($v)
+{
+  let $vals := ('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F')
+  return $vals[($v idiv 16) + 1] || $vals[($v mod 16) + 1]
+  (: let $rest := $v idiv 16 :)
+  (: return ( :)
+  (:   $vals[($v mod 16) + 1] || :)
+  (:   (if($rest ne 0) then hex($rest) else "") :)
+  (: ) :)
 };
 
 declare function prefixFor($uri as xs:string)
@@ -173,6 +187,23 @@ declare function makeExpr($node)
       (if($count gt 1) then "(" else "") ||
       string-join($children ! makeExpr(.),", ") ||
       (if($count gt 1) then ")" else "")
+    )
+  )
+  (: If :)
+  case exists($node/self::plan:if) return (
+    "if(" || makeExpr($node/plan:*[1]) || ")" ||
+    " then " || makeExpr($node/plan:*[2]) ||
+    " else " || makeExpr($node/plan:*[3])
+  )
+  (: Cast :)
+  case exists($node/self::plan:cast) return (
+    makeExpr($node/plan:*[1]) || " cast as " ||
+    (
+      let $type := string($node/@seq-type)
+      let $ns := replace($type,"Q\{([^}]*)\}:?(.*)","$1")
+      let $local := replace($type,"Q\{([^}]*)\}:?(.*)","$2")
+      return
+        prefixFor($ns) || $local || $node/@occur-type
     )
   )
   (: Variable References :)
@@ -729,34 +760,69 @@ declare function makeGraph($node as element(), $id as xs:string)
   default return makeGenericGraph($node,$id)
 };
 
-declare function makeHTML($in as element())
+declare function gradient($v as xs:double)
+{
+  (: $v between 0 and 1 :)
+  let $start := (255,255,255)
+  let $end := (255,0,0)
+  let $f := function($i) {
+    hex(fn:round(($start[$i] * (1.0-$v)) + ($end[$i] * $v)))
+  }
+  return "#" || $f(1) || $f(2) || $f(3)
+};
+
+declare function color($n as element(), $attrNames as xs:string*, $total as xs:double)
+{
+  element { node-name($n)} {
+    $n/@*,
+    if(empty($n/@*[local-name(.)=$attrNames])) then ()
+    else (
+      let $v := sum($n/@*[local-name(.)=$attrNames]) div $total
+      let $v := math:log((10 * $v) + 1) div math:log(11)
+      return attribute _color { gradient($v) }
+    ),
+    $n/* ! color(.,$attrNames,$total)
+  }
+};
+
+declare function colorForTime($in as element())
+{
+  let $ltime := sum($in//@local-time)
+  let $rtime := sum($in//@remote-time)
+  return color($in,$time-attrs,$ltime+$rtime)
+};
+
+declare function colorForMemory($in as element())
+{
+  let $lmem := sum($in//@local-max-memory)
+  let $rmem := sum($in//@remote-max-memory)
+  return color($in,$memory-attrs,$lmem+$rmem)
+};
+
+declare function makeScripts($in as element())
 {
   let $out := makeGraph($in, "N")
-  return
-    <html>
-      <head>
-        <script type="text/javascript" src="xtrace/lib/d3/d3.v3.min.js"><!-- --></script>
-        <script type="text/javascript" src="xtrace/lib/jQuery/jquery-1.9.0.js"><!-- --></script>
-        <script type="text/javascript" src="xtrace/lib/jQuery/jquery.tipsy.js"><!-- --></script>
-        <script type="text/javascript" src="xtrace/lib/dagre/dagre.js"><!-- --></script>
-        <script type="text/javascript" src="xtrace/js/Minimap.js"><!-- --></script>
-        <script type="text/javascript" src="xtrace/js/MinimapZoom.js"><!-- --></script>
-        <script type="text/javascript" src="xtrace/js/DirectedAcyclicGraph.js"><!-- --></script>
-        <script type="text/javascript" src="xtrace/js/Graph.js"><!-- --></script>
-        <script type="text/javascript" src="xtrace/js/Tooltip.js"><!-- --></script>
-        <script type="text/javascript" src="xtrace/js/qp.js"><!-- --></script>
-        <link href="xtrace/stylesheets/xtrace.css" rel="stylesheet" type="text/css" />
-        <link href="xtrace/stylesheets/tipsy.css" rel="stylesheet" type="text/css" />
-        <link href="xtrace/stylesheets/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
-        <script>
-          input = { xdmp:quote(json:to-array($out)) };
+  return (
+    <script type="text/javascript" src="xtrace/lib/d3/d3.v3.min.js"><!-- --></script>,
+    <script type="text/javascript" src="xtrace/lib/jQuery/jquery-1.9.0.js"><!-- --></script>,
+    <script type="text/javascript" src="xtrace/lib/jQuery/jquery.tipsy.js"><!-- --></script>,
+    <script type="text/javascript" src="xtrace/lib/dagre/dagre.js"><!-- --></script>,
+    <script type="text/javascript" src="xtrace/js/Minimap.js"><!-- --></script>,
+    <script type="text/javascript" src="xtrace/js/MinimapZoom.js"><!-- --></script>,
+    <script type="text/javascript" src="xtrace/js/DirectedAcyclicGraph.js"><!-- --></script>,
+    <script type="text/javascript" src="xtrace/js/Graph.js"><!-- --></script>,
+    <script type="text/javascript" src="xtrace/js/Tooltip.js"><!-- --></script>,
+    <script type="text/javascript" src="xtrace/js/qp.js"><!-- --></script>,
+    <link href="xtrace/stylesheets/xtrace.css" rel="stylesheet" type="text/css" />,
+    <link href="xtrace/stylesheets/tipsy.css" rel="stylesheet" type="text/css" />,
+    <link href="xtrace/stylesheets/jquery.contextMenu.css" rel="stylesheet" type="text/css" />,
+    <script>
+      input = { xdmp:quote(json:to-array($out)) };
 
-          window.onload = function() {{
-            var params = getParameters();
-            window.qp = new QueryPlan(document.body,input,params);
-          }}
-        </script>
-      </head>
-      <body width="100%" height="100%" style="margin: 0"></body>
-    </html>
+      window.onload = function() {{
+          var params = getParameters();
+          window.qp = new QueryPlan(document.body,input,params);
+      }}
+    </script>
+  )
 };

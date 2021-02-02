@@ -13,7 +13,7 @@ var DirectedAcyclicGraphTooltip = function(gravity) {
                             "order","num-sorted",
                             "count","local-time","remote-time","local-max-memory","remote-max-memory",
                             "cost","estimated-count","mem-cost","dmem-cost"];
-	    var excluded = ["_id","_name","_parent","_parentLabel"];
+	    var excluded = ["_id","_name","_parent","_parentLabel","_color"];
             // The same list as in DirectedAcyclicGraph.js
             var gnProps = ["column","order-spec","subject","predicate","object","graph","row","value","fragment","content","expr","condition","join-filter","cross-product"];
 

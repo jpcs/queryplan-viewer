@@ -194,5 +194,14 @@ let $plans := map:new()
 )
 return (
   xdmp:set-response-content-type("text/html"),
-  qputils:makeHTML(map:get($plans,xdmp:get-request-field("q")))
+  let $in := map:get($plans,xdmp:get-request-field("q"))
+  let $in := switch(true())
+    case empty($in//@local-time) return $in
+    case xdmp:get-request-field("color") = "memory" return qputils:colorForMemory($in)
+    default return qputils:colorForTime($in)
+  return
+    <html>
+      <head>{ qputils:makeScripts($in) }</head>
+      <body style="margin: 0"/>
+    </html>
 )

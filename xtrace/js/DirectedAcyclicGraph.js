@@ -148,6 +148,9 @@ function DirectedAcyclicGraph() {
 
         // Attach the DOM elements
         var rect = d3.select(this).append("rect");
+        if(d.report.hasOwnProperty("_color")) {
+            rect.attr("style","fill:"+d.report["_color"]);
+        }
         if(d.report["_name"] == "literal") {
             rect.classed("literal",true);
         }
