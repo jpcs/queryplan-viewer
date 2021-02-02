@@ -29,7 +29,7 @@ declare function format-time($v)
 {
   let $n := xs:double($v)
   return switch(true())
-  case $n > (10000000) return fn:round-half-to-even(($v div 10000000),2) || "s"
+  case $n > (10 * 1000 * 10000) return fn:round-half-to-even(($v div 1000 * 10000),2) || "s"
   default return fn:round-half-to-even(($v div 10000),2) || "ms"
 };
 

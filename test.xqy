@@ -26,6 +26,7 @@ import module "http://marklogic.com/optic/qputils/costs" at "tests/costs.xqy";
 import module "http://marklogic.com/optic/qputils/exprs" at "tests/exprs.xqy";
 import module "http://marklogic.com/optic/qputils/lexicon" at "tests/lexicon.xqy";
 import module "http://marklogic.com/optic/qputils/v9" at "tests/v9.xqy";
+import module "http://marklogic.com/optic/qputils/v9" at "tests/color.xqy";
 
 let $tests :=
   for $t in xdmp:functions()[xdmp:annotation(.,xs:QName("qputils:test"))] ! .()
