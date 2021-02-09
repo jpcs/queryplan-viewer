@@ -1,0 +1,490 @@
+var qv_box = {
+    debug: window.location.hostname === "localhost",
+    width: 160,
+    hpadding: 50,
+    vpadding: 10,
+    height: 100,
+    lineHeight: 10,
+    font: ".40em"
+}
+
+var qv_palettes = {
+    resource : d3.scaleSequential([0, 1], d3.interpolateReds),
+    serial : d3.scaleSequential([0, 1], d3.interpolateBlues),
+    count : d3.scaleSequential([0, 1], d3.interpolateGreens),
+    magnitude: d3.scaleSequential([0, 10], d3.interpolateGreens)
+}
+
+
+function qv_debug(msg) {
+    
+    if (qv_box.debug) {
+        console.log(msg)
+    }
+
+}
+function qv_hierarchy(json) {
+    var data = d3.stratify()
+        .id(function (d) { return d._id; })
+        .parentId(function (d) { if (d._parent) return d._parent; else return "" })
+        (json);
+    var nodes = d3.hierarchy(data);
+    return nodes;
+}
+
+function qv_buildTree(nodes, width, height) {
+    var treemap = d3.tree().nodeSize([qv_box.width * 1.1, qv_box.height * 1.1]);
+    var nnodes = nodes.copy().sort((a, b) =>  d3.ascending(a.data.data._parentLabel,b.data.data._parentLabel))
+    return  treemap(nnodes) 
+}
+
+
+function qv_text(div, title, text, tooltip, color) {
+    if (Array.isArray(text)) text = text.join(",")
+    var span = div.append("xhtml:p").attr("class", "tree-node").style("font-size", qv_box.font)
+    if (Array.isArray(color)) {
+        color.map( (x) => span.append("xhtml:span").style("color",x).text("\u25A0"))
+    }
+    span.append("xhtml:span").style("font-weight", "bold").text(title)
+    if (text) span.append("xhtml:span").text(": " + text)
+    if (tooltip) span.on("mouseover", function(event, d) {		
+         qv_tooltipShow(event,tooltip); })					
+        .on("mouseout", function(event, d) {	
+         qv_tooltipHide(event)	});
+    return span     
+}
+
+
+function qv_cost(div, percent) {
+    var rect = svg.append("g")
+        .selectAll("rect")
+        .data(cells)
+        .join("rect")
+        .attr("x", d => x(d.day))
+        .attr("y", d => y(d.test) + 1)
+        .attr("width", x.bandwidth() - 1)
+        .attr("height", y.bandwidth() - 2)
+        .attr("fill", d => color(d.value))
+}
+
+// splits parallel and serial cost, and returns values as proportion of a given whole.
+
+function qv_parallelVsSerial (value, whole) {
+    if (value) {
+        var components= value.split("/").map(x=>parseFloat(x))
+        var parallel = (components[0] + components[1] + components[2]) /whole [0]
+        var serial = (components[3] + components[4]) / whole [1]
+        return [parallel,serial]
+    } else {
+        return [0,0]
+    }   
+}
+
+function qv_maxParallelVsSerial (value, max) {
+    value = qv_parallelVsSerial(value, [1,1])
+    return [Math.max (value[0], max[0]), Math.max (value[1], max[1])]
+}
+
+function qv_proportion (value, max) {
+    if (max == 0) return 0
+    return value/max
+}
+
+function qv_parseMemory(str) {
+    var r = parseFloat(str)
+    if (str.endsWith("Gb")) return r * (1024^3)
+    if (str.endsWith("Mb")) return r * (1024^2)
+    if (str.endsWith("Kb")) return r * (1024)
+    return r;
+}
+function qv_parseTime(str) {
+    var r = parseFloat(str)
+    if (str.endsWith("ms")) return r 
+    return r * 1000;
+}
+
+// compute maximum of all the metrics across the plan
+
+function qv_maxCost (nodes) {
+    var maxcost = {
+        label : "maxcost",
+        cost: 0,
+        mem: 0,
+        dmem: 0,
+        io: [0,0],
+        cpu: [0,0],
+        dcpu: [0,0],
+        nw: [0,0],
+        count: 0,
+        ltime: 0,
+        rtime: 0,
+        lmem:0,
+        rmem:0
+    }
+
+    nodes.descendants().forEach(element => {
+        var data = element.data.data
+        if (data.cost) {
+            maxcost.cost = Math.max(parseFloat(data.cost),maxcost.cost)
+            maxcost.mem = Math.max(parseFloat(data["mem-cost"]), maxcost.mem)
+            maxcost.dmem = Math.max(parseFloat(data["dmem-cost"]), maxcost.dmem)
+            maxcost.count = Math.max(parseFloat(data["estimated-count"]), maxcost.count)
+            maxcost.io = qv_maxParallelVsSerial(data["io-cost"], maxcost.io)
+            maxcost.cpu = qv_maxParallelVsSerial(data["cpu-cost"], maxcost.cpu)
+            maxcost.dcpu = qv_maxParallelVsSerial(data["dcpu-cost"], maxcost.dcpu)
+            maxcost.nw = qv_maxParallelVsSerial(data["nw-cost"], maxcost.nw)
+        } else if (data["local-time"]) {
+            maxcost.lmem = Math.max(qv_parseMemory(data["local-max-memory"]), maxcost.lmem)
+            maxcost.rmem = Math.max(qv_parseMemory(data["remote-max-memory"]), maxcost.rmem)
+            maxcost.ltime = Math.max(qv_parseTime(data["local-time"]), maxcost.ltime)
+            maxcost.rtime = Math.max(qv_parseTime(data["remote-time"]), maxcost.rtime)
+        }
+    })
+    return maxcost
+}
+
+
+
+function qv_relativeCost( data, maxcost) {
+    if (data.cost) {
+      return {
+        id: data._id,
+        cost: qv_proportion(parseFloat(data.cost) , maxcost.cost),
+        mem: qv_proportion(parseFloat(data["mem-cost"]) , maxcost.mem),
+        dmem: qv_proportion(parseFloat(data["dmem-cost"]) , maxcost.dmem),
+        io: qv_parallelVsSerial(data["io-cost"],maxcost.io),
+        cpu: qv_parallelVsSerial(data["cpu-cost"],maxcost.cpu),
+        dcpu: qv_parallelVsSerial(data["dcpu-cost"],maxcost.dcpu),
+        nw: qv_parallelVsSerial(data["nw-cost"],maxcost.nw),
+        count: qv_proportion(parseFloat(data["estimated-count"]) , maxcost.count)
+      }
+    }   else if (data["local-time"]) {
+        return {
+        id: data._id,
+        ltime: qv_proportion(qv_parseTime(data["local-time"]) , maxcost.ltime),
+        rtime: qv_proportion(qv_parseTime(data["remote-time"]) , maxcost.rtime),
+        lmem:  qv_proportion(qv_parseMemory(data["local-max-memory"]) , maxcost.lmem),
+        rmem:  qv_proportion(qv_parseMemory(data["remote-max-memory"]) , maxcost.rmem)
+        }
+    }
+  
+}  
+
+
+function qv_displayCost(metrics, cost) {
+
+    var parent = d3.create("svg:g").attr("width", qv_box.width )
+    var i = 0;
+    var padding = 4
+    var width = (qv_box.width -(padding*2)) / metrics.length;
+        
+
+    metrics.forEach (
+        v => {
+            value = cost[v]
+            x= i * width + padding
+            tx= i * width + padding + width/2
+            rx= i * width + padding
+            ty= qv_box.lineHeight * 3/4 
+            ry= qv_box.lineHeight
+            h=qv_box.lineHeight
+            r=2
+            i++;
+            parent.append("text")
+                .style("font-size", qv_box.font)
+                .attr("text-anchor",  "middle")
+                .attr("x", tx )
+                .attr("y", ty)
+                .attr("width", width  )
+                .attr("height", h).text (v)
+            if (v === "count")    {
+                parent.append("rect")
+                .attr("x",  rx)
+                .attr("y", ry)
+                .attr("rx",r)
+                .attr("fill", qv_palettes.count(value))
+                .style("stroke", "none")
+                .attr("width", width - 1)
+                .attr("height", h).append("title").text(Math.round(value*100) +"%")
+            }
+            else if (typeof value === "number") {       
+                parent.append("rect")
+                .attr("x",  rx)
+                .attr("y", ry)
+                .attr("rx",r)
+                .attr("fill", qv_palettes.resource(value))
+                .style("stroke", "none")
+                .attr("width", width  - 1)
+                .attr("height", h).append("title").text(Math.round(value*100) +"%")
+            } else  {
+                    parent.append("rect")
+                    .attr("x", rx)
+                    .attr("y", ry)
+                    .attr("rx",r)
+                    .attr("fill", qv_palettes.resource(value[0]))
+                    .style("stroke", "none")
+                    .attr("width", width/2 - 1)
+                    .attr("height", h).append("title").text("p:" + Math.round(value[0] *100)+"%")
+                    parent.append("rect")
+                    .attr("x", tx)
+                    .attr("y", ry)
+                    .attr("rx",r)
+                    .attr("fill", qv_palettes.serial(value[1]))
+                    .style("stroke", "none")
+                    .attr("width", width/2  - 1)
+                    .attr("height", h).append("title").text("s:" + Math.round(value[1]*100)+"%")
+
+            }
+            
+
+        }
+    )
+    return parent.node()
+}
+
+function qv_parse_cardinalities(cardinalities) {
+   
+    if (cardinalities) {
+        if (cardinalities.startsWith("(")) {
+            var l=cardinalities.length;
+            return cardinalities.substring(1,l-1).replaceAll("\),\(",";").split(";").map(x=>x.split(","))
+        } else return cardinalities.split(",").map((x) => [x,x])
+    } else return []
+
+}   
+function qv_triple_info(div, type, value, cardinalities) {
+    value = qv_decode(value)
+    var v= parseInt(value.split(' ')[0])
+    if (v >= 0) {
+       var colors = null;
+       if (cardinalities[v])  colors = cardinalities[v].map( (x) =>  qv_palettes.magnitude(Math.round(Math.log10(parseFloat(x)))))
+        return qv_text(div, type, value , {
+              type : type,
+              value : value,
+              cardinality: cardinalities[v]}
+             , colors)
+    }     
+    else return qv_text(div, type, value, value)
+}
+
+function qv_decode(str) {
+    const res =  
+    str.replace(
+      /\n|\t|&amp;|&lt;|&gt;|&#39;|&quot;/g,
+      tag =>
+        ({
+          '\n': ' ',
+          '\s': ' ',
+          '&amp;': '&',
+          '&lt;': '<',
+          '&gt;': '>',
+          '&#39;': "'",
+          '&quot;': '"'
+        }[tag] || tag)
+    )
+    return res.replace(/\s\s+/g,' ');
+}
+
+function qv_node(node) {
+    var data = node.data.data
+    var div = d3.create("div")
+    var name = data._name
+     if ( data.permutation) name += " (" + data.permutation + ")"
+     if ( data.type) name += " (" + data.type + ")"
+     if ( data.limit) name += " (" + data.limit + ")"
+     if ( data["num-sorted"]) name += " ( num-sorted=" +  data["num-sorted"] + ")"
+     qv_text(div, name, "" , data)
+        .style("color", "#202020")
+        .style("padding", "4px")
+        .style("text-align","center")
+        .on("click", (event) => {   
+        if (node.children)  {
+            var visibility = "visible" 
+            if (qv_isVisible(node.children[0])) visibility="hidden"
+            var descendants = node.children.map( x => x.descendants())
+             qv_toggle(descendants.flat(), visibility);
+        }
+      }) 
+    if (Object.keys(data).length > 3) {
+   //     div.append("hr").attr("class","nodehr")
+    }
+    if (data.subject) {
+        var cardinalities = qv_parse_cardinalities(data.cardinalities)
+        //console.log(cardinalities)
+        qv_triple_info(div, "subject", data.subject,cardinalities);
+        qv_triple_info(div, "predicate", data.predicate,cardinalities);
+        qv_triple_info(div, "object", data.object,cardinalities);
+    }
+    if (data.condition) {
+        qv_text(div, "condition", data.condition,data.condition);
+    }
+    if (data.column) {
+        qv_text(div, "column", data.column ,data.column)
+    }
+    if (data.expr) {
+        qv_text(div, "expr", data.expr ,data.expr)
+    }
+    if (data.iri) {
+        qv_text(div, "iri", data.iri ,data.iri)
+    }
+    if (data["order-spec"]) {
+        qv_text(div, "order-spec", data["order-spec"], data["order-spec"] )
+    }
+    if (data["aggregate"]) {
+        qv_text(div, "aggregate", data["aggregate"], data["aggregate"] )
+    }
+    if (data["left-graph-node"]) {
+        qv_text(div, "left", data["left-graph-node"].name, data["left-graph-node"] )
+    }
+    if (data["join-filter"]) {
+        qv_text(div, "filter", data["join-filter"], data["join-filter"] )
+    }
+    return div.node()
+}
+
+function qv_nodeHeight(data) {
+    var linesize = qv_box.lineHeight;
+    var size = linesize * 3;
+    if (data.subject) size = size + 4 * linesize;
+    if (data.condition) size = size + linesize
+    if (data.column) size = size + linesize
+    if (data.aggregate) size = size + linesize
+    if (data.iri) size = size + linesize
+    if (data["order-spec"]) size = size + linesize
+    if (data["local-time"]) size = size + linesize
+    if (data["left-graph-node"]) size = size + linesize
+    if (data["join-filter"]) size = size + linesize
+    if (data["expr"]) size = size + linesize
+    return size
+}
+
+function qv_tooltipShow(event, data) {
+    var tooltip = d3.select("#tooltip")
+        tooltip.style("left", (event.pageX) + "px")
+            .style("top", (event.pageY - 28) + "px");
+        tooltip.select("pre").text(JSON.stringify(data, null,2))
+        tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+    
+}	  
+
+
+function qv_tooltipHide(event) {
+    var tooltip = d3.select("#tooltip")
+        tooltip.transition()		
+        .duration(500)		
+        .style("opacity", 0)
+        
+}
+
+
+function qv_isVisible(node) {
+    var id=node.data.id
+    var p = d3.select("#node_" + id)
+
+    return (p.attr("visibility") === "visible")
+}
+
+function qv_toggle(nodes, visibility) {
+    nodes.forEach((d, i) => {
+        id=d.data.id
+        var l = d3.select("#link_" + id)
+        var p = d3.select("#node_" + id)
+       
+        l.attr("visibility", visibility)
+        p.attr("visibility", visibility)
+        
+    })
+}
+function qv_init(containerid, json) {
+    qv_debug(json)
+    var container = d3.select(containerid);
+    var margin = { top: 40, right: 90, bottom: 200, left: 90 }
+    var nodes = qv_hierarchy(json)
+
+    var maxcost = qv_maxCost(nodes)
+
+    qv_debug(maxcost);
+
+    var width = (nodes.leaves().length  + 2)  * (qv_box.width + qv_box.hpadding);
+    var height = nodes.height * (qv_box.height + qv_box.vpadding) * 2;
+
+    nodes = qv_buildTree(nodes,width,height)
+    qv_debug(nodes);
+    var svg = container.append("svg")
+        .attr("width", Math.max(2048, width + margin.left + margin.right))
+        .attr("height", height + margin.top + margin.bottom)
+        
+    // set up transform and zoom
+    g = svg.append("g")
+        .attr("transform",
+            "translate(" + ( margin.left) + "," + margin.top + ")");
+    var zoom = d3.zoom()
+        .scaleExtent([0.25, 10])
+        .on('zoom', function (event) {
+            g.attr('transform', event.transform);
+        });
+    svg.call(zoom);
+
+    //links
+    qv_debug(nodes.links())
+    var links = g
+        .selectAll("path")
+        .data(nodes.links())
+        .join("path")
+        .attr("class", "link")
+        .attr("id", function (d) {  return "link_" +d.target.data.id })
+        .attr("visibility", "visible")
+        .attr("d", d3.linkVertical()
+            .x(d => d.x + qv_box.width / 2)
+            .y(d => d.y + qv_box.lineHeight * 3 ));
+
+    // container for node
+    var node = g.selectAll(".node")
+        .data(nodes.descendants())
+        .enter().append("g")
+        .attr("id", function (d) {  return "node_" + d.data.id })
+        .attr("visibility", "visible")
+        .attr("class", function (d) {
+            return "node" +
+                (d.children ? " node--internal" : " node--leaf");
+        })
+        .attr("transform", function (d) {
+            return "translate(" + (d.x) + "," + d.y + ")";
+        });
+
+    // rectangle around node
+    node.append("rect")
+        .attr("y", 0)
+        .attr("rx",5)
+        .attr("fill", "white")
+        .attr("width", qv_box.width)
+        .attr("height", function (d) { 
+            var h = qv_nodeHeight(d.data.data) 
+            if (d.data.data.cost) { h += qv_box.lineHeight * 2}
+            return  h})
+       
+    // add cost banner
+    node.filter(function(d){ return d.data.data.cost }).append((d) => {
+            var cost = qv_relativeCost(d.data.data, maxcost)
+            return qv_displayCost(["cost","mem","dmem","io","cpu", "dcpu","nw", "count"],cost)
+    })
+    node.filter(function(d){ return d.data.data["local-time"] }).append((d) => {
+        var cost = qv_relativeCost(d.data.data, maxcost)
+        qv_debug(cost)
+        return qv_displayCost(["ltime","rtime", "lmem","rmem"],cost)
+    })
+  
+    // add text box
+    var fo = node.append("foreignObject")
+        .attr("y", function (d) {  if (d.data.data.cost || d.data.data["local-time"] ) {return qv_box.lineHeight * 2} else {return 0}})
+        .attr("height", function (d) { return qv_nodeHeight(d.data.data) })
+        .attr("width", qv_box.width)
+    fo.append((d) => {
+        return qv_node(d, maxcost);
+        }
+    )
+    
+
+}
