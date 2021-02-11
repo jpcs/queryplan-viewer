@@ -10,26 +10,27 @@ var qv_box = {
 
 var qv_palettes = {
     resource : d3.scaleSequential([0, 1], d3.interpolateReds),
-    serial : d3.scaleSequential([0, 1], d3.interpolateBlues),
-    count : d3.scaleSequential([0, 1], d3.interpolateGreens),
+    serial : d3.scaleSequential([0, 1], d3.interpolateReds),
+    parallel : d3.scaleSequential([0, 1], d3.interpolateBlues),
+    count : d3.scaleSequential([0, 1], d3.interpolateReds),
     magnitude: d3.scaleSequential([0, 10], d3.interpolateGreens)
 }
 
+var qv_boxInfo = ["condition","column","row","expr","iri","nullable","order-spec","aggregate","left-graph-node","join-filter","left"];
+
 
 function qv_debug(msg) {
-    
     if (qv_box.debug) {
         console.log(msg)
     }
-
 }
+
 function qv_hierarchy(json) {
     var data = d3.stratify()
         .id(function (d) { return d._id; })
         .parentId(function (d) { if (d._parent) return d._parent; else return "" })
         (json);
-    var nodes = d3.hierarchy(data);
-    return nodes;
+    return d3.hierarchy(data);
 }
 
 function qv_buildTree(nodes, width, height) {
@@ -72,17 +73,19 @@ function qv_cost(div, percent) {
 function qv_parallelVsSerial (value, whole) {
     if (value) {
         var components= value.split("/").map(x=>parseFloat(x))
-        var parallel = (components[0] + components[1] + components[2]) /whole [0]
-        var serial = (components[3] + components[4]) / whole [1]
-        return [parallel,serial]
+        var parallel = (components[0] + components[1] + components[2]) /whole.parallel
+        var serial = (components[3] + components[4]) / whole.serial
+        return {parallel:parallel,serial:serial}
     } else {
-        return [0,0]
+        return {parallel:0,serial:0}
     }   
 }
 
 function qv_maxParallelVsSerial (value, max) {
-    value = qv_parallelVsSerial(value, [1,1])
-    return [Math.max (value[0], max[0]), Math.max (value[1], max[1])]
+    value = qv_parallelVsSerial(value, {parallel:1,serial:1})
+    maxp = Math.max (value.parallel, max.parallel)
+    maxs = Math.max (value.serial, max.serial)
+    return {parallel:maxp,serial:maxs}
 }
 
 function qv_proportion (value, max) {
@@ -111,10 +114,10 @@ function qv_maxCost (nodes) {
         cost: 0,
         mem: 0,
         dmem: 0,
-        io: [0,0],
-        cpu: [0,0],
-        dcpu: [0,0],
-        nw: [0,0],
+        io: {parallel:0,serial:0},
+        cpu: {parallel:0,serial:0},
+        dcpu: {parallel:0,serial:0},
+        nw: {parallel:0,serial:0},
         count: 0,
         ltime: 0,
         rtime: 0,
@@ -134,6 +137,7 @@ function qv_maxCost (nodes) {
             maxcost.dcpu = qv_maxParallelVsSerial(data["dcpu-cost"], maxcost.dcpu)
             maxcost.nw = qv_maxParallelVsSerial(data["nw-cost"], maxcost.nw)
         } else if (data["local-time"]) {
+            maxcost.count = Math.max(parseFloat(data.count),maxcost.count)
             maxcost.lmem = Math.max(qv_parseMemory(data["local-max-memory"]), maxcost.lmem)
             maxcost.rmem = Math.max(qv_parseMemory(data["remote-max-memory"]), maxcost.rmem)
             maxcost.ltime = Math.max(qv_parseTime(data["local-time"]), maxcost.ltime)
@@ -161,6 +165,7 @@ function qv_relativeCost( data, maxcost) {
     }   else if (data["local-time"]) {
         return {
         id: data._id,
+        count: qv_proportion(parseFloat(data.count) , maxcost.count),
         ltime: qv_proportion(qv_parseTime(data["local-time"]) , maxcost.ltime),
         rtime: qv_proportion(qv_parseTime(data["remote-time"]) , maxcost.rtime),
         lmem:  qv_proportion(qv_parseMemory(data["local-max-memory"]) , maxcost.lmem),
@@ -171,14 +176,23 @@ function qv_relativeCost( data, maxcost) {
 }  
 
 
-function qv_displayCost(metrics, cost) {
+function qv_displayCostBox (parent , rect, palette, value, prefix="") {
+    var r = 2;
+    parent.append("rect")
+    .attr("x", rect.x)
+    .attr("y", rect.y)
+    .attr("rx",r)
+    .attr("fill", palette(value))
+    .style("stroke", "none")
+    .attr("width", rect.width - 1)
+    .attr("height", qv_box.lineHeight).append("title").text(prefix + Math.round(value*100) +"%")
+}
 
+function qv_displayCost(metrics, cost) {
     var parent = d3.create("svg:g").attr("width", qv_box.width )
     var i = 0;
     var padding = 4
     var width = (qv_box.width -(padding*2)) / metrics.length;
-        
-
     metrics.forEach (
         v => {
             value = cost[v]
@@ -187,8 +201,6 @@ function qv_displayCost(metrics, cost) {
             rx= i * width + padding
             ty= qv_box.lineHeight * 3/4 
             ry= qv_box.lineHeight
-            h=qv_box.lineHeight
-            r=2
             i++;
             parent.append("text")
                 .style("font-size", qv_box.font)
@@ -196,62 +208,30 @@ function qv_displayCost(metrics, cost) {
                 .attr("x", tx )
                 .attr("y", ty)
                 .attr("width", width  )
-                .attr("height", h).text (v)
+                .attr("height", qv_box.lineHeight).text (v)
             if (v === "count")    {
-                parent.append("rect")
-                .attr("x",  rx)
-                .attr("y", ry)
-                .attr("rx",r)
-                .attr("fill", qv_palettes.count(value))
-                .style("stroke", "none")
-                .attr("width", width - 1)
-                .attr("height", h).append("title").text(Math.round(value*100) +"%")
+                qv_displayCostBox(parent, {x:rx, y:ry, width:width}, qv_palettes.count, value)
             }
-            else if (typeof value === "number") {       
-                parent.append("rect")
-                .attr("x",  rx)
-                .attr("y", ry)
-                .attr("rx",r)
-                .attr("fill", qv_palettes.resource(value))
-                .style("stroke", "none")
-                .attr("width", width  - 1)
-                .attr("height", h).append("title").text(Math.round(value*100) +"%")
+            else if (typeof value === "number") {      
+                qv_displayCostBox(parent, {x:rx, y:ry, width:width}, qv_palettes.resource,value) 
             } else  {
-                    parent.append("rect")
-                    .attr("x", rx)
-                    .attr("y", ry)
-                    .attr("rx",r)
-                    .attr("fill", qv_palettes.resource(value[0]))
-                    .style("stroke", "none")
-                    .attr("width", width/2 - 1)
-                    .attr("height", h).append("title").text("p:" + Math.round(value[0] *100)+"%")
-                    parent.append("rect")
-                    .attr("x", tx)
-                    .attr("y", ry)
-                    .attr("rx",r)
-                    .attr("fill", qv_palettes.serial(value[1]))
-                    .style("stroke", "none")
-                    .attr("width", width/2  - 1)
-                    .attr("height", h).append("title").text("s:" + Math.round(value[1]*100)+"%")
-
+                qv_displayCostBox(parent, {x:rx, y:ry, width:width/2}, qv_palettes.parallel,value.parallel, "parallel: ") 
+                qv_displayCostBox(parent, {x:tx, y:ry, width:width/2}, qv_palettes.serial,value.serial,"serial: ") 
             }
-            
-
         }
     )
     return parent.node()
 }
 
 function qv_parse_cardinalities(cardinalities) {
-   
     if (cardinalities) {
         if (cardinalities.startsWith("(")) {
             var l=cardinalities.length;
             return cardinalities.substring(1,l-1).replaceAll("\),\(",";").split(";").map(x=>x.split(","))
         } else return cardinalities.split(",").map((x) => [x,x])
     } else return []
-
 }   
+
 function qv_triple_info(div, type, value, cardinalities) {
     value = qv_decode(value)
     var v= parseInt(value.split(' ')[0])
@@ -315,30 +295,9 @@ function qv_node(node) {
         qv_triple_info(div, "predicate", data.predicate,cardinalities);
         qv_triple_info(div, "object", data.object,cardinalities);
     }
-    if (data.condition) {
-        qv_text(div, "condition", data.condition,data.condition);
-    }
-    if (data.column) {
-        qv_text(div, "column", data.column ,data.column)
-    }
-    if (data.expr) {
-        qv_text(div, "expr", data.expr ,data.expr)
-    }
-    if (data.iri) {
-        qv_text(div, "iri", data.iri ,data.iri)
-    }
-    if (data["order-spec"]) {
-        qv_text(div, "order-spec", data["order-spec"], data["order-spec"] )
-    }
-    if (data["aggregate"]) {
-        qv_text(div, "aggregate", data["aggregate"], data["aggregate"] )
-    }
-    if (data["left-graph-node"]) {
-        qv_text(div, "left", data["left-graph-node"].name, data["left-graph-node"] )
-    }
-    if (data["join-filter"]) {
-        qv_text(div, "filter", data["join-filter"], data["join-filter"] )
-    }
+    qv_boxInfo.forEach(
+        (v) =>  {if (data[v]) qv_text(div, v, data[v],data[v]);}
+    )
     return div.node()
 }
 
@@ -346,15 +305,10 @@ function qv_nodeHeight(data) {
     var linesize = qv_box.lineHeight;
     var size = linesize * 3;
     if (data.subject) size = size + 4 * linesize;
-    if (data.condition) size = size + linesize
-    if (data.column) size = size + linesize
-    if (data.aggregate) size = size + linesize
-    if (data.iri) size = size + linesize
-    if (data["order-spec"]) size = size + linesize
-    if (data["local-time"]) size = size + linesize
-    if (data["left-graph-node"]) size = size + linesize
-    if (data["join-filter"]) size = size + linesize
-    if (data["expr"]) size = size + linesize
+    qv_boxInfo.forEach(
+        (v) =>  {if (data[v]) size = size + linesize;}
+    )
+    if (data.cost || data.count) size = size + 2 * linesize
     return size
 }
 
@@ -391,12 +345,12 @@ function qv_toggle(nodes, visibility) {
         id=d.data.id
         var l = d3.select("#link_" + id)
         var p = d3.select("#node_" + id)
-       
         l.attr("visibility", visibility)
         p.attr("visibility", visibility)
         
     })
 }
+
 function qv_init(containerid, json) {
     qv_debug(json)
     var container = d3.select(containerid);
@@ -462,7 +416,6 @@ function qv_init(containerid, json) {
         .attr("width", qv_box.width)
         .attr("height", function (d) { 
             var h = qv_nodeHeight(d.data.data) 
-            if (d.data.data.cost) { h += qv_box.lineHeight * 2}
             return  h})
        
     // add cost banner
@@ -473,7 +426,7 @@ function qv_init(containerid, json) {
     node.filter(function(d){ return d.data.data["local-time"] }).append((d) => {
         var cost = qv_relativeCost(d.data.data, maxcost)
         qv_debug(cost)
-        return qv_displayCost(["ltime","rtime", "lmem","rmem"],cost)
+        return qv_displayCost(["ltime","rtime", "lmem","rmem", "count"],cost)
     })
   
     // add text box
@@ -486,5 +439,4 @@ function qv_init(containerid, json) {
         }
     )
     
-
 }
