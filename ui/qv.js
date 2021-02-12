@@ -42,6 +42,7 @@ function qv_buildTree(nodes, width, height) {
 
 function qv_text(div, title, text, tooltip, color) {
     if (Array.isArray(text)) text = text.join(",")
+    if (text.constructor === ({}).constructor) text = JSON.stringify(text, null,2)
     var span = div.append("xhtml:p").attr("class", "tree-node").style("font-size", qv_box.font)
     if (Array.isArray(color)) {
         color.map( (x) => span.append("xhtml:span").style("color",x).text("\u25A0"))
