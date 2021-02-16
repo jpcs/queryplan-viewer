@@ -494,7 +494,12 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
     fn:fold-left(function($map,$n) {
       $map=>map-append("join-filter",makeJoinFilterExpr($n))
     },?,$node/plan:filters/plan:join-filter)
-  )(),
+  )() =>(
+    fn:fold-left(function($map,$n) {
+      $map=>map-append("join-filter",makeExpr($n))
+    },?,$node/plan:ljfilters/*)
+  )()
+  ,
 
   let $subs :=
     switch(version($node))
@@ -508,6 +513,16 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
   let $rhs := $subs[2]
   let $rhsID := $id || "_R"
   return (
+    if (fn:exists($node/plan:exists))
+    then 
+      let $maps := makeGraph($node/plan:exists/*, $id || "_E")
+    return (
+      head($maps)=>map:with("_parent",$id)=>map:with("_parentLabel","right"),
+      tail($maps)
+    )
+    else
+       ()
+    ,
     let $maps := makeGraph($lhs,$lhsID)
     return (
       head($maps)=>map:with("_parent",$id)=>map:with("_parentLabel","left"),
@@ -719,6 +734,8 @@ declare function makeFromGraph($node as element(), $id as xs:string)
     },?,$node/plan:*/plan:value)
   )()
 };
+
+
 
 declare function makeGenericGraph($node as element(), $id as xs:string)
 {
