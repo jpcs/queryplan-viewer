@@ -30,17 +30,29 @@ declare function local:makeHTML($out)
       input = { xdmp:quote(json:to-array($out)), xdmp:log(json:to-array($out)) }
     </script>
   </head>
-  <body onload="qv_init('#viewer',  input);">
-  <div id="viewer"  > 
-        <div id="tooltip" class="tooltip"> <pre> </pre></div>
+
+ 
+  <body onload="qv_showPlan('#viewer',  input);">
+  <div id="wrapper" class="full-height">
+
+    <div id="viewer"> 
+          <div id="tooltip" class="tooltip"> <!-- --></div>
     </div>
+  </div>
+
   </body>
   </html>
 
 };
                                         
 
-let $in := xdmp:unquote (xdmp:get-request-field("plan") )/*
+
+let $file := xdmp:get-request-field("filename")
+let $plan := xdmp:get-request-field("plan")
+
+let $in :=  if ($file) then xdmp:document-get($file)/*
+            else if ($plan) then xdmp:unquote (xdmp:get-request-field("plan"))/*
+            else fn:error(xs:QName("XDMP-ARG"), "Missing argument: filename or plan required")
 
 return (
   xdmp:set-response-content-type("text/html"),
