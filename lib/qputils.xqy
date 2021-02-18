@@ -225,10 +225,33 @@ declare function makeExpr($node)
   default return "??"
 };
 
+declare function makeIRI($iri)
+{
+  let $known := <a>
+    <entry prefix="rdfs">http://www.w3.org/2000/01/rdf-schema#</entry>
+    <entry prefix="foaf">http://xmlns.com/foaf/0.1/</entry>
+    <entry prefix="rdf">http://www.w3.org/1999/02/22-rdf-syntax-ns#</entry>
+    <entry prefix="owl">http://www.w3.org/2002/07/owl#</entry>
+    <entry prefix="skos">http://www.w3.org/2004/02/skos/core#</entry>
+    <entry prefix="xs">http://www.w3.org/2001/XMLSchema#</entry>
+    <entry prefix="fn">http://www.w3.org/2005/xpath-functions#</entry>
+    <entry prefix="sem">http://marklogic.com/semantics#</entry>
+  </a>
+  let $iri := sql:trim($iri)
+  return (
+    $known/entry ! (
+        if(starts-with($iri,.))
+        then (@prefix || ":" || substring-after($iri,.))
+        else ()
+    ),
+    ("<" || $iri || ">")
+  )[1]
+};
+
 declare function makeGraphNodeExpr($node)
 {
   switch($node/@type)
-  case "iri" return ("<" || $node || ">")
+  case "iri" return makeIRI($node)
   case "blank" return ("_:" || $node/@name)
   case "var" return ("?" || $node/@name)
   case "global-variable" return ("$" || $node/@name)
@@ -244,7 +267,7 @@ declare function makeGraphNodeExpr($node)
 declare function makeGraphNodeInfo($node)
 {
   switch($node/@type)
-  case "iri" return ("<" || $node || ">")
+  case "iri" return makeIRI($node)
   case "blank" return ($node/@column-index || " (_:" || $node/@name || ")")
   case "var" return ($node/@column-index || " (?" || $node/@name || ")")
   case "global-variable" return ("$" || $node/@name)
