@@ -5,7 +5,8 @@ var qv_box = {
     vpadding: 10,
     height: 100,
     lineHeight: 10,
-    font: ".40em"
+    font: ".40em",
+    titleFont: ".60em"
 }
 
 var qv_palettes = {
@@ -16,8 +17,11 @@ var qv_palettes = {
     magnitude: d3.scaleSequential([0, 10], d3.interpolateGreens)
 }
 
-var qv_boxInfo = ["condition","column","row","expr","iri","nullable","order-spec","aggregate","left-graph-node","join-filter","left"];
+// var qv_boxInfo = ["condition","column","row","expr","iri","nullable","order-spec","aggregate","left-graph-node","join-filter","left"];
 
+var qv_cardInfo = [ "subject","predicate","object","graph","value","fragment","row" ] ;
+
+var qv_boxInfo = [ "column","condition","expr","order-spec","aggregate","join-filter", "content","cross-product", "default-graph","named-graph","varIn","varOut"];
 
 function qv_debug(msg) {
     if (qv_box.debug) {
@@ -36,26 +40,47 @@ function qv_hierarchy(json) {
 function qv_buildTree(nodes, width, height) {
     var treemap = d3.tree().nodeSize([qv_box.width * 1.1, qv_box.height * 1.1]);
     var nnodes = nodes.copy().sort((a, b) =>  d3.ascending(a.data.data._parentLabel,b.data.data._parentLabel))
-    return  treemap(nnodes) 
+    return treemap(nnodes)
 }
 
-
-function qv_text(div, title, text, tooltip, color) {
-    if (Array.isArray(text)) text = text.join(",")
-    if (text.constructor === ({}).constructor) text = JSON.stringify(text, null,2)
-    var span = div.append("xhtml:p").attr("class", "tree-node").style("font-size", qv_box.font)
-    if (Array.isArray(color)) {
-        color.map( (x) => span.append("xhtml:span").style("color",x).text("\u25A0"))
-    }
-    span.append("xhtml:span").style("font-weight", "bold").text(title)
-    if (text) span.append("xhtml:span").text(": " + text)
-    if (tooltip) span.on("mouseover", function(event, d) {		
-         qv_tooltipShow(event,tooltip); })					
+function qv_tooltipEvents(element, tooltip) {
+    if(tooltip) element
+        .on("mouseover", function(event, d) {		
+            qv_tooltipShow(event,tooltip);
+        })
         .on("mouseout", function(event, d) {	
-         qv_tooltipHide(event)	});
-    return span     
+            qv_tooltipHide(event);
+        });
 }
 
+function qv_title(div, title, tooltip) {
+    var span = div.append("xhtml:p")
+        .attr("class", "tree-node")
+        .style("color", "#202020")
+        .style("padding", "4px")
+        .style("text-align","center")
+        .style("font-size",qv_box.titleFont)
+        .style("font-weight", "bold")
+        .text(title);
+    qv_tooltipEvents(span,tooltip);
+    return span;
+}
+
+function qv_row(table, title, text, tooltip, color) {
+    if (Array.isArray(text)) text = text.join(", ")
+    if (text.constructor === ({}).constructor) text = JSON.stringify(text,null,2)
+    var row = table.append("xhtml:tr");
+    var td0 = row.append("xhtml:td");
+    var td1 = row.append("xhtml:td");
+    var td2 = row.append("xhtml:td");
+    if(Array.isArray(color)) {
+        color.map( (x) => td0.append("xhtml:span").style("color",x).text("\u25A0"))
+    }
+    td1.append("xhtml:span").style("font-weight", "bold").text(title + (text ? ":" : ""));
+    if (text) td2.append("xhtml:span").text(text)
+    qv_tooltipEvents(row,tooltip);
+    return row;
+}
 
 function qv_cost(div, percent) {
     var rect = svg.append("g")
@@ -67,6 +92,8 @@ function qv_cost(div, percent) {
         .attr("width", x.bandwidth() - 1)
         .attr("height", y.bandwidth() - 2)
         .attr("fill", d => color(d.value))
+        .style("stroke", d => color(0.5))
+        .style("stroke-width", "0.5")
 }
 
 // splits parallel and serial cost, and returns values as proportion of a given whole.
@@ -184,7 +211,8 @@ function qv_displayCostBox (parent , rect, palette, value, prefix="") {
     .attr("y", rect.y)
     .attr("rx",r)
     .attr("fill", palette(value))
-    .style("stroke", "none")
+    .style("stroke", palette(0.5))
+    .style("stroke-width", "0.5")
     .attr("width", rect.width - 1)
     .attr("height", qv_box.lineHeight).append("title").text(prefix + Math.round(value*100) +"%")
 }
@@ -233,19 +261,19 @@ function qv_parse_cardinalities(cardinalities) {
     } else return []
 }   
 
-function qv_triple_info(div, type, value, cardinalities) {
+function qv_triple_info(table, type, value, cardinalities) {
     value = qv_decode(value)
     var v= parseInt(value.split(' ')[0])
     if (v >= 0) {
-       var colors = null;
-       if (cardinalities[v])  colors = cardinalities[v].map( (x) =>  qv_palettes.magnitude(Math.round(Math.log10(parseFloat(x)))))
-        return qv_text(div, type, value , {
+        var colors = null;
+        if (cardinalities[v])  colors = cardinalities[v].map( (x) =>  qv_palettes.magnitude(Math.round(Math.log10(parseFloat(x)))))
+        return qv_row(table, type, value , {
               type : type,
               value : value,
               cardinality: cardinalities[v]}
              , colors)
     }     
-    else return qv_text(div, type, value, value)
+    else return qv_row(table, type, value, value)
 }
 
 function qv_decode(str) {
@@ -274,13 +302,10 @@ function qv_node(node) {
      if ( data.type) name += " (" + data.type + ")"
      if ( data.limit) name += " (" + data.limit + ")"
      if ( data["num-sorted"]) name += " ( num-sorted=" +  data["num-sorted"] + ")"
-     qv_text(div, name, "" , data)
-        .style("color", "#202020")
-        .style("padding", "4px")
-        .style("text-align","center")
+     qv_title(div, name, data)
         .on("click", (event) => {   
         if (node.children)  {
-            var visibility = "visible" 
+            var visibility = "visible"
             if (qv_isVisible(node.children[0])) visibility="hidden"
             var descendants = node.children.map( x => x.descendants())
              qv_toggle(descendants.flat(), visibility);
@@ -289,33 +314,38 @@ function qv_node(node) {
     if (Object.keys(data).length > 3) {
    //     div.append("hr").attr("class","nodehr")
     }
-    if (data.subject) {
-        var cardinalities = qv_parse_cardinalities(data.cardinalities)
-        //console.log(cardinalities)
-        qv_triple_info(div, "subject", data.subject,cardinalities);
-        qv_triple_info(div, "predicate", data.predicate,cardinalities);
-        qv_triple_info(div, "object", data.object,cardinalities);
-    }
-    qv_boxInfo.forEach(
-        (v) =>  {if (data[v]) qv_text(div, v, data[v],data[v]);}
-    )
+    var table = div.append("xhtml:table")
+        .attr("class", "tree-node")
+        .style("border","0px")
+        .style("font-size", qv_box.font);
+
+    var cardinalities = qv_parse_cardinalities(data.cardinalities)
+    //console.log(cardinalities)
+    qv_cardInfo
+        .filter((key) => data.hasOwnProperty(key))
+        .forEach((key) => qv_triple_info(table,key,data[key],cardinalities));
+    qv_boxInfo
+        .filter((key) => data.hasOwnProperty(key))
+        .forEach((key) =>  qv_row(table,key,data[key],data[key]));
     return div.node()
 }
 
 function qv_nodeHeight(data) {
     var linesize = qv_box.lineHeight;
     var size = linesize * 3;
-    if (data.subject) size = size + 4 * linesize;
-    qv_boxInfo.forEach(
-        (v) =>  {if (data[v]) size = size + linesize;}
-    )
-    if (data.cost || data.count) size = size + 2 * linesize
+    qv_cardInfo
+        .filter((key) => data.hasOwnProperty(key))
+        .forEach((key) => { size += linesize });
+    qv_boxInfo
+        .filter((key) => data.hasOwnProperty(key))
+        .forEach((key) => { size += linesize });
+    if(data.cost || data.count) size = size + 2 * linesize
     return size
 }
 
 function qv_tooltipShow(event, data) {
     var tooltip = d3.select("#tooltip")
-        tooltip.style("left", (event.pageX) + "px")
+        tooltip.style("left", (event.pageX + 28) + "px")
             .style("top", (event.pageY - 28) + "px");
         tooltip.select("pre").text(JSON.stringify(data, null,2))
         tooltip.transition()
@@ -344,11 +374,9 @@ function qv_isVisible(node) {
 function qv_toggle(nodes, visibility) {
     nodes.forEach((d, i) => {
         id=d.data.id
-        var l = d3.select("#link_" + id)
-        var p = d3.select("#node_" + id)
-        l.attr("visibility", visibility)
-        p.attr("visibility", visibility)
-        
+        d3.select("#link_" + id).attr("visibility", visibility)
+        d3.select("#node_" + id).attr("visibility", visibility)
+        d3.select("#label_" + id).attr("visibility", visibility)        
     })
 }
 
@@ -370,13 +398,13 @@ function qv_init(containerid, json) {
     var svg = container.append("svg")
         .attr("width", Math.max(2048, width + margin.left + margin.right))
         .attr("height", height + margin.top + margin.bottom)
-        
+
     // set up transform and zoom
     g = svg.append("g")
         .attr("transform",
             "translate(" + ( margin.left) + "," + margin.top + ")");
     var zoom = d3.zoom()
-        .scaleExtent([0.25, 10])
+        .scaleExtent([0.1, 10])
         .on('zoom', function (event) {
             g.attr('transform', event.transform);
         });
@@ -384,17 +412,50 @@ function qv_init(containerid, json) {
 
     //links
     qv_debug(nodes.links())
+
+    // A group for each link
     var links = g
         .selectAll("path")
         .data(nodes.links())
-        .join("path")
+        .join("g")
+        .style("color", "red");
+
+    // Add the link path
+    links.append("path")
         .attr("class", "link")
-        .attr("id", function (d) {  return "link_" +d.target.data.id })
+        .attr("id", function (d) { return "link_" +d.target.data.id })
         .attr("visibility", "visible")
         .attr("d", d3.linkVertical()
-            .x(d => d.x + qv_box.width / 2)
-            .y(d => d.y + qv_box.lineHeight * 3 ));
+              .x(d => d.x + qv_box.width / 2)
+              .y(d => d.y + qv_box.lineHeight * 3 ));
 
+    // Add the link label, using (non-moving) animation to place it 30% along the path
+    links.append("text")
+        .attr("class", "link-label")
+        .attr("id", function (d) { return "label_" +d.target.data.id })
+        .text(function(d) { return d.target.data.data["_parentLabel"] })
+        .attr("transform",function(d) {
+            var bbox = this.getBBox();
+            var transform = "";
+            if(d.target.x < d.source.x) {
+                // Turn upside down labels the right way up
+                transform +=
+                    "translate(" + (bbox.width/2) + "," + (0) + ") "
+                    + "rotate(180) "
+                    + "translate(" + (-bbox.width/2) + "," + (0) + ") ";
+            }
+            // Leave a bit of space between the label and the path
+            transform += "translate(" + (0) + "," + (-3) + ") "
+            return transform;
+        })    
+        .append("animateMotion")
+        .attr("calcMode","linear")
+        .attr("rotate","auto")
+        .attr("keyPoints","0.3;0.3")
+        .attr("keyTimes","0.0;1.0")
+        .append("mpath")
+        .attr("href", function(d) { return "#link_" +d.target.data.id; });
+    
     // container for node
     var node = g.selectAll(".node")
         .data(nodes.descendants())
@@ -438,6 +499,5 @@ function qv_init(containerid, json) {
     fo.append((d) => {
         return qv_node(d, maxcost);
         }
-    )
-    
+    )    
 }

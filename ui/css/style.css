@@ -1,52 +1,61 @@
 
-  .node rect {   
+.node rect {   
     stroke-width: 1px;   
-    stroke:#DCDCDC; 
-  }
-  
+    stroke:#DCDCDC;
+    fill-opacity: 1.0;
+}
 
-  .banner  {
+
+.banner  {
     stroke-width: 0px;
-  }
+}
 
-  .nodehr {
+.nodehr {
     margin: 2px 5px 2px 5px;
     color:white;
     border-color:white;
     border-top: 0px;
- 
-  }
+    
+}
 
-  .node--internal text {
+.node--internal text {
     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
-  }
+}
 
 
 
-  .link {
+.link {
     fill: none;
     stroke: steelblue;
     stroke-width: 1px;
-  }
-  .tree-node {
-      overflow: hidden;
-      display: block;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      padding-left: 5px;
-      margin-top:3px;
-      margin-bottom:0px;
-      text-align: left;
-      color: #505050;
-      
- }
- #viewer {
-     overflow: "auto";
-     
- }
- body {
-  background: #F8F8F8;
- }
+}
+
+.link-label {
+    font-size: 8px;
+}
+
+.tree-node {
+    overflow: hidden;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-left: 5px;
+    margin-top:3px;
+    margin-bottom:0px;
+    margin-right: 2px;
+    margin-left: 2px;
+    text-align: left;
+    color: #505050;
+}
+
+#viewer {
+    overflow: "auto";
+}
+
+body {
+    background: #F8F8F8;
+    font-family: Arial, Helvetica, sans-serif;    
+}
  
 .tooltip  {
     opacity: 0;
@@ -55,9 +64,10 @@
     text-align: left;			
     word-wrap: break-word;			
     padding: 2px;				
-    font: 12px sans-serif;		
+    font-size: 12px;
+    font-family: monospace;
     background:lightgoldenrodyellow;	
-    border: 0px;		
+    border: 1px solid goldenrod;
     border-radius: 8px;			
     pointer-events: none;	
     z-index: 5
