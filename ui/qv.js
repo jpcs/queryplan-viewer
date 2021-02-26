@@ -17,11 +17,38 @@ var qv_palettes = {
     magnitude: d3.scaleSequential([0, 10], d3.interpolateGreens)
 }
 
-// var qv_boxInfo = ["condition","column","row","expr","iri","nullable","order-spec","aggregate","left-graph-node","join-filter","left"];
+// Displayed in the node box with cardinality info
+var qv_cardInfo = [
+    "subject","predicate","object","graph","value","fragment","row"
+];
 
-var qv_cardInfo = [ "subject","predicate","object","graph","value","fragment","row" ] ;
+// Displayed in the node box
+var qv_boxInfo = [
+    "column","condition","expr","order-spec","aggregate","join-filter","content",
+    "cross-product", "default-graph","named-graph","varIn","varOut","num-sorted",
+    "limit","offset"
+];
 
-var qv_boxInfo = [ "column","condition","expr","order-spec","aggregate","join-filter", "content","cross-product", "default-graph","named-graph","varIn","varOut"];
+// Displayed in the cost banner
+var qv_costInfo = [
+    "cost","mem-cost","dmem-cost","io-cost","cpu-cost","dcpu-cost","nw-cost","estimated-count"
+];
+
+// Displayed in the execution banner
+var qv_executionInfo = [
+    "count","local-time","remote-time","local-max-memory","remote-max-memory"
+];
+
+// Tooltip row order
+var qv_tooltipPriority = [
+    "id","type","name","schema","view","column-index",
+    "op","permutation","descending","dedup",
+    "left","right",
+    "aggregate",
+    "order","num-sorted",
+    "ltime","rtime","lmem","rmem",
+    "cost","mem","dmem","cpu","dcpu","nw","io","count"
+];
 
 function qv_debug(msg) {
     if (qv_box.debug) {
@@ -43,10 +70,10 @@ function qv_buildTree(nodes, width, height) {
     return treemap(nnodes)
 }
 
-function qv_tooltipEvents(element, tooltip) {
+function qv_tooltipEvents(element, tooltip, doFilter) {
     if(tooltip) element
         .on("mouseover", function(event, d) {		
-            qv_tooltipShow(event,tooltip);
+            qv_tooltipShow(event,tooltip,doFilter);
         })
         .on("mouseout", function(event, d) {	
             qv_tooltipHide(event);
@@ -54,7 +81,7 @@ function qv_tooltipEvents(element, tooltip) {
 }
 
 function qv_title(div, title, tooltip) {
-    var span = div.append("xhtml:p")
+    var para = div.append("xhtml:p")
         .attr("class", "tree-node")
         .style("color", "#202020")
         .style("padding", "4px")
@@ -62,8 +89,8 @@ function qv_title(div, title, tooltip) {
         .style("font-size",qv_box.titleFont)
         .style("font-weight", "bold")
         .text(title);
-    qv_tooltipEvents(span,tooltip);
-    return span;
+    qv_tooltipEvents(para,tooltip,true);
+    return para;
 }
 
 function qv_row(table, title, text, tooltip, color) {
@@ -78,7 +105,7 @@ function qv_row(table, title, text, tooltip, color) {
     }
     td1.append("xhtml:span").style("font-weight", "bold").text(title + (text ? ":" : ""));
     if (text) td2.append("xhtml:span").text(text)
-    qv_tooltipEvents(row,tooltip);
+    qv_tooltipEvents(row,tooltip,false);
     return row;
 }
 
@@ -175,12 +202,10 @@ function qv_maxCost (nodes) {
     return maxcost
 }
 
-
-
 function qv_relativeCost( data, maxcost) {
     if (data.cost) {
       return {
-        id: data._id,
+        // id: data._id,
         cost: qv_proportion(parseFloat(data.cost) , maxcost.cost),
         mem: qv_proportion(parseFloat(data["mem-cost"]) , maxcost.mem),
         dmem: qv_proportion(parseFloat(data["dmem-cost"]) , maxcost.dmem),
@@ -192,7 +217,7 @@ function qv_relativeCost( data, maxcost) {
       }
     }   else if (data["local-time"]) {
         return {
-        id: data._id,
+        // id: data._id,
         count: qv_proportion(parseFloat(data.count) , maxcost.count),
         ltime: qv_proportion(qv_parseTime(data["local-time"]) , maxcost.ltime),
         rtime: qv_proportion(qv_parseTime(data["remote-time"]) , maxcost.rtime),
@@ -200,9 +225,7 @@ function qv_relativeCost( data, maxcost) {
         rmem:  qv_proportion(qv_parseMemory(data["remote-max-memory"]) , maxcost.rmem)
         }
     }
-  
-}  
-
+}
 
 function qv_displayCostBox (parent , rect, palette, value, prefix="") {
     var r = 2;
@@ -249,6 +272,7 @@ function qv_displayCost(metrics, cost) {
             }
         }
     )
+    qv_tooltipEvents(parent,cost,false);
     return parent.node()
 }
 
@@ -266,12 +290,12 @@ function qv_triple_info(table, type, value, cardinalities) {
     var v= parseInt(value.split(' ')[0])
     if (v >= 0) {
         var colors = null;
-        if (cardinalities[v])  colors = cardinalities[v].map( (x) =>  qv_palettes.magnitude(Math.round(Math.log10(parseFloat(x)))))
-        return qv_row(table, type, value , {
-              type : type,
-              value : value,
-              cardinality: cardinalities[v]}
-             , colors)
+        var tooltip = value;
+        if (cardinalities[v]) {
+            colors = cardinalities[v].map( (x) =>  qv_palettes.magnitude(Math.round(Math.log10(parseFloat(x)))));
+            tooltip = { value : value, cardinality: cardinalities[v].join(",") };
+        }
+        return qv_row(table,type,value,tooltip,colors);
     }     
     else return qv_row(table, type, value, value)
 }
@@ -300,8 +324,8 @@ function qv_node(node) {
     var name = data._name
      if ( data.permutation) name += " (" + data.permutation + ")"
      if ( data.type) name += " (" + data.type + ")"
-     if ( data.limit) name += " (" + data.limit + ")"
-     if ( data["num-sorted"]) name += " ( num-sorted=" +  data["num-sorted"] + ")"
+     // if ( data.limit) name += " (" + data.limit + ")"
+     // if ( data["num-sorted"]) name += " ( num-sorted=" +  data["num-sorted"] + ")"
      qv_title(div, name, data)
         .on("click", (event) => {   
         if (node.children)  {
@@ -339,21 +363,70 @@ function qv_nodeHeight(data) {
     qv_boxInfo
         .filter((key) => data.hasOwnProperty(key))
         .forEach((key) => { size += linesize });
-    if(data.cost || data.count) size = size + 2 * linesize
+    if(qv_costInfo.some((v) => data.hasOwnProperty(v)))
+        size = size + 2 * linesize
+    if(qv_executionInfo.some((v) => data.hasOwnProperty(v)))
+        size = size + 2 * linesize
     return size
 }
 
-function qv_tooltipShow(event, data) {
-    var tooltip = d3.select("#tooltip")
-        tooltip.style("left", (event.pageX + 28) + "px")
-            .style("top", (event.pageY - 28) + "px");
-        tooltip.select("pre").text(JSON.stringify(data, null,2))
-        tooltip.transition()
-            .duration(200)
-            .style("opacity", .9);
-    
-}	  
+function qv_tooltipTableRow(table, key, value) {
+    if(Array.isArray(value)) {
+        value.forEach((v) => qv_tooltipTableRow(table,key,v));
+    }
+    else if(typeof(value)==="object") {
+        var tr = table.append("tr");
+        if(key!==null) tr.append("td").text(key);
+        var table2 = tr.append("td").append("table");
+        Object.keys(value).forEach((key) => qv_tooltipTableRow(table2,key,value[key]));
+    }
+    else {
+        var tr = table.append("tr");
+        if(key!==null) tr.append("td").text(key);
+        if(typeof(value)==="string") value = qv_decode(value);
+        tr.append("td").text(value);
+    }
+}
 
+function qv_tooltipContents(parent, data, doFilter) {
+    if(typeof(data)==="object") {
+        var seen = {};
+        if(doFilter) {
+            Object.keys(data).filter((key) => key.charAt(0)=='_')
+                .forEach((key) => { seen[key] = true });
+            qv_cardInfo.forEach((key) => { seen[key] = true });
+            qv_boxInfo.forEach((key) => { seen[key] = true });
+            qv_costInfo.forEach((key) => { seen[key] = true });
+            qv_executionInfo.forEach((key) => { seen[key] = true });
+        }
+
+        var seenFilter = (key) => {
+            if(seen[key]) return false;
+            seen[key] = true;
+            return data.hasOwnProperty(key);
+        };
+
+        var table = parent.append("table");
+        var display = (key) => qv_tooltipTableRow(table,key,data[key]);
+
+        qv_tooltipPriority.filter(seenFilter).forEach(display);
+        Object.keys(data).filter(seenFilter).forEach(display);
+    }
+    else {
+        qv_tooltipTableRow(parent.append("table"),null,data);
+    }
+}
+
+function qv_tooltipShow(event, data, doFilter) {
+    var tooltip = d3.select("#tooltip")
+        .style("left", (event.pageX + 28) + "px")
+        .style("top", (event.pageY - 28) + "px");
+    tooltip.html("");
+    qv_tooltipContents(tooltip,data,doFilter);
+    tooltip.transition()
+        .duration(200)
+        .style("opacity", .9);
+}
 
 function qv_tooltipHide(event) {
     var tooltip = d3.select("#tooltip")
@@ -362,7 +435,6 @@ function qv_tooltipHide(event) {
         .style("opacity", 0)
         
 }
-
 
 function qv_isVisible(node) {
     var id=node.data.id
@@ -481,23 +553,29 @@ function qv_init(containerid, json) {
             return  h})
        
     // add cost banner
-    node.filter(function(d){ return d.data.data.cost }).append((d) => {
-            var cost = qv_relativeCost(d.data.data, maxcost)
-            return qv_displayCost(["cost","mem","dmem","io","cpu", "dcpu","nw", "count"],cost)
-    })
-    node.filter(function(d){ return d.data.data["local-time"] }).append((d) => {
-        var cost = qv_relativeCost(d.data.data, maxcost)
-        qv_debug(cost)
-        return qv_displayCost(["ltime","rtime", "lmem","rmem", "count"],cost)
-    })
+    node.filter((d) => qv_costInfo.some((v) => d.data.data[v])).append((d) => {
+        var cost = qv_relativeCost(d.data.data, maxcost);
+        return qv_displayCost(["cost","mem","dmem","cpu","dcpu","nw","io","count"],cost);
+    });
+    node.filter((d) => qv_executionInfo.some((v) => d.data.data[v])).append((d) => {
+        var cost = qv_relativeCost(d.data.data, maxcost);
+        qv_debug(cost);
+        return qv_displayCost(["ltime","rtime","lmem","rmem","count"],cost);
+    });
   
     // add text box
     var fo = node.append("foreignObject")
-        .attr("y", function (d) {  if (d.data.data.cost || d.data.data["local-time"] ) {return qv_box.lineHeight * 2} else {return 0}})
+        .attr("y", (d) => {
+            var result = 0;
+            if(qv_costInfo.some((v) => d.data.data.hasOwnProperty(v)))
+                result += qv_box.lineHeight * 2;
+            if(qv_executionInfo.some((v) => d.data.data.hasOwnProperty(v)))
+                result += qv_box.lineHeight * 2;
+            return result;
+        })
         .attr("height", function (d) { return qv_nodeHeight(d.data.data) })
         .attr("width", qv_box.width)
     fo.append((d) => {
         return qv_node(d, maxcost);
-        }
-    )    
+    })
 }

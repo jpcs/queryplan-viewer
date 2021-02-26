@@ -32,7 +32,7 @@ declare function local:makeHTML($out)
   </head>
   <body onload="qv_init('#viewer',  input);">
   <div id="viewer"  > 
-        <div id="tooltip" class="tooltip"> <pre> </pre></div>
+        <div id="tooltip" class="tooltip"><!-- --></div>
     </div>
   </body>
   </html>

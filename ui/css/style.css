@@ -73,6 +73,27 @@ body {
     z-index: 5
 }
 
+.tooltip table {
+  border-collapse: collapse;
+  white-space: pre-wrap;
+  font-size: 1em;
+}
+.tooltip table > tr > td {
+  border: 1px solid goldenrod;
+}
+.tooltip table > tr:first-child > td {
+  border-top: 0;
+}
+.tooltip table > tr > td:first-child {
+  border-left: 0;
+}
+.tooltip table > tr:last-child > td {
+  border-bottom: 0;
+}
+.tooltip table > tr > td:last-child {
+  border-right: 0;
+}
+
 pre {
   white-space: pre-wrap;
   font-size: .80em;
