@@ -125,27 +125,29 @@ function qv_cost(div, percent) {
 
 // splits parallel and serial cost, and returns values as proportion of a given whole.
 
-function qv_parallelVsSerial (value, whole) {
-    if (value) {
-        var components= value.split("/").map(x=>parseFloat(x))
-        var parallel = (components[0] + components[1] + components[2]) /whole.parallel
-        var serial = (components[3] + components[4]) / whole.serial
-        return {parallel:parallel,serial:serial}
-    } else {
-        return {parallel:0,serial:0}
-    }   
-}
-
-function qv_maxParallelVsSerial (value, max) {
-    value = qv_parallelVsSerial(value, {parallel:1,serial:1})
-    maxp = Math.max (value.parallel, max.parallel)
-    maxs = Math.max (value.serial, max.serial)
-    return {parallel:maxp,serial:maxs}
-}
-
-function qv_proportion (value, max) {
+function qv_proportion(value, max) {
+    if(typeof max === "object") {
+        var result = {};
+        Object.keys(max).forEach((k) => {
+            result[k] = qv_proportion(value[k],max[k]);
+        });
+        return result;
+    }
     if (max == 0) return 0
     return value/max
+}
+
+function qv_max(a,b) {
+    if(!a) return b;
+    if(!b) return a;
+    if(typeof a === "object") {
+        var result = {};
+        Object.keys(a).forEach((k) => {
+            result[k] = qv_max(a[k],b[k]);
+        });
+        return result;
+    }
+    return Math.max(a,b);
 }
 
 function qv_parseMemory(str) {
@@ -162,69 +164,38 @@ function qv_parseTime(str) {
 }
 
 // compute maximum of all the metrics across the plan
+function qv_fetchCost(data) {
+    var fetchParallelSerial = (value) => {
+        if(!value) return {parallel:0,serial:0};
 
-function qv_maxCost (nodes) {
-    var maxcost = {
-        label : "maxcost",
-        cost: 0,
-        mem: 0,
-        dmem: 0,
-        io: {parallel:0,serial:0},
-        cpu: {parallel:0,serial:0},
-        dcpu: {parallel:0,serial:0},
-        nw: {parallel:0,serial:0},
-        count: 0,
-        ltime: 0,
-        rtime: 0,
-        lmem:0,
-        rmem:0
-    }
+        var components= value.split("/").map(x=>parseFloat(x));
+        var parallel = components[0] + components[1] + components[2];
+        var serial = components[3] + components[4];
+        return {parallel:parallel,serial:serial};
+    };
 
-    nodes.descendants().forEach(element => {
-        var data = element.data.data
-        if (data.cost) {
-            maxcost.cost = Math.max(parseFloat(data.cost),maxcost.cost)
-            maxcost.mem = Math.max(parseFloat(data["mem-cost"]), maxcost.mem)
-            maxcost.dmem = Math.max(parseFloat(data["dmem-cost"]), maxcost.dmem)
-            maxcost.count = Math.max(parseFloat(data["estimated-count"]), maxcost.count)
-            maxcost.io = qv_maxParallelVsSerial(data["io-cost"], maxcost.io)
-            maxcost.cpu = qv_maxParallelVsSerial(data["cpu-cost"], maxcost.cpu)
-            maxcost.dcpu = qv_maxParallelVsSerial(data["dcpu-cost"], maxcost.dcpu)
-            maxcost.nw = qv_maxParallelVsSerial(data["nw-cost"], maxcost.nw)
-        } else if (data["local-time"]) {
-            maxcost.count = Math.max(parseFloat(data.count),maxcost.count)
-            maxcost.lmem = Math.max(qv_parseMemory(data["local-max-memory"]), maxcost.lmem)
-            maxcost.rmem = Math.max(qv_parseMemory(data["remote-max-memory"]), maxcost.rmem)
-            maxcost.ltime = Math.max(qv_parseTime(data["local-time"]), maxcost.ltime)
-            maxcost.rtime = Math.max(qv_parseTime(data["remote-time"]), maxcost.rtime)
-        }
-    })
-    return maxcost
-}
-
-function qv_relativeCost( data, maxcost) {
-    if (data.cost) {
-      return {
+    var result = null;
+    
+    if (data.cost) result = {
         // id: data._id,
-        cost: qv_proportion(parseFloat(data.cost) , maxcost.cost),
-        mem: qv_proportion(parseFloat(data["mem-cost"]) , maxcost.mem),
-        dmem: qv_proportion(parseFloat(data["dmem-cost"]) , maxcost.dmem),
-        io: qv_parallelVsSerial(data["io-cost"],maxcost.io),
-        cpu: qv_parallelVsSerial(data["cpu-cost"],maxcost.cpu),
-        dcpu: qv_parallelVsSerial(data["dcpu-cost"],maxcost.dcpu),
-        nw: qv_parallelVsSerial(data["nw-cost"],maxcost.nw),
-        count: qv_proportion(parseFloat(data["estimated-count"]) , maxcost.count)
-      }
-    }   else if (data["local-time"]) {
-        return {
+        cost:  parseFloat(data.cost),
+        mem:   parseFloat(data["mem-cost"]),
+        dmem:  parseFloat(data["dmem-cost"]),
+        io:    fetchParallelSerial(data["io-cost"]),
+        cpu:   fetchParallelSerial(data["cpu-cost"]),
+        dcpu:  fetchParallelSerial(data["dcpu-cost"]),
+        nw:    fetchParallelSerial(data["nw-cost"]),
+        count: parseFloat(data["estimated-count"])
+    };
+    else if (data["local-time"]) result = {
         // id: data._id,
-        count: qv_proportion(parseFloat(data.count) , maxcost.count),
-        ltime: qv_proportion(qv_parseTime(data["local-time"]) , maxcost.ltime),
-        rtime: qv_proportion(qv_parseTime(data["remote-time"]) , maxcost.rtime),
-        lmem:  qv_proportion(qv_parseMemory(data["local-max-memory"]) , maxcost.lmem),
-        rmem:  qv_proportion(qv_parseMemory(data["remote-max-memory"]) , maxcost.rmem)
-        }
-    }
+        count: parseFloat(data.count),
+        ltime: qv_parseTime(data["local-time"]),
+        rtime: qv_parseTime(data["remote-time"]),
+        lmem:  qv_parseMemory(data["local-max-memory"]),
+        rmem:  qv_parseMemory(data["remote-max-memory"])
+    };
+    return result;
 }
 
 function qv_displayCostBox (parent , rect, palette, value, prefix="") {
@@ -240,14 +211,14 @@ function qv_displayCostBox (parent , rect, palette, value, prefix="") {
     .attr("height", qv_box.lineHeight).append("title").text(prefix + Math.round(value*100) +"%")
 }
 
-function qv_displayCost(metrics, cost) {
+function qv_displayCost(metrics, cost, maxcost) {
     var parent = d3.create("svg:g").attr("width", qv_box.width )
     var i = 0;
     var padding = 4
     var width = (qv_box.width -(padding*2)) / metrics.length;
     metrics.forEach (
         v => {
-            value = cost[v]
+            value = qv_proportion(cost[v],maxcost[v])
             x= i * width + padding
             tx= i * width + padding + width/2
             rx= i * width + padding
@@ -389,7 +360,7 @@ function qv_tooltipTableRow(table, key, value) {
 }
 
 function qv_tooltipContents(parent, data, doFilter) {
-    if(typeof(data)==="object") {
+    if(!Array.isArray(data) && typeof(data)==="object") {
         var seen = {};
         if(doFilter) {
             Object.keys(data).filter((key) => key.charAt(0)=='_')
@@ -429,11 +400,10 @@ function qv_tooltipShow(event, data, doFilter) {
 }
 
 function qv_tooltipHide(event) {
-    var tooltip = d3.select("#tooltip")
-        tooltip.transition()		
+    var tooltip = d3.select("#tooltip");
+    tooltip.transition()
         .duration(500)		
-        .style("opacity", 0)
-        
+        .style("opacity", 0);
 }
 
 function qv_isVisible(node) {
@@ -457,10 +427,6 @@ function qv_init(containerid, json) {
     var container = d3.select(containerid);
     var margin = { top: 40, right: 90, bottom: 200, left: 90 }
     var nodes = qv_hierarchy(json)
-
-    var maxcost = qv_maxCost(nodes)
-
-    qv_debug(maxcost);
 
     var width = (nodes.leaves().length  + 2)  * (qv_box.width + qv_box.hpadding);
     var height = nodes.height * (qv_box.height + qv_box.vpadding) * 2;
@@ -553,14 +519,20 @@ function qv_init(containerid, json) {
             return  h})
        
     // add cost banner
+    var maxcost = null;
+    nodes.descendants().forEach(element => {
+        maxcost = qv_max(qv_fetchCost(element.data.data),maxcost);
+    });
+    qv_debug(maxcost);
+
     node.filter((d) => qv_costInfo.some((v) => d.data.data[v])).append((d) => {
-        var cost = qv_relativeCost(d.data.data, maxcost);
-        return qv_displayCost(["cost","mem","dmem","cpu","dcpu","nw","io","count"],cost);
+        var cost = qv_fetchCost(d.data.data);
+        return qv_displayCost(["cost","mem","dmem","cpu","dcpu","nw","io","count"],cost,maxcost);
     });
     node.filter((d) => qv_executionInfo.some((v) => d.data.data[v])).append((d) => {
-        var cost = qv_relativeCost(d.data.data, maxcost);
+        var cost = qv_fetchCost(d.data.data);
         qv_debug(cost);
-        return qv_displayCost(["ltime","rtime","lmem","rmem","count"],cost);
+        return qv_displayCost(["ltime","rtime","lmem","rmem","count"],cost,maxcost);
     });
   
     // add text box
