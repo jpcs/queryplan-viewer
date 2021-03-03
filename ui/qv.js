@@ -21,6 +21,7 @@ var qv_colors = {
     selected: "orange",
     default: "steelblue"
 }
+
 // Displayed in the node box with cardinality info
 var qv_cardInfo = [
     "subject","predicate","object","graph","value","fragment","row"
@@ -33,7 +34,7 @@ var qv_boxInfo = [
     "limit","offset", "percent", "temperature"
 ];
 
-var qv_titleInfo = [ "permutation", "type"];
+var qv_titleInfo = ["permutation", "type"];
 
 // Displayed in the cost banner
 var qv_costInfo = [
@@ -244,9 +245,6 @@ function qv_cost(div, percent) {
         .style("stroke-width", "0.5")
 }
 
-// splits parallel and serial cost, and returns values as proportion of a given whole.
-
-
 function qv_proportion(value, max) {
     if(typeof max === "object") {
         var result = {};
@@ -416,11 +414,7 @@ function qv_node(node) {
     var div = d3.create("div")
     var name = data._name
     qv_titleInfo.filter((key) => data.hasOwnProperty(key))
-                  .forEach((key) => {name += " (" + data[key] + ")"});
-     //if ( data.permutation) name += " (" + data.permutation + ")"
-     //if ( data.type) name += " (" + data.type + ")"
-     // if ( data.limit) name += " (" + data.limit + ")"
-     // if ( data["num-sorted"]) name += " ( num-sorted=" +  data["num-sorted"] + ")"
+      .forEach((key) => {name += " (" + data[key] + ")"});
      qv_title(div, name, data)
         .on("click", (event) => {   
         if (node.children)  {
@@ -552,8 +546,6 @@ function qv_showPlan(containerid, json) {
     var margin = { top: 20, right: 0, bottom: 0, left: 0 }
     var nodes = qv_hierarchy(json)
 
-    //var width = (nodes.leaves().length  + 2)  * (qv_box.width + qv_box.hpadding);
-    //var height = nodes.height * (qv_box.height + qv_box.vpadding) * 2;
     const box = container.node().getBoundingClientRect()
     var width = box.width
     var height = box.height - 40
@@ -575,7 +567,6 @@ function qv_showPlan(containerid, json) {
             g.attr('transform', event.transform);
         });
     svg.call(zoom);
-    
 
     //links
     qv_debug(nodes.links())
@@ -596,7 +587,7 @@ function qv_showPlan(containerid, json) {
               .x(d => d.x + qv_box.width / 2)
               .y(d => d.y + qv_box.lineHeight * 3 ));
 
-    // Add the link label, using (non-moving) animation to place it 30% along the path
+    // Add the link label, using (non-moving) animation to place it 60% along the path
     links.append("text")
         .attr("class", "link-label")
         .attr("id", function (d) { return "label_" +d.target.data.id })

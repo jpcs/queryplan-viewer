@@ -30,19 +30,14 @@ declare function local:makeHTML($out)
       input = { xdmp:quote(json:to-array($out)), xdmp:log(json:to-array($out)) }
     </script>
   </head>
-
- 
   <body onload="qv_showPlan('#viewer',  input);">
-  <div id="wrapper" class="full-height">
-
-    <div id="viewer"> 
-          <div id="tooltip" class="tooltip"> <!-- --></div>
+    <div id="wrapper" class="full-height">
+      <div id="viewer"> 
+        <div id="tooltip" class="tooltip"><!-- --></div>
+      </div>
     </div>
-  </div>
-
-  </body>
+    </body>
   </html>
-
 };
                                         
 
