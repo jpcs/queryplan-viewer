@@ -1,0 +1,57 @@
+<html>
+
+<head>
+    <script type="text/javascript" src="ui/lib/d3.v6.min.js">< !-- --></script>
+    <script type="text/javascript" src="ui/qv.js">< !-- --></script>
+    <link rel="stylesheet" href="ui/css/w3-theme.css"><!-- -->
+    <link rel="stylesheet" href="ui/css/w3.css"><!-- -->
+    <link rel="stylesheet" href="ui/css/style.css"><!-- -->
+    </link>
+
+    <meta charset="UTF-8">
+
+
+</head>
+
+<body>
+    <div id="wrapper" class="w3-container w3-theme-l6 full-height" >
+            <div class="w3-col w3-theme-l1 full-height" style="width:200px">
+                <div id="form" class="w3-row">
+                    <form class="w3-container w3-tiny">
+                        <label>File</label>
+                        <input class="w3-input w3-border-0" type="text" name="file" id="form_file"
+                            value="">
+                        <label>Start time</label>
+                        <input class="w3-input w3-border-0" type="text" name="start" id="form_start">
+                        <label>Trace id</label>
+                        <input class="w3-input w3-border-0" type="text" name="trace" id="form_trace">
+                        <div class="w3-padding-16 w3-center" >
+                            <button  type="button" class="w3-button w3-round-large w3-theme-action"
+                            onclick="qv_scanLogForPlans('#plans','#form_file','#form_start', '#form_trace', '#viewer')">Load
+                            Plans
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div id="plans" class="w3-row">
+                    <!-- -->
+                  </div>
+               
+            </div>
+            <div class="w3-rest">
+                
+                <div id="viewer">
+                    <div id="tabs" class="qv-tabs w3-row w3-theme-l1">
+                        <!-- -->
+                    </div>
+                    <div id="tooltip" class="tooltip">
+                       
+                    </div>
+                </div>
+            </div>
+      
+
+    </div>
+</body>
+
+</html>
