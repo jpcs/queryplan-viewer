@@ -144,6 +144,16 @@ table.criteria td, table.criteria th {
 
 }
 
+#message {
+  float: right;
+  overflow: hidden;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 40%;
+  height: 34px;
+}
+
 
 #viewer {
   overflow: auto;
