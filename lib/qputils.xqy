@@ -866,3 +866,58 @@ declare function makeScripts($in as element())
     </script>
   )
 };
+
+
+declare function qputils:normalize ($string) {
+  let $res := fn:normalize-space($string)
+  return 
+  if (fn:starts-with($res, "("))
+  then fn:substring($res, 2, fn:string-length($string) -2)
+  else $res
+};
+
+declare function qputils:parseCost ($line, $obj) {
+   let $line :=  qputils:normalize ($line) 
+   let $cost := fn:substring-before($line,"crd:")
+   let $card := fn:substring-before(fn:substring-after($line,"crd:["),"]")
+   let $_ := map:put($obj, "cardinalities", $card)
+   let $_ :=
+       for $token in fn:tokenize($cost,",")
+       let $t := fn:tokenize($token, ":")
+       let $name := $t[1]
+       let $name := 
+         if ($name = ("mem","dmem","nw","io"))
+         then ($name|| "-cost")
+         else if (fn:starts-with($name,"dcpu")) then "dcpu-cost"
+         else if (fn:starts-with($name,"cpu")) then "cpu-cost"
+         else if ($name = "m") then "cost"
+         else if ($name = "c") then "estimated-count"
+         else if ($name = "r") then "rule-count"
+         else $name
+       return map:put($obj,$name,qputils:normalize($t[2]))
+   return () 
+};
+
+declare function qputils:parseOptimization ($lines) {
+ for $line at $j in $lines
+ let $tokens := fn:tokenize($line, " ")
+ let $name := if (fn:contains($line, "initialCost")) then "start"
+              else if (fn:contains($line, "bestCost")) then "end"
+              else "iteration " || ( $j - 1)
+ let $obj := map:new() => map:with("_id", "node_" || $j) => map:with("_name", $name)
+ let $_ := if ($j gt 1) then map:put($obj,"_parent", "node_" || $j - 1) else ()
+ 
+ let $res :=
+    for $token in $tokens 
+    let $t := fn:tokenize($token, "=")
+    let $tagname := 
+         switch ($t[1])
+         case "t" return "temperature"
+         case "r" return "repeats"
+         case "c" return "cool"
+         default return $t[1]
+        
+    where fn:matches($name, "^\w")
+    return  if (fn:starts-with($t[2], "(")) then qputils:parseCost($t[2], $obj) else  map:put($obj,$tagname,$t[2])
+ return ($obj)
+};

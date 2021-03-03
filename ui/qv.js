@@ -17,6 +17,11 @@ var qv_palettes = {
     magnitude: d3.scaleSequential([0, 10], d3.interpolateGreens)
 }
 
+var qv_colors = {
+    selected: "orange",
+    default: "steelblue"
+}
+
 // Displayed in the node box with cardinality info
 var qv_cardInfo = [
     "subject","predicate","object","graph","value","fragment","row"
@@ -26,8 +31,10 @@ var qv_cardInfo = [
 var qv_boxInfo = [
     "column","condition","expr","order-spec","aggregate","join-filter","content",
     "cross-product", "default-graph","named-graph","varIn","varOut","num-sorted",
-    "limit","offset"
+    "limit","offset", "percent", "temperature"
 ];
+
+var qv_titleInfo = ["permutation", "type"];
 
 // Displayed in the cost banner
 var qv_costInfo = [
@@ -50,10 +57,125 @@ var qv_tooltipPriority = [
     "cost","mem","dmem","cpu","dcpu","nw","io","count"
 ];
 
+var qv_logTabs = {
+   "optimization" : "Optimization",
+    "estimate" : "Final Plan",
+    "execution": "Execution"
+};
+
 function qv_debug(msg) {
     if (qv_box.debug) {
         console.log(msg)
     }
+}
+
+
+function qv_displayTabs (containerid, viewerid, file, data) {
+    d3.select(containerid).select("div").remove()
+    var bar = d3.select(containerid).append("div").attr("class","w3-bar w3-theme-l1")
+    const types = Object.keys(qv_logTabs);
+    
+    types.forEach ( 
+        type => {    
+            var a = bar.append("a")
+            if (type === "execution") {
+                a.attr("class", "w3-bar-item w3-button w3-small w3-theme-action")
+            } else {   
+                a.attr("class", "w3-bar-item w3-button  w3-small w3-theme-d1")
+            } 
+            a.attr("href","#")
+               .text(qv_logTabs[type])
+               .on("click",(event) => {  
+                  bar.selectAll('a[class = "w3-bar-item w3-button w3-small w3-theme-action"]').attr("class", "w3-bar-item w3-button w3-small w3-theme-d1")
+                  d3.select(event.target).attr("class", "w3-bar-item w3-button w3-small w3-theme-action")
+                  qv_loadFromLog(viewerid, file, data.key, type) 
+            })
+        })   
+    var message =  "Displaying Plan: " 
+    if (data.trace) {message += data.trace} else {message += data.key}
+    bar.append("span").style("float","right").attr("class","w3-bar-item w3-small w3-right-align w3-orange").text(message)    
+}
+
+
+function qv_visualizeTicks(scale, tickArguments, box) {
+    const width = box.width;
+    const height = box.height, 
+    m = 10;
+    if (tickArguments === undefined) tickArguments = [];
+    scale.range([m, height - m]);
+    const svg = d3.create("svg")
+      .attr("width", width)
+      .attr("height", height);
+    svg.append("g")
+        .attr("transform", "translate(" + (width - 60) + ",0)")  
+        .call(d3.axisRight(scale).ticks(...tickArguments));
+    return svg
+  }
+
+function qv_jitter (range, unit) {
+    return Math.floor((Math.random() * (range / unit)) * unit)
+}
+
+function qv_displayPlansAsTimeline (containerid, viewerid, file, data) {
+    d3.select(containerid).select("svg").remove()
+    times = d3.group(data, d => Date.parse(d.time))
+    var extent = d3.extent(times.keys())
+    extent[0]=extent[0]-(1000 * 30)
+    extent[1]=extent[1]+(1000 * 30)
+    dst = d3
+        .scaleTime()
+        .domain(extent)
+    
+    const container = d3.select(containerid)
+    const box = container.node().getBoundingClientRect()
+    
+    box.height = d3.select("#plans").node().parentNode.getBoundingClientRect().height - d3.select("#form").node().getBoundingClientRect().height - 10
+    const jitter = (box.height / 10) 
+    const svg = qv_visualizeTicks(dst, [10, d3.timeFormat("%H:%M:%S")],box);
+   
+    svg
+        .selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+              .attr("r", function (d) { return 3})
+              .attr("fill", qv_colors.default)
+              .attr("cy", function (d) {  return dst(Date.parse(d.time ) + qv_jitter(3000, 500))})
+              .attr("cx", function (d) {  return 10 + qv_jitter (box.width - 100 , 5 )})
+              .on("click",function (event, d) { 
+                  
+                  svg.selectAll('circle[fill = "' + qv_colors.selected+ '"]').attr("fill", qv_colors.default)
+                  d3.select(event.target).attr("fill", qv_colors.selected)
+                
+                  qv_displayTabs("#tabs", viewerid, file, d)
+                  qv_loadFromLog(viewerid, file, d.key, "execution") 
+               }
+              ).each( function (d) {qv_tooltipEvents (d3.select(this),d)})
+    container.append((d) => { return svg.node()})          
+    
+}
+
+function qv_scanLogForPlans  (containerid, fileid, startid, traceid,viewerid) {
+    
+    var file=d3.select(fileid).node().value
+    var start= ""
+    var trace=""
+    if (d3.select(startid).node().value) { start = "&start=" + d3.select(startid).node().value.replace(" ","T") }
+    if (d3.select(traceid).node().value) { trace = "&trace=" + d3.select(traceid).node().value }
+    d3.select(containerid).select("table").remove()
+    qv_debug(file + start +trace)
+   
+    d3.json('api/scan-for-plans.xqy?regex=+plan%3d&file=' +file + start +trace).then(function(data){
+        qv_displayPlansAsTimeline(containerid, viewerid, file, data)
+       
+  })
+}
+
+function qv_loadFromLog  (viewerid,file, id, type) {
+    d3.select(viewerid).select("svg").remove()
+    d3.json('api/plan-from-log.xqy?file=' +file+ "&id=" +id + "&type=" +type).then(function(data){
+    qv_showPlan(viewerid,  data);
+  })
 }
 
 function qv_hierarchy(json) {
@@ -122,8 +244,6 @@ function qv_cost(div, percent) {
         .style("stroke", d => color(0.5))
         .style("stroke-width", "0.5")
 }
-
-// splits parallel and serial cost, and returns values as proportion of a given whole.
 
 function qv_proportion(value, max) {
     if(typeof max === "object") {
@@ -247,7 +367,7 @@ function qv_displayCost(metrics, cost, maxcost) {
     return parent.node()
 }
 
-function qv_parse_cardinalities(cardinalities) {
+function qv_parseCardinalities(cardinalities) {
     if (cardinalities) {
         if (cardinalities.startsWith("(")) {
             var l=cardinalities.length;
@@ -256,7 +376,7 @@ function qv_parse_cardinalities(cardinalities) {
     } else return []
 }   
 
-function qv_triple_info(table, type, value, cardinalities) {
+function qv_tripleInfo(table, type, value, cardinalities) {
     value = qv_decode(value)
     var v= parseInt(value.split(' ')[0])
     if (v >= 0) {
@@ -293,10 +413,8 @@ function qv_node(node) {
     var data = node.data.data
     var div = d3.create("div")
     var name = data._name
-     if ( data.permutation) name += " (" + data.permutation + ")"
-     if ( data.type) name += " (" + data.type + ")"
-     // if ( data.limit) name += " (" + data.limit + ")"
-     // if ( data["num-sorted"]) name += " ( num-sorted=" +  data["num-sorted"] + ")"
+    qv_titleInfo.filter((key) => data.hasOwnProperty(key))
+      .forEach((key) => {name += " (" + data[key] + ")"});
      qv_title(div, name, data)
         .on("click", (event) => {   
         if (node.children)  {
@@ -314,11 +432,11 @@ function qv_node(node) {
         .style("border","0px")
         .style("font-size", qv_box.font);
 
-    var cardinalities = qv_parse_cardinalities(data.cardinalities)
-    //console.log(cardinalities)
+    var cardinalities = qv_parseCardinalities(data.cardinalities)
+   
     qv_cardInfo
         .filter((key) => data.hasOwnProperty(key))
-        .forEach((key) => qv_triple_info(table,key,data[key],cardinalities));
+        .forEach((key) => qv_tripleInfo(table,key,data[key],cardinalities));
     qv_boxInfo
         .filter((key) => data.hasOwnProperty(key))
         .forEach((key) =>  qv_row(table,key,data[key],data[key]));
@@ -422,28 +540,30 @@ function qv_toggle(nodes, visibility) {
     })
 }
 
-function qv_init(containerid, json) {
+function qv_showPlan(containerid, json) {
     qv_debug(json)
     var container = d3.select(containerid);
-    var margin = { top: 40, right: 90, bottom: 200, left: 90 }
+    var margin = { top: 20, right: 0, bottom: 0, left: 0 }
     var nodes = qv_hierarchy(json)
 
-    var width = (nodes.leaves().length  + 2)  * (qv_box.width + qv_box.hpadding);
-    var height = nodes.height * (qv_box.height + qv_box.vpadding) * 2;
+    const box = container.node().getBoundingClientRect()
+    var width = box.width
+    var height = box.height - 40
 
     nodes = qv_buildTree(nodes,width,height)
     qv_debug(nodes);
     var svg = container.append("svg")
-        .attr("width", Math.max(2048, width + margin.left + margin.right))
-        .attr("height", height + margin.top + margin.bottom)
+         .attr("width", width + margin.left + margin.right)
+         .attr("height", height + margin.top + margin.bottom)
 
     // set up transform and zoom
     g = svg.append("g")
-        .attr("transform",
-            "translate(" + ( margin.left) + "," + margin.top + ")");
+        .attr("transform", d3.zoomIdentity.translate(width/2, 10));   
+   
     var zoom = d3.zoom()
         .scaleExtent([0.1, 10])
         .on('zoom', function (event) {
+            
             g.attr('transform', event.transform);
         });
     svg.call(zoom);
@@ -467,7 +587,7 @@ function qv_init(containerid, json) {
               .x(d => d.x + qv_box.width / 2)
               .y(d => d.y + qv_box.lineHeight * 3 ));
 
-    // Add the link label, using (non-moving) animation to place it 30% along the path
+    // Add the link label, using (non-moving) animation to place it 60% along the path
     links.append("text")
         .attr("class", "link-label")
         .attr("id", function (d) { return "label_" +d.target.data.id })
@@ -489,7 +609,7 @@ function qv_init(containerid, json) {
         .append("animateMotion")
         .attr("calcMode","linear")
         .attr("rotate","auto")
-        .attr("keyPoints","0.3;0.3")
+        .attr("keyPoints","0.6;0.6")
         .attr("keyTimes","0.0;1.0")
         .append("mpath")
         .attr("href", function(d) { return "#link_" +d.target.data.id; });

@@ -46,15 +46,15 @@
     margin-left: 2px;
     text-align: left;
     color: #505050;
+    line-height: 1.0;
 }
 
-#viewer {
-    overflow: "auto";
-}
+
 
 body {
-    background: #F8F8F8;
-    font-family: Arial, Helvetica, sans-serif;    
+   padding: 0; 
+   margin: 0    
+   height: 100%;
 }
  
 .tooltip  {
@@ -98,3 +98,62 @@ pre {
   white-space: pre-wrap;
   font-size: .80em;
 }
+
+
+table.plantable {
+  background-color: #FFFFFF;
+  border-collapse: collapse;
+  border-width: 1px;
+  border-color: steelblue;
+  border-style: solid;
+  color: #000000;
+}
+
+table.plantable td, table.plantable th {
+  border-width: 1px;
+  border-color: steelblue;
+  border-style: solid;
+  padding: 5px;
+}
+
+table.plantable thead {
+  background-color: whitesmoke;
+}
+
+
+
+table.criteria td, table.criteria th {
+  padding: 5px;
+}  
+
+.full-height {
+  height: 100%;
+}
+
+.qv-tabs {
+  height: 34px;
+}
+.qv-banner {
+  height: 100%;
+}
+
+.qv-vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 70px;
+
+}
+
+
+#viewer {
+  overflow: auto;
+  max-width: 100%; 
+  height: 100%;
+}
+
+#wrapper {
+width: 100%; 
+margin: 0; 
+background: #F8F8F8;
+}
+
