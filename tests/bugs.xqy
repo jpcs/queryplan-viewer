@@ -248,7 +248,7 @@ map:entry("name","sc27362")
 				<plan:values>
 				  <plan:graph-node type="var" name="id" column-index="0" static-type="NONE"/>
 				  <plan:bindings>
-				    <plan:rdf-val>urn:pearson:distributable:66dc8ff1-e0bc-4623-b0b3-e35b537714c1</plan:rdf-val>
+				    <plan:rdf-val>urn:p:distributable:66dc8ff1-e0bc-4623-b0b3-e35b537714c1</plan:rdf-val>
 				  </plan:bindings>
 				</plan:values>
 				<plan:triple-index order="0,1" permutation="PSO" dedup="true" descending="false" is-column="false">
@@ -268,9 +268,10 @@ map:entry("name","sc27362")
 			    </plan:join>
 			    <plan:values>
 			      <plan:graph-node type="var" name="type" column-index="1" static-type="NONE"/>
-			      <plan:bindings><plan:rdf-val>https://schema.pearson.com/ns/system/Connections</plan:rdf-val>
-                                                                  ... about 100 values here ...
-                                                              <plan:rdf-val>http://schema.org/Book</plan:rdf-val></plan:bindings>
+			      <plan:bindings>
+                                <plan:rdf-val>https://schema.p.com/ns/system/Connections</plan:rdf-val>
+                                <plan:rdf-val>http://schema.org/Book</plan:rdf-val>
+                              </plan:bindings>
 			    </plan:values>
 			  </plan:elems>
 			</plan:join>
@@ -287,8 +288,8 @@ map:entry("name","sc27362")
 			    <plan:graph-node type="var" name="o" column-index="3" static-type="NONE"/>
 			  </plan:object>
 			  <plan:graph>
-			    <plan:graph-node type="iri" name="https://data.pearson.com/graph/ontology/1" static-type="NONE">
-			      <plan:rdf-val>https://data.pearson.com/graph/ontology/1</plan:rdf-val>
+			    <plan:graph-node type="iri" name="https://data.p.com/graph/ontology/1" static-type="NONE">
+			      <plan:rdf-val>https://data.p.com/graph/ontology/1</plan:rdf-val>
 			    </plan:graph-node>
 			  </plan:graph>
 			</plan:triple-index>
@@ -309,8 +310,8 @@ map:entry("name","sc27362")
 			<plan:graph-node type="var" name="o" column-index="3" static-type="NONE"/>
 		      </plan:object>
 		      <plan:graph>
-			<plan:graph-node type="iri" name="https://data.pearson.com/graph/systemconfiguration/1" static-type="NONE">
-			  <plan:rdf-val>https://data.pearson.com/graph/systemconfiguration/1</plan:rdf-val>
+			<plan:graph-node type="iri" name="https://data.p.com/graph/systemconfiguration/1" static-type="NONE">
+			  <plan:rdf-val>https://data.p.com/graph/systemconfiguration/1</plan:rdf-val>
 			</plan:graph-node>
 		      </plan:graph>
 		    </plan:triple-index>
@@ -329,22 +330,19 @@ map:entry("name","sc27362")
 )
 =>map:with("expected",(
 '{"_id":"N", "_name":"select"}',
-'{"limit":"21", "_id":"N_1", "_parent":"N", "_name":"limit"}',
-'{"_id":"N_1_1", "_parent":"N_1", "_name":"distinct"}',
-'{"order":"", "_id":"N_1_1_1", "_parent":"N_1_1", "_name":"project", "column":"0 (?id)"}',
-'{"_id":"N_1_1_1_1", "_parent":"N_1_1_1", "condition":"fn:not(sem:isBlank(?id))", "_name":"filter"}',
-'{"order":"", "_id":"N_1_1_1_1_1", "_parent":"N_1_1_1_1", "condition":"0=0", "_name":"left-hash-negation-join"}',
-'{"_parentLabel":"left", "order":"", "_id":"N_1_1_1_1_1_L", "_parent":"N_1_1_1_1_1", "condition":"0=0", "_name":"left-hash-negation-join"}',
-'{"_parentLabel":"left", "order":"", "_id":"N_1_1_1_1_1_L_L", "_parent":"N_1_1_1_1_1_L", "condition":"1=1", "_name":"hash-join"}',
-'{"_parentLabel":"left", "order":"0,1", "_id":"N_1_1_1_1_1_L_L_L", "_parent":"N_1_1_1_1_1_L_L", "condition":"0=0", "_name":"scatter-join"}',
-'{"_parentLabel":"left", "_id":"N_1_1_1_1_1_L_L_L_L", "_parent":"N_1_1_1_1_1_L_L_L", "bindings":"<urn:pearson:distributable:66dc8ff1-e0bc-4623-b0b3-e35b537714c1>", "_name":"values", "column":"0 (?id)"}',
-'{"_parentLabel":"left", "_id":"N_1_1_1_1_1_L_L_L_L", "_parent":"N_1_1_1_1_1_L_L_L", "bindings":"<urn:pearson:distributable:66dc8ff1-e0bc-4623-b0b3-e35b537714c1>", "_name":"values", "column":"0 (?id)"}',
-'{"dedup":"true", "_parentLabel":"right", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"0,1", "_id":"N_1_1_1_1_1_L_L_L_R", "_parent":"N_1_1_1_1_1_L_L_L", "permutation":"PSO", "subject":"0 (?id)", "_name":"triple-index", "is-column":"false", "descending":"false", "object":"1 (?type)"}',
-'{"_parentLabel":"right", "_id":"N_1_1_1_1_1_L_L_R", "_parent":"N_1_1_1_1_1_L_L", "bindings":["<https://schema.pearson.com/ns/system/Connections>", "<http://schema.org/Book>"], "_name":"values", "column":"1 (?type)"}',
-'{"_parentLabel":"right", "_id":"N_1_1_1_1_1_L_L_R", "_parent":"N_1_1_1_1_1_L_L", "bindings":["<https://schema.pearson.com/ns/system/Connections>", "<http://schema.org/Book>"], "_name":"values", "column":"1 (?type)"}',
-'{"_parentLabel":"right", "_id":"N_1_1_1_1_1_L_L_R", "_parent":"N_1_1_1_1_1_L_L", "bindings":["<https://schema.pearson.com/ns/system/Connections>", "<http://schema.org/Book>"], "_name":"values", "column":"1 (?type)"}',
-'{"dedup":"true", "order":"2,0,3", "subject":"0 (?id)", "_name":"triple-index", "is-column":"false", "descending":"false", "_parentLabel":"right", "predicate":"2 (?p)", "_id":"N_1_1_1_1_1_L_R", "_parent":"N_1_1_1_1_1_L", "permutation":"PSO", "object":"3 (?o)", "graph":"<https://data.pearson.com/graph/ontology/1>"}',
-'{"dedup":"true", "order":"2,0,3", "subject":"0 (?id)", "_name":"triple-index", "is-column":"false", "descending":"false", "_parentLabel":"right", "predicate":"2 (?p)", "_id":"N_1_1_1_1_1_R", "_parent":"N_1_1_1_1_1", "permutation":"PSO", "object":"3 (?o)", "graph":"<https://data.pearson.com/graph/systemconfiguration/1>"}'
+'{"_id":"N_1", "_name":"limit", "_parent":"N", "limit":"21"}',
+'{"_id":"N_1_1", "_name":"distinct", "_parent":"N_1"}',
+'{"_id":"N_1_1_1", "_name":"project", "_parent":"N_1_1", "column":"0 (?id)", "order":""}',
+'{"_id":"N_1_1_1_1", "_name":"filter", "_parent":"N_1_1_1", "condition":"fn:not(sem:isBlank(?id))"}',
+'{"_id":"N_1_1_1_1_1", "_name":"left-hash-negation-join", "_parent":"N_1_1_1_1", "condition":"0=0", "lang":"sparql", "order":""}',
+'{"_id":"N_1_1_1_1_1_L", "_name":"left-hash-negation-join", "_parent":"N_1_1_1_1_1", "_parentLabel":"left", "condition":"0=0", "lang":"sparql", "order":""}',
+'{"_id":"N_1_1_1_1_1_L_L", "_name":"hash-join", "_parent":"N_1_1_1_1_1_L", "_parentLabel":"left", "condition":"1=1", "order":""}',
+'{"_id":"N_1_1_1_1_1_L_L_L", "_name":"scatter-join", "_parent":"N_1_1_1_1_1_L_L", "_parentLabel":"left", "condition":"0=0", "order":"0,1"}',
+'{"_id":"N_1_1_1_1_1_L_L_L_L", "_name":"values", "_parent":"N_1_1_1_1_1_L_L_L", "_parentLabel":"left", "bindings":"<urn:p:distributable:66dc8ff1-e0bc-4623-b0b3-e35b537714c1>", "column":"0 (?id)"}',
+'{"_id":"N_1_1_1_1_1_L_L_L_R", "_name":"triple-index", "_parent":"N_1_1_1_1_1_L_L_L", "_parentLabel":"right", "dedup":"true", "descending":"false", "is-column":"false", "object":"1 (?type)", "order":"0,1", "permutation":"PSO", "predicate":"rdf:type", "subject":"0 (?id)"}',
+'{"_id":"N_1_1_1_1_1_L_L_R", "_name":"values", "_parent":"N_1_1_1_1_1_L_L", "_parentLabel":"right", "bindings":["<https://schema.p.com/ns/system/Connections>", "<http://schema.org/Book>"], "column":"1 (?type)"}',
+'{"_id":"N_1_1_1_1_1_L_R", "_name":"triple-index", "_parent":"N_1_1_1_1_1_L", "_parentLabel":"right", "dedup":"true", "descending":"false", "graph":"<https://data.p.com/graph/ontology/1>", "is-column":"false", "object":"3 (?o)", "order":"2,0,3", "permutation":"PSO", "predicate":"2 (?p)", "subject":"0 (?id)"}',
+'{"_id":"N_1_1_1_1_1_R", "_name":"triple-index", "_parent":"N_1_1_1_1_1", "_parentLabel":"right", "dedup":"true", "descending":"false", "graph":"<https://data.p.com/graph/systemconfiguration/1>", "is-column":"false", "object":"3 (?o)", "order":"2,0,3", "permutation":"PSO", "predicate":"2 (?p)", "subject":"0 (?id)"}'
 ))
 ,
 map:entry("name","one-or-more")
@@ -562,45 +560,48 @@ map:entry("name","one-or-more")
 )
 =>map:with("expected",(
 '{"_id":"N", "_name":"select"}',
-'{"_id":"N_1", "_parent":"N", "default-graph":["http://marklogic.com/semantics#default-graph", "https://content.com/collection/ontology", "https://content.com/collection/content/ImageObject/en-US", "https://content.com/collection/content/ImageObject/subclassed/en-US", "https://content.com/collection/content/Thing/subclassed", "https://content.com/collection/gin/Thing/subclassed", "https://content.com/collection/gin/Classification/subclassed", "https://content.com/collection/gin/AssetType", "https://content.com/collection/gin/AssetType/subclassed"], "_name":"from"}',
-'{"_id":"N_2", "_parent":"N", "_name":"distinct"}',
-'{"order":"", "_id":"N_2_1", "_parent":"N_2", "_name":"project", "column":"0 (?subject)"}',
-'{"order":"last(5),desc(last(4))", "_id":"N_2_1_1", "_parent":"N_2_1", "order-spec":["5 (?ANON2266679090434743153)", "4 (?4) [desc]"], "_name":"order-by", "num-sorted":"0"}',
-'{"_id":"N_2_1_1_1", "expr":"fn:not(fn:exists(?4)) as ?ANON2266679090434743153", "_parent":"N_2_1_1", "_name":"bind"}',
-'{"order":"", "_id":"N_2_1_1_1_1", "_parent":"N_2_1_1_1", "condition":"0=0", "_name":"left-scatter-join"}',
-'{"_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L", "_parent":"N_2_1_1_1_1", "condition":"0=0", "_name":"scatter-join"}',
-'{"_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L_L", "_parent":"N_2_1_1_1_1_L", "condition":"0=0", "_name":"scatter-join"}',
-'{"_parentLabel":"left", "order":"0", "_id":"N_2_1_1_1_1_L_L_L", "_parent":"N_2_1_1_1_1_L_L", "condition":"0=0", "_name":"scatter-join"}',
-'{"_parentLabel":"left", "order":"1,0", "_id":"N_2_1_1_1_1_L_L_L_L", "_parent":"N_2_1_1_1_1_L_L_L", "condition":"1=1", "_name":"scatter-join"}',
-'{"dedup":"true", "_parentLabel":"left", "predicate":"<https://content.com/id>", "order":"1", "_id":"N_2_1_1_1_1_L_L_L_L_L", "_parent":"N_2_1_1_1_1_L_L_L_L", "permutation":"OPS", "subject":"1 (_:ANON3064792102711755591)", "_name":"triple-index", "object":"$0"}',
-'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/mainEntity>", "order":"1,0", "_id":"N_2_1_1_1_1_L_L_L_L_R", "_parent":"N_2_1_1_1_1_L_L_L_L", "permutation":"POS", "subject":"0 (?subject)", "_name":"triple-index", "object":"1 (_:ANON3064792102711755591)"}',
-'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/locale>", "order":"0", "_id":"N_2_1_1_1_1_L_L_L_R", "_parent":"N_2_1_1_1_1_L_L_L", "permutation":"OPS", "subject":"0 (?subject)", "_name":"triple-index", "object":"$3"}',
-'{"_parentLabel":"right", "order":"", "_id":"N_2_1_1_1_1_L_L_R", "type":"concat-union", "_parent":"N_2_1_1_1_1_L_L", "_name":"sparql-union"}',
-'{"dedup":"true", "predicate":"<https://content.com/assetType>", "order":"0,2", "_id":"N_2_1_1_1_1_L_L_R_1", "_parent":"N_2_1_1_1_1_L_L_R", "permutation":"PSO", "subject":"0 (?subject)", "_name":"triple-index", "object":"2 (?1)"}',
-'{"_id":"N_2_1_1_1_1_L_L_R_1_1", "_parent":"N_2_1_1_1_1_L_L_R_1", "condition":"?1=(<https://content.com/data/AssetType/t-screenshot>, <https://content.com/data/AssetType/ig-screenshot>)", "left":{"type":"var", "column-index":"2", "name":"1"}, "_name":"join-filter", "op":"="}',
-'{"order":"", "_id":"N_2_1_1_1_1_L_L_R_2", "_parent":"N_2_1_1_1_1_L_L_R", "condition":"0=0", "_name":"right-hash"}',
-'{"_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L_L_R_2_L", "_parent":"N_2_1_1_1_1_L_L_R_2", "condition":"0=0", "_name":"scatter-join"}',
-'{"_parentLabel":"left", "order":"0", "_id":"N_2_1_1_1_1_L_L_R_2_L_L", "_parent":"N_2_1_1_1_1_L_L_R_2_L", "condition":"0=0", "_name":"scatter-join"}',
-'{"_parentLabel":"left", "order":"3,0", "_id":"N_2_1_1_1_1_L_L_R_2_L_L_L", "_parent":"N_2_1_1_1_1_L_L_R_2_L_L", "condition":"3=3", "_name":"scatter-join"}',
-'{"dedup":"true", "_parentLabel":"left", "predicate":"<https://content.com/id>", "order":"3", "_id":"N_2_1_1_1_1_L_L_R_2_L_L_L_L", "_parent":"N_2_1_1_1_1_L_L_R_2_L_L_L", "permutation":"OPS", "subject":"3 (_:ANON16715473614359753352)", "_name":"triple-index", "object":"$0"}',
-'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/mainEntity>", "order":"3,0", "_id":"N_2_1_1_1_1_L_L_R_2_L_L_L_R", "_parent":"N_2_1_1_1_1_L_L_R_2_L_L_L", "permutation":"POS", "subject":"0 (?subject)", "_name":"triple-index", "object":"3 (_:ANON16715473614359753352)"}',
-'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/locale>", "order":"0", "_id":"N_2_1_1_1_1_L_L_R_2_L_L_R", "_parent":"N_2_1_1_1_1_L_L_R_2_L_L", "permutation":"OPS", "subject":"0 (?subject)", "_name":"triple-index", "object":"$3"}',
-'{"_parentLabel":"right", "_id":"N_2_1_1_1_1_L_L_R_2_L_R", "_parent":"N_2_1_1_1_1_L_L_R_2_L", "_name":"distinct"}',
-'{"order":"", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R", "_name":"project", "column":"0 (?subject)"}',
-'{"order":"", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1", "type":"concat-union", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1", "_name":"sparql-union"}',
-'{"dedup":"true", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"0", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_1", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1", "permutation":"OPS", "subject":"0 (?subject)", "_name":"triple-index", "object":"<https://content.com/ImageObject>"}',
-'{"order":"3,0", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1", "condition":"3=3", "_name":"scatter-join"}',
-'{"varOut":"1 (?ANON10602977668939359507)", "_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2_L", "type":"SCATTER", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2", "subject":"3 (_:ANON9473490927005035661)", "object":"<https://content.com/ImageObject>", "_name":"one-or-more", "varIn":"0 (?ANON14681692922891278890)"}',
-'{"dedup":"true", "predicate":"<http://www.w3.org/2000/01/rdf-schema#subClassOf>", "order":"0,1", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2_L_1", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2_L", "permutation":"PSO", "subject":"0 (?ANON14681692922891278890)", "_name":"triple-index", "object":"1 (?ANON10602977668939359507)"}',
-'{"dedup":"true", "_parentLabel":"right", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"3,0", "_id":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2_R", "_parent":"N_2_1_1_1_1_L_L_R_2_L_R_1_1_2", "permutation":"POS", "subject":"0 (?subject)", "_name":"triple-index", "object":"3 (_:ANON9473490927005035661)"}',
-'{"_parentLabel":"right", "_id":"N_2_1_1_1_1_L_R", "_parent":"N_2_1_1_1_1_L", "_name":"distinct"}',
-'{"order":"", "_id":"N_2_1_1_1_1_L_R_1", "_parent":"N_2_1_1_1_1_L_R", "_name":"project", "column":"0 (?subject)"}',
-'{"order":"", "_id":"N_2_1_1_1_1_L_R_1_1", "type":"concat-union", "_parent":"N_2_1_1_1_1_L_R_1", "_name":"sparql-union"}',
-'{"dedup":"true", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"0", "_id":"N_2_1_1_1_1_L_R_1_1_1", "_parent":"N_2_1_1_1_1_L_R_1_1", "permutation":"OPS", "subject":"0 (?subject)", "_name":"triple-index", "object":"<https://content.com/ImageObject>"}',
-'{"order":"1,0", "_id":"N_2_1_1_1_1_L_R_1_1_2", "_parent":"N_2_1_1_1_1_L_R_1_1", "condition":"1=1", "_name":"scatter-join"}',
-'{"varOut":"1 (?ANON16852300872775477243)", "_parentLabel":"left", "order":"", "_id":"N_2_1_1_1_1_L_R_1_1_2_L", "type":"SCATTER", "_parent":"N_2_1_1_1_1_L_R_1_1_2", "subject":"1 (_:ANON18246697083136543884)", "object":"<https://content.com/ImageObject>", "_name":"one-or-more", "varIn":"0 (?ANON16421309367134413032)"}',
-'{"dedup":"true", "predicate":"<http://www.w3.org/2000/01/rdf-schema#subClassOf>", "order":"0,1", "_id":"N_2_1_1_1_1_L_R_1_1_2_L_1", "_parent":"N_2_1_1_1_1_L_R_1_1_2_L", "permutation":"PSO", "subject":"0 (?ANON16421309367134413032)", "_name":"triple-index", "object":"1 (?ANON16852300872775477243)"}',
-'{"dedup":"true", "_parentLabel":"right", "predicate":"<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "order":"1,0", "_id":"N_2_1_1_1_1_L_R_1_1_2_R", "_parent":"N_2_1_1_1_1_L_R_1_1_2", "permutation":"POS", "subject":"0 (?subject)", "_name":"triple-index", "object":"1 (_:ANON18246697083136543884)"}',
-'{"dedup":"true", "_parentLabel":"right", "predicate":"<https://content.com/dateCreated>", "order":"0,4", "_id":"N_2_1_1_1_1_R", "_parent":"N_2_1_1_1_1", "permutation":"PSO", "subject":"0 (?subject)", "_name":"triple-index", "object":"4 (?4)"}'
+'{"_id":"N_1", "_name":"from", "_parent":"N", "default-graph":["http://marklogic.com/semantics#default-graph", "https://content.com/collection/ontology", "https://content.com/collection/content/ImageObject/en-US", "https://content.com/collection/content/ImageObject/subclassed/en-US", "https://content.com/collection/content/Thing/subclassed", "https://content.com/collection/gin/Thing/subclassed", "https://content.com/collection/gin/Classification/subclassed", "https://content.com/collection/gin/AssetType", "https://content.com/collection/gin/AssetType/subclassed"]}',
+'{"_id":"N_2", "_name":"distinct", "_parent":"N"}',
+'{"_id":"N_2_1", "_name":"project", "_parent":"N_2", "column":"0 (?subject)", "order":""}',
+'{"_id":"N_2_1_1", "_name":"order-by", "_parent":"N_2_1", "num-sorted":"0", "order":"last(5),desc(last(4))", "order-spec":["5 (?ANON2266679090434743153)", "4 (?4) [desc]"]}',
+'{"_id":"N_2_1_1_1", "_name":"bind", "_parent":"N_2_1_1", "expr":"fn:not(fn:exists(?4)) as ?ANON2266679090434743153"}',
+'{"_id":"N_2_1_1_1_1", "_name":"left-scatter-join", "_parent":"N_2_1_1_1", "condition":"0=0", "order":""}',
+'{"_id":"N_2_1_1_1_1_L", "_name":"scatter-join", "_parent":"N_2_1_1_1_1", "_parentLabel":"left", "condition":"0=0", "order":""}',
+'{"_id":"N_2_1_1_1_1_L_L", "_name":"scatter-join", "_parent":"N_2_1_1_1_1_L", "_parentLabel":"left", "condition":"0=0", "order":""}',
+'{"_id":"N_2_1_1_1_1_L_L_L", "_name":"scatter-join", "_parent":"N_2_1_1_1_1_L_L", "_parentLabel":"left", "condition":"0=0", "order":"0"}',
+'{"_id":"N_2_1_1_1_1_L_L_L_L", "_name":"scatter-join", "_parent":"N_2_1_1_1_1_L_L_L", "_parentLabel":"left", "condition":"1=1", "order":"1,0"}',
+'{"_id":"N_2_1_1_1_1_L_L_L_L_L", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_L_L", "_parentLabel":"left", "dedup":"true", "object":"$0", "order":"1", "permutation":"OPS", "predicate":"<https://content.com/id>", "subject":"1 (_:ANON3064792102711755591)"}',
+'{"_id":"N_2_1_1_1_1_L_L_L_L_R", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_L_L", "_parentLabel":"right", "dedup":"true", "object":"1 (_:ANON3064792102711755591)", "order":"1,0", "permutation":"POS", "predicate":"<https://content.com/mainEntity>", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_L_L_L_R", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_L", "_parentLabel":"right", "dedup":"true", "object":"$3", "order":"0", "permutation":"OPS", "predicate":"<https://content.com/locale>", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R", "_name":"sparql-union", "_parent":"N_2_1_1_1_1_L_L", "_parentLabel":"right", "order":"", "type":"concat-union"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_1", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_R", "dedup":"true", "object":"2 (?1)", "order":"0,2", "permutation":"PSO", "predicate":"<https://content.com/assetType>", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_1_1", "_name":"join-filter", "_parent":"N_2_1_1_1_1_L_L_R_1", "condition":"?1=(<https://content.com/data/AssetType/t-screenshot>, <https://content.com/data/AssetType/ig-screenshot>)", "left":{"column-index":"2", "name":"1", "type":"var"}, "op":"="}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2", "_name":"right-hash-exists-join", "_parent":"N_2_1_1_1_1_L_L_R", "condition":"0=0", "lang":"sparql", "order":""}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_L", "_name":"scatter-join", "_parent":"N_2_1_1_1_1_L_L_R_2", "_parentLabel":"left", "condition":"4=4", "order":"4,0"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_L_L", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_R_2_L", "_parentLabel":"left", "dedup":"true", "object":"$2", "order":"4", "permutation":"OPS", "predicate":"<https://content.com/id>", "subject":"4 (_:ANON3088863675916099189)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_L_R", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_R_2_L", "_parentLabel":"right", "dedup":"true", "object":"4 (_:ANON3088863675916099189)", "order":"4,0", "permutation":"POS", "predicate":"<https://content.com/classification>", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R", "_name":"scatter-join", "_parent":"N_2_1_1_1_1_L_L_R_2", "_parentLabel":"right", "condition":"0=0", "order":""}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_L", "_name":"scatter-join", "_parent":"N_2_1_1_1_1_L_L_R_2_R", "_parentLabel":"left", "condition":"0=0", "order":"0"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_L_L", "_name":"scatter-join", "_parent":"N_2_1_1_1_1_L_L_R_2_R_L", "_parentLabel":"left", "condition":"3=3", "order":"3,0"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_L_L_L", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_R_2_R_L_L", "_parentLabel":"left", "dedup":"true", "object":"$0", "order":"3", "permutation":"OPS", "predicate":"<https://content.com/id>", "subject":"3 (_:ANON16715473614359753352)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_L_L_R", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_R_2_R_L_L", "_parentLabel":"right", "dedup":"true", "object":"3 (_:ANON16715473614359753352)", "order":"3,0", "permutation":"POS", "predicate":"<https://content.com/mainEntity>", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_L_R", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_R_2_R_L", "_parentLabel":"right", "dedup":"true", "object":"$3", "order":"0", "permutation":"OPS", "predicate":"<https://content.com/locale>", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_R", "_name":"distinct", "_parent":"N_2_1_1_1_1_L_L_R_2_R", "_parentLabel":"right"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_R_1", "_name":"project", "_parent":"N_2_1_1_1_1_L_L_R_2_R_R", "column":"0 (?subject)", "order":""}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_R_1_1", "_name":"sparql-union", "_parent":"N_2_1_1_1_1_L_L_R_2_R_R_1", "order":"", "type":"concat-union"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_R_1_1_1", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_R_2_R_R_1_1", "dedup":"true", "object":"<https://content.com/ImageObject>", "order":"0", "permutation":"OPS", "predicate":"rdf:type", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_R_1_1_2", "_name":"scatter-join", "_parent":"N_2_1_1_1_1_L_L_R_2_R_R_1_1", "condition":"3=3", "order":"3,0"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_R_1_1_2_L", "_name":"one-or-more", "_parent":"N_2_1_1_1_1_L_L_R_2_R_R_1_1_2", "_parentLabel":"left", "object":"<https://content.com/ImageObject>", "order":"", "subject":"3 (_:ANON9473490927005035661)", "type":"SCATTER", "varIn":"0 (?ANON14681692922891278890)", "varOut":"1 (?ANON10602977668939359507)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_R_1_1_2_L_1", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_R_2_R_R_1_1_2_L", "dedup":"true", "object":"1 (?ANON10602977668939359507)", "order":"0,1", "permutation":"PSO", "predicate":"rdfs:subClassOf", "subject":"0 (?ANON14681692922891278890)"}',
+'{"_id":"N_2_1_1_1_1_L_L_R_2_R_R_1_1_2_R", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_L_R_2_R_R_1_1_2", "_parentLabel":"right", "dedup":"true", "object":"3 (_:ANON9473490927005035661)", "order":"3,0", "permutation":"POS", "predicate":"rdf:type", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_L_R", "_name":"distinct", "_parent":"N_2_1_1_1_1_L", "_parentLabel":"right"}',
+'{"_id":"N_2_1_1_1_1_L_R_1", "_name":"project", "_parent":"N_2_1_1_1_1_L_R", "column":"0 (?subject)", "order":""}',
+'{"_id":"N_2_1_1_1_1_L_R_1_1", "_name":"sparql-union", "_parent":"N_2_1_1_1_1_L_R_1", "order":"", "type":"concat-union"}',
+'{"_id":"N_2_1_1_1_1_L_R_1_1_1", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_R_1_1", "dedup":"true", "object":"<https://content.com/ImageObject>", "order":"0", "permutation":"OPS", "predicate":"rdf:type", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_L_R_1_1_2", "_name":"scatter-join", "_parent":"N_2_1_1_1_1_L_R_1_1", "condition":"1=1", "order":"1,0"}',
+'{"_id":"N_2_1_1_1_1_L_R_1_1_2_L", "_name":"one-or-more", "_parent":"N_2_1_1_1_1_L_R_1_1_2", "_parentLabel":"left", "object":"<https://content.com/ImageObject>", "order":"", "subject":"1 (_:ANON18246697083136543884)", "type":"SCATTER", "varIn":"0 (?ANON16421309367134413032)", "varOut":"1 (?ANON16852300872775477243)"}',
+'{"_id":"N_2_1_1_1_1_L_R_1_1_2_L_1", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_R_1_1_2_L", "dedup":"true", "object":"1 (?ANON16852300872775477243)", "order":"0,1", "permutation":"PSO", "predicate":"rdfs:subClassOf", "subject":"0 (?ANON16421309367134413032)"}',
+'{"_id":"N_2_1_1_1_1_L_R_1_1_2_R", "_name":"triple-index", "_parent":"N_2_1_1_1_1_L_R_1_1_2", "_parentLabel":"right", "dedup":"true", "object":"1 (_:ANON18246697083136543884)", "order":"1,0", "permutation":"POS", "predicate":"rdf:type", "subject":"0 (?subject)"}',
+'{"_id":"N_2_1_1_1_1_R", "_name":"triple-index", "_parent":"N_2_1_1_1_1", "_parentLabel":"right", "dedup":"true", "object":"4 (?4)", "order":"0,4", "permutation":"PSO", "predicate":"<https://content.com/dateCreated>", "subject":"0 (?subject)"}'
 ))
 };

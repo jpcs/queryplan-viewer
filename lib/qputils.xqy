@@ -494,9 +494,25 @@ declare function makeProjectGraph($node as element(), $id as xs:string)
 
 declare function makeJoinGraph($node as element(), $id as xs:string)
 {
+  (:
+   : join, left-join, full-join, right-join, sparql-exists-join,
+   : sparql-negation-join, sql-exists-join, sql-in-join,
+   : sql-negation-join, sql-not-in-join
+   :)
   map:map()
   =>map:with("_id",$id)
-  =>map:with("_name",string($node/(@type|@join-type)))
+  =>map:with("_name",
+    (: Historically exists join @type didn't mention "exists" :)
+    if(local-name($node) = ("sql-exists-join","sparql-exists-join")
+      and fn:not(fn:contains($node/@type,"exists")))
+    then string($node/@type) || "-exists-join"
+    else string($node/(@type|@join-type)))
+  =>(function($m) {
+    if(starts-with(local-name($node),"sql-")) then $m=>map:with("lang","sql")
+    else if(starts-with(local-name($node),"sparql-")
+      and local-name($node) ne "sparql-left-join") then $m=>map:with("lang","sparql")
+    else $m
+  })()
   =>attrs($node,("static-type","type","join-type"))
   =>(function($m) {
     let $conditions :=
@@ -527,8 +543,8 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
   let $subs :=
     switch(version($node))
     case 9 return ($node/plan:elems/*,
-      if(contains($node/@type,"right")) then $node!((plan:optional|plan:negation-expr)/plan:*,plan:expr/plan:*)
-      else $node!(plan:expr/plan:*,(plan:optional|plan:negation-expr)/plan:*)
+      if(contains($node/@type,"right")) then $node!((plan:optional|plan:exists|plan:negation-expr)/plan:*,plan:expr/plan:*)
+      else $node!(plan:expr/plan:*,(plan:optional|plan:exists|plan:negation-expr)/plan:*)
     )
     default return $node/*[not(local-name(.) = ("hash","scatter"))]
   let $lhs := $subs[1]
@@ -536,16 +552,6 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
   let $rhs := $subs[2]
   let $rhsID := $id || "_R"
   return (
-    if (fn:exists($node/plan:exists))
-    then 
-      let $maps := makeGraph($node/plan:exists/*, $id || "_E")
-    return (
-      head($maps)=>map:with("_parent",$id)=>map:with("_parentLabel","right"),
-      tail($maps)
-    )
-    else
-       ()
-    ,
     let $maps := makeGraph($lhs,$lhsID)
     return (
       head($maps)=>map:with("_parent",$id)=>map:with("_parentLabel","left"),
@@ -728,8 +734,8 @@ declare function makeValuesRows($map,$values,$rowCount)
     $map=>map-append("bindings", string-join(
       for $v in subsequence($values,1,$rowCount)
       return makeRDFValExpr($v),
-      ", ")),
-    makeValuesRows($map,subsequence($values,$rowCount+1),$rowCount)
+      ", "))
+    =>makeValuesRows(subsequence($values,$rowCount+1),$rowCount)
   )
 };
 

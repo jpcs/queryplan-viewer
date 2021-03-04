@@ -31,13 +31,69 @@ declare %private function zip($f, $key, $result, $line)
   )
 };
 
+declare function escape($v as xs:string)
+{
+  fn:replace($v,'"','\\"')
+};
+
+declare function sortAndQuote($v)
+{
+  string-join(
+    typeswitch($v)
+    case map:map return (
+      "{",
+      string-join(
+        for $k in map:keys($v)
+        order by $k
+        return (
+          '"' || $k || '":' || sortAndQuote(map:get($v,$k))
+        ),
+        ', '
+      ),
+      "}"
+    )
+    case json:array return (
+      "[",
+      string-join(
+        for $k in json:array-values($v)
+        return (
+          sortAndQuote($k)
+        ),
+        ', '
+      ),
+      "]"
+    )
+    case xs:string | xs:untypedAtomic | xs:integer return (
+      '"', escape($v), '"'
+    )
+    default return (
+      if(tail($v)) then (
+        "[",
+        string-join(
+          for $k in $v
+          return (
+            sortAndQuote($k)
+          ),
+          ', '
+        ),
+        "]"
+      )
+      else (
+        xdmp:log(xdmp:type($v) || ": " || xdmp:quote($v)),
+        '"', escape(xdmp:quote($v)), '"'
+      )
+    )
+  )
+};
+
 declare function test($t)
 {
   let $name := map:get($t,"name")
   let $plan := map:get($t,"plan")
   let $key := map:get($t,"expected")
+  let $key := $key ! sortAndQuote(xdmp:from-json-string(.))
 
-  let $result := qputils:makeGraph($plan, "N") ! xdmp:quote(.)
+  let $result := qputils:makeGraph($plan, "N") ! sortAndQuote(.)
   return (
     zip(function($k,$r,$l) {
       if(empty($k)) then (
@@ -60,7 +116,7 @@ declare function makeExpected($t)
   let $name := map:get($t,"name")
   let $plan := map:get($t,"plan")
 
-  let $result := qputils:makeGraph($plan, "N") ! xdmp:quote(.)
+  let $result := qputils:makeGraph($plan, "N") ! sortAndQuote(.)
   return (
     'map:entry("name","' || $name || '")',
     '=>map:with("plan",',

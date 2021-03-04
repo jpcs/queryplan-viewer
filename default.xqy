@@ -20,13 +20,16 @@ xdmp:set-response-content-type("text/html"),
 <html>
 <body>
 
-<h1>Plan Viewer</h1>
+<h1>MarkLogic Query Plan Viewer</h1>
 
 <form action="show.xqy" id="form" method="POST">
-  <textarea rows="20" cols="100" name="plan" >Paste plan here...</textarea>
+  <textarea rows="20" cols="100" name="plan">Paste plan here...</textarea>
   <input type="submit"/>
 </form>
-
+<br> </br>
+<a href="log.html">Parse plans from a MarkLogic log file</a>
+<br> </br>
+<a href="samples.xqy">Sample query plans</a>
 
 </body>
 </html>
