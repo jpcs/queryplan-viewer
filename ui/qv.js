@@ -34,7 +34,10 @@ var qv_boxInfo = [
     "limit","offset", "percent", "temperature"
 ];
 
-var qv_titleInfo = ["permutation", "type"];
+// Displayed along with the title
+var qv_titleInfo = [
+    "permutation", "type"
+];
 
 // Displayed in the cost banner
 var qv_costInfo = [
@@ -57,11 +60,20 @@ var qv_tooltipPriority = [
     "cost","mem","dmem","cpu","dcpu","nw","io","count"
 ];
 
+// Labels for tabs in log scanner
+
 var qv_logTabs = {
    "optimization" : "Optimization",
     "estimate" : "Final Plan",
     "execution": "Execution"
 };
+
+var qv_logButtons = {
+   "default" : "w3-bar-item w3-button  w3-small w3-theme-d1",
+   "active"  : "w3-bar-item w3-button w3-small w3-theme-action"
+};
+
+
 
 function qv_debug(msg) {
     if (qv_box.debug) {
@@ -69,31 +81,41 @@ function qv_debug(msg) {
     }
 }
 
+function qv_displayMessage (message) {
+    const element = d3.select("#message")
+    element.text(message).attr("class","w3-bar-item w3-small w3-right-align w3-theme-l1").on("mouseover",null)
+}
+
+function qv_displayError (message, details) {
+    const element = d3.select("#message")
+    qv_tooltipEvents(element, details,false)
+    element.text("ERROR: " + message).attr("class","w3-bar-item w3-small w3-right-align w3-orange")
+}
 
 function qv_displayTabs (containerid, viewerid, file, data) {
-    d3.select(containerid).select("div").remove()
-    var bar = d3.select(containerid).append("div").attr("class","w3-bar w3-theme-l1")
-    const types = Object.keys(qv_logTabs);
+    var bar = d3.select(containerid)
+    bar.selectAll("a").remove()
     
+    const types = Object.keys(qv_logTabs);
     types.forEach ( 
         type => {    
             var a = bar.append("a")
             if (type === "execution") {
-                a.attr("class", "w3-bar-item w3-button w3-small w3-theme-action")
+                a.attr("class", qv_logButtons.active)
             } else {   
-                a.attr("class", "w3-bar-item w3-button  w3-small w3-theme-d1")
+                a.attr("class", qv_logButtons.default)
             } 
             a.attr("href","#")
                .text(qv_logTabs[type])
                .on("click",(event) => {  
-                  bar.selectAll('a[class = "w3-bar-item w3-button w3-small w3-theme-action"]').attr("class", "w3-bar-item w3-button w3-small w3-theme-d1")
-                  d3.select(event.target).attr("class", "w3-bar-item w3-button w3-small w3-theme-action")
+                  bar.selectAll('a[class = "' + qv_logButtons.active + '"').attr("class", qv_logButtons.default)
+                  d3.select(event.target).attr("class", qv_logButtons.active)
                   qv_loadFromLog(viewerid, file, data.key, type) 
             })
         })   
     var message =  "Displaying Plan: " 
     if (data.trace) {message += data.trace} else {message += data.key}
-    bar.append("span").style("float","right").attr("class","w3-bar-item w3-small w3-right-align w3-orange").text(message)    
+    qv_displayMessage(message)    
 }
 
 
@@ -107,8 +129,9 @@ function qv_visualizeTicks(scale, tickArguments, box) {
       .attr("width", width)
       .attr("height", height);
     svg.append("g")
-        .attr("transform", "translate(" + (width - 60) + ",0)")  
-        .call(d3.axisRight(scale).ticks(...tickArguments));
+        .attr("transform", "translate(" + 60 + ",0)")  
+        .call(d3.axisLeft(scale).ticks(...tickArguments))
+        .select(".domain").remove()
     return svg
   }
 
@@ -129,7 +152,9 @@ function qv_displayPlansAsTimeline (containerid, viewerid, file, data) {
     const container = d3.select(containerid)
     const box = container.node().getBoundingClientRect()
     
-    box.height = d3.select("#plans").node().parentNode.getBoundingClientRect().height - d3.select("#form").node().getBoundingClientRect().height - 10
+    box.height = d3.select("#plans").node().parentNode.getBoundingClientRect().height 
+                - d3.select("#form").node().getBoundingClientRect().height 
+                - 30
     const jitter = (box.height / 10) 
     const svg = qv_visualizeTicks(dst, [10, d3.timeFormat("%H:%M:%S")],box);
    
@@ -141,7 +166,7 @@ function qv_displayPlansAsTimeline (containerid, viewerid, file, data) {
               .attr("r", function (d) { return 3})
               .attr("fill", qv_colors.default)
               .attr("cy", function (d) {  return dst(Date.parse(d.time ) + qv_jitter(3000, 500))})
-              .attr("cx", function (d) {  return 10 + qv_jitter (box.width - 100 , 5 )})
+              .attr("cx", function (d) {  return 70 + qv_jitter (box.width - 100 , 5 )})
               .on("click",function (event, d) { 
                   
                   svg.selectAll('circle[fill = "' + qv_colors.selected+ '"]').attr("fill", qv_colors.default)
@@ -164,18 +189,45 @@ function qv_scanLogForPlans  (containerid, fileid, startid, traceid,viewerid) {
     if (d3.select(traceid).node().value) { trace = "&trace=" + d3.select(traceid).node().value }
     d3.select(containerid).select("table").remove()
     qv_debug(file + start +trace)
+    const url = 'api/scan-for-plans.xqy?regex=+plan%3d&file=' +file + start +trace;
+    fetch(url).then(response => {
+        if (!response.ok) {
+          response.json().then(data => {
+            console.log(data)
+            qv_displayError(response.statusText, data.errorResponse);
+            })
+          
+          return null;
+        } 
+        return response.json();
+      }).then(data => {
+          if (data) {
+            qv_displayMessage("Retrieved plans");
+            qv_displayPlansAsTimeline(containerid, viewerid, file, data)
+          }
+      })
    
-    d3.json('api/scan-for-plans.xqy?regex=+plan%3d&file=' +file + start +trace).then(function(data){
-        qv_displayPlansAsTimeline(containerid, viewerid, file, data)
-       
-  })
 }
 
 function qv_loadFromLog  (viewerid,file, id, type) {
     d3.select(viewerid).select("svg").remove()
-    d3.json('api/plan-from-log.xqy?file=' +file+ "&id=" +id + "&type=" +type).then(function(data){
-    qv_showPlan(viewerid,  data);
-  })
+    const url = 'api/plan-from-log.xqy?file=' +file+ "&id=" +id + "&type=" +type;
+    fetch(url).then(response => {
+        if (!response.ok) {
+            response.json().then(data => {
+              console.log(data)
+              qv_displayError(response.statusText, data.errorResponse);
+              })
+            
+            return null;
+          } 
+          return response.json();
+      }).then(data => {
+        //qv_displayMessage("Retrieved plans");
+        if (data) qv_showPlan(viewerid,  data);
+      })
+
+   
 }
 
 function qv_hierarchy(json) {
@@ -424,9 +476,7 @@ function qv_node(node) {
              qv_toggle(descendants.flat(), visibility);
         }
       }) 
-    if (Object.keys(data).length > 3) {
-   //     div.append("hr").attr("class","nodehr")
-    }
+    
     var table = div.append("xhtml:table")
         .attr("class", "tree-node")
         .style("border","0px")
@@ -507,9 +557,15 @@ function qv_tooltipContents(parent, data, doFilter) {
 }
 
 function qv_tooltipShow(event, data, doFilter) {
+
+    var boundaries = d3.select("body").node().getBoundingClientRect()
+
+    var x = Math.min (event.pageX + 28, boundaries.right-100)
+    var y = Math.min (event.pageY - 28, boundaries.bottom-50)
+    
     var tooltip = d3.select("#tooltip")
-        .style("left", (event.pageX + 28) + "px")
-        .style("top", (event.pageY - 28) + "px");
+        .style("left", x + "px")
+        .style("top", y + "px");
     tooltip.html("");
     qv_tooltipContents(tooltip,data,doFilter);
     tooltip.transition()
@@ -557,15 +613,15 @@ function qv_showPlan(containerid, json) {
          .attr("height", height + margin.top + margin.bottom)
 
     // set up transform and zoom
-    g = svg.append("g")
-        .attr("transform", d3.zoomIdentity.translate(width/2, 10));   
-   
+    var g = svg.append("g")
     var zoom = d3.zoom()
         .scaleExtent([0.1, 10])
         .on('zoom', function (event) {
-            
-            g.attr('transform', event.transform);
+        g.attr('transform', event.transform);
         });
+    // Initial position and scale: center root, 80% zoom.
+    svg.call(zoom.transform, d3.zoomIdentity.translate(width/2, 50).scale(.80))
+   
     svg.call(zoom);
 
     //links
