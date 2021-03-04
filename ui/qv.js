@@ -528,6 +528,8 @@ function qv_tooltipTableRow(table, key, value) {
 }
 
 function qv_tooltipContents(parent, data, doFilter) {
+    var empty = true;
+
     if(!Array.isArray(data) && typeof(data)==="object") {
         var seen = {};
         if(doFilter) {
@@ -546,14 +548,19 @@ function qv_tooltipContents(parent, data, doFilter) {
         };
 
         var table = parent.append("table");
-        var display = (key) => qv_tooltipTableRow(table,key,data[key]);
+        var display = (key) => {
+            qv_tooltipTableRow(table,key,data[key]);
+            empty = false;
+        }
 
         qv_tooltipPriority.filter(seenFilter).forEach(display);
         Object.keys(data).filter(seenFilter).forEach(display);
     }
-    else {
+    else if(data && (!Array.isArray(data) || data.length !== 0)) {
         qv_tooltipTableRow(parent.append("table"),null,data);
+        empty = false;
     }
+    return !empty;
 }
 
 function qv_tooltipShow(event, data, doFilter) {
@@ -567,10 +574,8 @@ function qv_tooltipShow(event, data, doFilter) {
         .style("left", x + "px")
         .style("top", y + "px");
     tooltip.html("");
-    qv_tooltipContents(tooltip,data,doFilter);
-    tooltip.transition()
-        .duration(200)
-        .style("opacity", .9);
+    if(qv_tooltipContents(tooltip,data,doFilter))
+        tooltip.transition().duration(200).style("opacity", .9);
 }
 
 function qv_tooltipHide(event) {
