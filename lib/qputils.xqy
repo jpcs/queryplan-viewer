@@ -806,45 +806,6 @@ declare function makeGraph($node as element(), $id as xs:string)
   default return makeGenericGraph($node,$id)
 };
 
-declare function gradient($v as xs:double)
-{
-  (: $v between 0 and 1 :)
-  let $start := (255,255,255)
-  let $end := (255,0,0)
-  let $f := function($i) {
-    hex(fn:round(($start[$i] * (1.0-$v)) + ($end[$i] * $v)))
-  }
-  return "#" || $f(1) || $f(2) || $f(3)
-};
-
-declare function color($n as element(), $attrNames as xs:string*, $total as xs:double)
-{
-  element { node-name($n)} {
-    $n/@*,
-    if(empty($n/@*[local-name(.)=$attrNames])) then ()
-    else (
-      let $v := sum($n/@*[local-name(.)=$attrNames]) div $total
-      let $v := math:log((10 * $v) + 1) div math:log(11)
-      return attribute _color { gradient($v) }
-    ),
-    $n/* ! color(.,$attrNames,$total)
-  }
-};
-
-declare function colorForTime($in as element())
-{
-  let $ltime := sum($in//@local-time)
-  let $rtime := sum($in//@remote-time)
-  return color($in,$time-attrs,$ltime+$rtime)
-};
-
-declare function colorForMemory($in as element())
-{
-  let $lmem := sum($in//@local-max-memory)
-  let $rmem := sum($in//@remote-max-memory)
-  return color($in,$memory-attrs,$lmem+$rmem)
-};
-
 declare function makeScripts($in as element())
 {
   let $out := makeGraph($in, "N")
