@@ -806,35 +806,6 @@ declare function makeGraph($node as element(), $id as xs:string)
   default return makeGenericGraph($node,$id)
 };
 
-declare function makeScripts($in as element())
-{
-  let $out := makeGraph($in, "N")
-  return (
-    <script type="text/javascript" src="xtrace/lib/d3/d3.v3.min.js"><!-- --></script>,
-    <script type="text/javascript" src="xtrace/lib/jQuery/jquery-1.9.0.js"><!-- --></script>,
-    <script type="text/javascript" src="xtrace/lib/jQuery/jquery.tipsy.js"><!-- --></script>,
-    <script type="text/javascript" src="xtrace/lib/dagre/dagre.js"><!-- --></script>,
-    <script type="text/javascript" src="xtrace/js/Minimap.js"><!-- --></script>,
-    <script type="text/javascript" src="xtrace/js/MinimapZoom.js"><!-- --></script>,
-    <script type="text/javascript" src="xtrace/js/DirectedAcyclicGraph.js"><!-- --></script>,
-    <script type="text/javascript" src="xtrace/js/Graph.js"><!-- --></script>,
-    <script type="text/javascript" src="xtrace/js/Tooltip.js"><!-- --></script>,
-    <script type="text/javascript" src="xtrace/js/qp.js"><!-- --></script>,
-    <link href="xtrace/stylesheets/xtrace.css" rel="stylesheet" type="text/css" />,
-    <link href="xtrace/stylesheets/tipsy.css" rel="stylesheet" type="text/css" />,
-    <link href="xtrace/stylesheets/jquery.contextMenu.css" rel="stylesheet" type="text/css" />,
-    <script>
-      input = { xdmp:quote(json:to-array($out)) };
-
-      window.onload = function() {{
-          var params = getParameters();
-          window.qp = new QueryPlan(document.body,input,params);
-      }}
-    </script>
-  )
-};
-
-
 declare function qputils:normalize ($string) {
   let $res := fn:normalize-space($string)
   return 
