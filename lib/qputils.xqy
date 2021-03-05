@@ -602,35 +602,45 @@ declare function makeGroupGraph($node as element(), $id as xs:string)
   )
 };
 
-declare function makeBindGraph($node as element(), $id as xs:string)
+declare function gatherBinds($map, $node as element())
 {
-  map:map()
-  =>map:with("_id",$id)
-  =>nameAndAttrs($node)
-  =>(function($map){
+  let $map :=
     if($node/plan:column) then (
-      $map=>map:with("expr", makeExpr($node/plan:expr/plan:*) || " as " ||
+      $map=>map-append("expr", makeExpr($node/plan:expr/plan:*) || " as " ||
         makeGraphNodeExpr($node/plan:column))
     )
     else (
-      $map=>map:with("expr", makeExpr($node/plan:bind-expr/plan:*) || " as " ||
+      $map=>map-append("expr", makeExpr($node/plan:bind-expr/plan:*) || " as " ||
         makeGraphNodeExpr($node/plan:var/plan:graph-node))
     )
-  })(),
 
   let $children := if($node/plan:column) then (
     $node/*[not(self::plan:column|self::plan:expr)]
   ) else (
     $node/plan:expr/*
   )
-
-  for $c at $pos in $children
-  let $newID := concat($id, "_", $pos)
   return (
-    let $maps := makeGraph($c,$newID)
+    if($children[1]/self::plan:bind) then gatherBinds($map,$children[1])
+    else $children
+  )
+};
+
+declare function makeBindGraph($node as element(), $id as xs:string)
+{
+  let $map := map:map()
+    =>map:with("_id",$id)
+    =>nameAndAttrs($node)
+  let $children := gatherBinds($map,$node)
+  return (
+    $map,
+    for $c at $pos in $children
+    let $newID := concat($id, "_", $pos)
     return (
-      head($maps)=>map:with("_parent",$id),
-      tail($maps)
+      let $maps := makeGraph($c,$newID)
+      return (
+        head($maps)=>map:with("_parent",$id),
+        tail($maps)
+      )
     )
   )
 };
