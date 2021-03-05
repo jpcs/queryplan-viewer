@@ -189,7 +189,7 @@ function qv_scanLogForPlans  (containerid, fileid, startid, traceid,viewerid) {
     if (d3.select(traceid).node().value) { trace = "&trace=" + d3.select(traceid).node().value }
     d3.select(containerid).select("table").remove()
     qv_debug(file + start +trace)
-    const url = 'api/scan-for-plans.xqy?regex=+plan%3d&file=' +file + start +trace;
+    const url = 'api/scan-for-plans.xqy?file=' +file + start +trace;
     fetch(url).then(response => {
         if (!response.ok) {
           response.json().then(data => {

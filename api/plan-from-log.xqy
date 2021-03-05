@@ -9,9 +9,9 @@ let $type := xdmp:get-request-field("type", "estimate")
 let $id := "sessionKey=" || $id || " "
 
 let $regex := switch ($type)
-              case "estimate" return  ("Event:id=Optic Plan Trace" || ".*" || $id || "plan=")
-              case "execution" return ("Event:id=Optic Execution Diagnostics Trace" || ".*" || $id )
-              case "optimization"  return ("Optic Optimization Trace"|| ".*" || $id )
+              case "estimate" return  ("(Optic Plan|SPARQL AST)" || ".*" || $id || "plan=")
+              case "execution" return ("Optic Execution Diagnostics" || ".*" || $id )
+              case "optimization"  return ("(Optic Optimization|SPARQL Cost Analysis)"|| ".*" || $id )
               default return fn:error("QV-ARG", "Invalid type")
 
 
