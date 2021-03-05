@@ -272,12 +272,12 @@ function qv_row(table, title, text, tooltip, color) {
     if (text.constructor === ({}).constructor) text = JSON.stringify(text,null,2)
     var row = table.append("xhtml:tr");
     var td0 = row.append("xhtml:td");
-    var td1 = row.append("xhtml:td");
+    var td1 = row.append("xhtml:th");
     var td2 = row.append("xhtml:td");
     if(Array.isArray(color)) {
         color.map( (x) => td0.append("xhtml:span").style("color",x).text("\u25A0"))
     }
-    td1.append("xhtml:span").style("font-weight", "bold").text(title + (text ? ":" : ""));
+    td1.text(title + (text ? ":" : ""));
     if (text) td2.append("xhtml:span").text(text)
     qv_tooltipEvents(row,tooltip,false);
     return row;
@@ -515,13 +515,13 @@ function qv_tooltipTableRow(table, key, value) {
     }
     else if(typeof(value)==="object") {
         var tr = table.append("tr");
-        if(key!==null) tr.append("td").text(key);
+        if(key!==null) tr.append("th").text(key);
         var table2 = tr.append("td").append("table");
         Object.keys(value).forEach((key) => qv_tooltipTableRow(table2,key,value[key]));
     }
     else {
         var tr = table.append("tr");
-        if(key!==null) tr.append("td").text(key);
+        if(key!==null) tr.append("th").text(key);
         if(typeof(value)==="string") value = qv_decode(value);
         tr.append("td").text(value);
     }

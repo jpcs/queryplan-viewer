@@ -78,19 +78,19 @@ body {
   white-space: pre-wrap;
   font-size: 1em;
 }
-.tooltip table > tr > td {
+.tooltip table > tr > * {
   border: 1px solid goldenrod;
 }
-.tooltip table > tr:first-child > td {
+.tooltip table > tr:first-child > * {
   border-top: 0;
 }
-.tooltip table > tr > td:first-child {
+.tooltip table > tr > *:first-child {
   border-left: 0;
 }
-.tooltip table > tr:last-child > td {
+.tooltip table > tr:last-child > * {
   border-bottom: 0;
 }
-.tooltip table > tr > td:last-child {
+.tooltip table > * > td:last-child {
   border-right: 0;
 }
 
