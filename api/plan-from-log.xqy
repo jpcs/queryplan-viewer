@@ -14,11 +14,10 @@ let $regex := switch ($type)
               case "optimization"  return ("(Optic Optimization|SPARQL Cost Analysis)"|| ".*" || $id )
               default return fn:error("QV-ARG", "Invalid type")
 
-
 let $res := xdmp:logfile-scan($file, $regex)
+let $res := $res ! fn:substring-after(., "&#xa;")
 let $res := if ($type = ("optimization"))
-            then qputils:parseOptimization ($res ! fn:substring-after(., $id))
-            else qputils:makeGraph(xdmp:unquote(fn:substring-after($res, "&#xa;"))/*,"N")  
-  
+            then qputils:parseOptimization($res)
+            else qputils:makeGraph(xdmp:unquote($res[1])/*,"N")
   
 return  json:to-array($res)
