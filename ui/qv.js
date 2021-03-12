@@ -64,8 +64,8 @@ var qv_tooltipPriority = [
 
 var qv_logTabs = {
    "optimization" : "Optimization",
-    "estimate" : "Final Plan",
-    "execution": "Execution"
+    "estimate" : "Optimized Plan",
+    "execution": "Diagnostic Plan"
 };
 
 var qv_logButtons = {

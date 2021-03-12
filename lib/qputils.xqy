@@ -195,6 +195,19 @@ declare function makeExpr($node)
     " then " || makeExpr($node/plan:*[2]) ||
     " else " || makeExpr($node/plan:*[3])
   )
+  (: Switch :)
+  case exists($node/self::plan:switch-expr) return (
+    "switch(" || makeExpr($node/plan:switch/plan:*[1]) || ")" ||
+    string-join(
+        for $sc in $node/plan:clauses/plan:switch-clause
+        for $c in $sc/plan:cases/plan:*
+        return (
+          " case " || makeExpr($c) ||
+          " return " || makeExpr($c/../following-sibling::plan:*[1])
+        )
+    ) ||
+    " default return " || makeExpr($node/plan:default/plan:*[1])
+  )
   (: Cast :)
   case exists($node/self::plan:cast) return (
     makeExpr($node/plan:*[1]) || " cast as " ||
@@ -205,6 +218,74 @@ declare function makeExpr($node)
       return
         prefixFor($ns) || $local || $node/@occur-type
     )
+  )
+  (: Node Constructors :)
+  case exists($node/self::plan:object-constructor) return (
+    "object-node{" ||
+    string-join(
+      for $ncv in $node/plan:name-colon-value
+      let $n := $ncv/plan:name/plan:*[1]
+      let $v := $ncv/plan:name/following-sibling::plan:*[1]
+      return (
+        makeExpr($n) || " : " || makeExpr($v)
+      ),
+      ", "
+    ) ||
+    "}"
+  )
+  case exists($node/self::plan:array-constructor) return (
+    "array-node{" ||
+    $node/plan:*[1]/makeExpr(.) ||
+    "}"
+  )
+  case exists($node/self::plan:element-constructor) return (
+    "element-node{" ||
+    makeExpr($node/plan:start-tag/plan:*[1]) ||
+    "} {" ||
+    string-join(
+      ($node/plan:start-tag/plan:attribute-list/plan:*,
+      $node/plan:start-tag/following-sibling::plan:*[1])
+      ! makeExpr(.),
+      ", "
+    ) ||
+    "}"
+  )
+  case exists($node/self::plan:attribute-value-pair) return (
+    "attribute-node{" ||
+    makeExpr($node/plan:name/plan:*[1]) ||
+    "} {" ||
+    makeExpr($node/plan:value/plan:*[1]) ||
+    "}"
+  )
+  case exists($node/self::plan:namespace-decl) return (
+    "namespace-node{""" || $node/@prefix ||
+    """} {""" || $node/@namespace-uri ||
+    """}"
+  )
+  case exists($node/self::plan:xml-processing) return (
+    "processing-instruction-node{" ||
+    $node/plan:name/plan:*[1]/makeExpr(.) ||
+    "} {" ||
+    $node/plan:content/plan:*[1]/makeExpr(.) ||
+    "}"
+  )
+  case exists($node/self::plan:number-constructor) return (
+    "number-node{" || makeExpr($node/plan:*[1]) || "}"
+  )
+  case exists($node/self::plan:boolean-constructor) return (
+    "boolean-node{" || makeExpr($node/plan:*[1]) || "}"
+  )
+  case exists($node/self::plan:text-constructor) return (
+    "text-node{" || makeExpr($node/plan:*[1]) || "}"
+  )
+  case exists($node/self::plan:xml-comment) return (
+    "comment-node{" || makeExpr($node/plan:*[1]) || "}"
+  )
+  case exists($node/self::plan:document-constructor) return (
+    "document-node{" || makeExpr($node/plan:*[1]) || "}"
+  )
+  case exists($node/self::plan:null-constructor) return (
+    "null-node{}"
   )
   (: Variable References :)
   case exists($node/self::plan:column-ref) return (
