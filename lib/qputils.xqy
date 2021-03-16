@@ -665,12 +665,22 @@ declare function makeGroupGraph($node as element(), $id as xs:string)
   )()
   =>(
     fn:fold-left(function($map,$n) {
+      $map=>map-append("grouping-set",
+        json:to-array(
+          for $o in $n/plan:order-spec
+          return makeGraphNodeInfo($o)
+        )
+      )
+    },?,$node/plan:grouping-set)
+  )()
+  =>(
+    fn:fold-left(function($map,$n) {
       $map=>map-append("aggregate",
         makeExpr($n/plan:aggregate-function) || " as " || makeGraphNodeExpr($n/(plan:column|plan:var/plan:graph-node)))
     },?,$node/plan:aggregate-bind)
   )(),
 
-  let $children := $node/*[not(self::plan:order-spec|self::plan:aggregate-bind)]
+  let $children := $node/*[not(self::plan:order-spec|self::plan:aggregate-bind|self::plan:grouping-set)]
 
   for $c at $pos in $children
   let $newID := concat($id, "_", $pos)

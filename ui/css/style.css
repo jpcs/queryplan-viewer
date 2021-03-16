@@ -1,28 +1,41 @@
+body {
+   padding: 0; 
+   margin: 0;
+   height: 100%;
+   font-family: sans-serif;
+}
+ 
+/********************************************************************************/
+/* Log Timeline */
 
-.node rect {   
-    stroke-width: 1px;   
-    stroke:#DCDCDC;
-    fill-opacity: 1.0;
+#message {
+  float: right;
+  overflow: hidden;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 40%;
+  height: 34px;
 }
 
-
-.banner  {
-    stroke-width: 0px;
+#viewer {
+  overflow: auto;
+  max-width: 100%;
+  height: 100%;
 }
 
-.nodehr {
-    margin: 2px 5px 2px 5px;
-    color:white;
-    border-color:white;
-    border-top: 0px;
-    
+#wrapper {
+width: 100%;
+margin: 0;
+background: #F8F8F8;
 }
 
-.node--internal text {
-    text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+.full-height {
+  height: 100%;
 }
 
-
+/********************************************************************************/
+/* Links */
 
 .link {
     fill: none;
@@ -34,29 +47,94 @@
     font-size: 8px;
 }
 
-.tree-node {
-    overflow: hidden;
-    display: block;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    padding-left: 5px;
-    margin-top:3px;
+/********************************************************************************/
+/* Nodes */
+
+.node {
+    font-size: 4pt;
+}
+
+.node rect {   
+    stroke-width: 1px;   
+    stroke:#DCDCDC;
+    fill-opacity: 1.0;
+}
+
+.node-title {
+    padding: 4px;
+    margin-top:0px;
     margin-bottom:0px;
     margin-right: 2px;
     margin-left: 2px;
-    text-align: left;
+    text-align: center;
+    color: #202020;
+    font-size: 8pt;
+    font-weight: bold;
+}
+
+.node-table {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 4pt;
+    text-overflow: ellipsis;
+    padding: 0px;
+    margin: 0px;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    line-height: 1.1;
     color: #505050;
-    line-height: 1.0;
+    text-align: left;
 }
 
-
-
-body {
-   padding: 0; 
-   margin: 0    
-   height: 100%;
+.node-outer-table {
+    margin-left: 2px;
+    margin-right: 2px;
 }
- 
+
+.node-table td,th {
+    padding: 1px;
+}
+
+table.node-table {
+  border-collapse: collapse;
+}
+
+table.node-outer-table {
+    border: 0;
+    padding: 1px;
+}
+table.node-outer-table > tr > th {
+    border-right: 1px solid #DCDCDC;
+}
+table.node-outer-table > tr > td:last-child {
+    width: 100%;
+}
+
+table.node-inner-table > tr > * {
+    border: 1px solid #DCDCDC;
+    padding: 0;
+}
+table.node-inner-table > tr:first-child > * {
+    border-top: 0;
+    padding-top: 1px;
+}
+table.node-inner-table > tr > *:first-child {
+    border-left: 0;
+    padding-left: 1px;
+}
+table.node-inner-table > tr:last-child > * {
+  border-bottom: 0;
+  padding-bottom: 1px;
+}
+table.node-inner-table > * > td:last-child {
+  border-right: 0;
+  padding-right: 1px;
+}
+
+/********************************************************************************/
+/* Tooltip */
+
 .tooltip  {
     opacity: 0;
     max-width: 500px;
@@ -94,76 +172,53 @@ body {
   border-right: 0;
 }
 
-pre {
-  white-space: pre-wrap;
-  font-size: .80em;
-}
 
+/* .banner  { */
+/*     stroke-width: 0px; */
+/* } */
 
-table.plantable {
-  background-color: #FFFFFF;
-  border-collapse: collapse;
-  border-width: 1px;
-  border-color: steelblue;
-  border-style: solid;
-  color: #000000;
-}
+/* .node--internal text { */
+/*     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff; */
+/* } */
 
-table.plantable td, table.plantable th {
-  border-width: 1px;
-  border-color: steelblue;
-  border-style: solid;
-  padding: 5px;
-}
+/* pre { */
+/*   white-space: pre-wrap; */
+/*   font-size: .80em; */
+/* } */
 
-table.plantable thead {
-  background-color: whitesmoke;
-}
+/* table.plantable { */
+/*   background-color: #FFFFFF; */
+/*   border-collapse: collapse; */
+/*   border-width: 1px; */
+/*   border-color: steelblue; */
+/*   border-style: solid; */
+/*   color: #000000; */
+/* } */
 
+/* table.plantable td, table.plantable th { */
+/*   border-width: 1px; */
+/*   border-color: steelblue; */
+/*   border-style: solid; */
+/*   padding: 5px; */
+/* } */
 
+/* table.plantable thead { */
+/*   background-color: whitesmoke; */
+/* } */
 
-table.criteria td, table.criteria th {
-  padding: 5px;
-}  
+/* table.criteria td, table.criteria th { */
+/*   padding: 5px; */
+/* }   */
 
-.full-height {
-  height: 100%;
-}
+/* .qv-tabs { */
+/*   height: 34px; */
+/* } */
+/* .qv-banner { */
+/*   height: 100%; */
+/* } */
 
-.qv-tabs {
-  height: 34px;
-}
-.qv-banner {
-  height: 100%;
-}
-
-.qv-vertical-center {
-  margin: 0;
-  position: absolute;
-  top: 70px;
-
-}
-
-#message {
-  float: right;
-  overflow: hidden;
-  display: block;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  width: 40%;
-  height: 34px;
-}
-
-
-#viewer {
-  overflow: auto;
-  max-width: 100%; 
-  height: 100%;
-}
-
-#wrapper {
-width: 100%; 
-margin: 0; 
-background: #F8F8F8;
-}
-
+/* .qv-vertical-center { */
+/*   margin: 0; */
+/*   position: absolute; */
+/*   top: 70px; */
+/* } */

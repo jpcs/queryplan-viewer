@@ -24,6 +24,7 @@ declare function local:makeHTML($out)
   <html>
   <head>
     <script type="text/javascript" src="ui/lib/d3.v6.min.js"><!-- --></script>
+    <script type="text/javascript" src="ui/lib/d3-flextree.v2.min.js"><!-- --></script>
     <script type="text/javascript" src="ui/qv.js"><!-- --></script>
     <link rel="stylesheet" href="ui/css/style.css"><!-- --></link>
     <script>

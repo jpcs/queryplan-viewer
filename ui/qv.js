@@ -1,12 +1,9 @@
 var qv_box = {
     debug: window.location.hostname === "localhost",
     width: 160,
-    hpadding: 50,
-    vpadding: 10,
     height: 100,
-    lineHeight: 10,
-    font: ".40em",
-    titleFont: ".60em"
+    lineHeight: 8,
+    maxRowRepeats: 3
 }
 
 var qv_palettes = {
@@ -24,12 +21,12 @@ var qv_colors = {
 
 // Displayed in the node box with cardinality info
 var qv_cardInfo = [
-    "subject","predicate","object","graph","value","fragment","row"
+    "subject","predicate","object","graph","value","fragment","row","column"
 ];
 
 // Displayed in the node box
 var qv_boxInfo = [
-    "column","condition","expr","order-spec","aggregate","join-filter","content",
+    "condition","expr","order-spec","grouping-set","aggregate","join-filter","content",
     "cross-product", "default-graph","named-graph","varIn","varOut","num-sorted",
     "limit","offset", "percent", "temperature"
 ];
@@ -73,13 +70,36 @@ var qv_logButtons = {
    "active"  : "w3-bar-item w3-button w3-small w3-theme-action"
 };
 
-
+////////////////////////////////////////////////////////////////////////////////
+// Helper Functions
 
 function qv_debug(msg) {
     if (qv_box.debug) {
         console.log(msg)
     }
 }
+
+function qv_decode(str) {
+    if(typeof(str)!=="string") return str;
+    const res =  
+    str.replace(
+      /\n|\t|&amp;|&lt;|&gt;|&#39;|&quot;/g,
+      tag =>
+        ({
+          '\n': ' ',
+          '\s': ' ',
+          '&amp;': '&',
+          '&lt;': '<',
+          '&gt;': '>',
+          '&#39;': "'",
+          '&quot;': '"'
+        }[tag] || tag)
+    )
+    return res.replace(/\s\s+/g,' ');
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Log Timeline View
 
 function qv_displayMessage (message) {
     const element = d3.select("#message")
@@ -230,19 +250,8 @@ function qv_loadFromLog  (viewerid,file, id, type) {
    
 }
 
-function qv_hierarchy(json) {
-    var data = d3.stratify()
-        .id(function (d) { return d._id; })
-        .parentId(function (d) { if (d._parent) return d._parent; else return "" })
-        (json);
-    return d3.hierarchy(data);
-}
-
-function qv_buildTree(nodes, width, height) {
-    var treemap = d3.tree().nodeSize([qv_box.width * 1.1, qv_box.height * 1.1]);
-    var nnodes = nodes.copy().sort((a, b) =>  d3.ascending(a.data.data._parentLabel,b.data.data._parentLabel))
-    return treemap(nnodes)
-}
+////////////////////////////////////////////////////////////////////////////////
+// Tooltips
 
 function qv_tooltipEvents(element, tooltip, doFilter) {
     if(tooltip) element
@@ -254,34 +263,83 @@ function qv_tooltipEvents(element, tooltip, doFilter) {
         });
 }
 
-function qv_title(div, title, tooltip) {
-    var para = div.append("xhtml:p")
-        .attr("class", "tree-node")
-        .style("color", "#202020")
-        .style("padding", "4px")
-        .style("text-align","center")
-        .style("font-size",qv_box.titleFont)
-        .style("font-weight", "bold")
-        .text(title);
-    qv_tooltipEvents(para,tooltip,true);
-    return para;
+function qv_tooltipTableRow(table, key, value) {
+    if(Array.isArray(value)) {
+        value.forEach((v) => qv_tooltipTableRow(table,key,v));
+    }
+    else if(value!==null && typeof(value)==="object") {
+        var tr = table.append("tr");
+        if(key!==null) tr.append("th").text(key);
+        var table2 = tr.append("td").append("table");
+        Object.keys(value).forEach((key) => qv_tooltipTableRow(table2,key,value[key]));
+    }
+    else {
+        var tr = table.append("tr");
+        if(key!==null) tr.append("th").text(key);
+        tr.append("td").text(qv_decode(value));
+    }
 }
 
-function qv_row(table, title, text, tooltip, color) {
-    if (Array.isArray(text)) text = text.join(", ")
-    if (text.constructor === ({}).constructor) text = JSON.stringify(text,null,2)
-    var row = table.append("xhtml:tr");
-    var td0 = row.append("xhtml:td");
-    var td1 = row.append("xhtml:th");
-    var td2 = row.append("xhtml:td");
-    if(Array.isArray(color)) {
-        color.map( (x) => td0.append("xhtml:span").style("color",x).text("\u25A0"))
+function qv_tooltipContents(parent, data, doFilter) {
+    var empty = true;
+
+    if(!Array.isArray(data) && typeof(data)==="object") {
+        var seen = {};
+        if(doFilter) {
+            Object.keys(data).filter((key) => key.charAt(0)=='_')
+                .forEach((key) => { seen[key] = true });
+            qv_cardInfo.forEach((key) => { seen[key] = true });
+            qv_boxInfo.forEach((key) => { seen[key] = true });
+            qv_costInfo.forEach((key) => { seen[key] = true });
+            qv_executionInfo.forEach((key) => { seen[key] = true });
+        }
+
+        var seenFilter = (key) => {
+            if(seen[key]) return false;
+            seen[key] = true;
+            return data.hasOwnProperty(key);
+        };
+
+        var table = parent.append("table");
+        var display = (key) => {
+            qv_tooltipTableRow(table,key,data[key]);
+            empty = false;
+        }
+
+        qv_tooltipPriority.filter(seenFilter).forEach(display);
+        Object.keys(data).filter(seenFilter).forEach(display);
     }
-    td1.text(title + (text ? ":" : ""));
-    if (text) td2.append("xhtml:span").text(text)
-    qv_tooltipEvents(row,tooltip,false);
-    return row;
+    else if(data && (!Array.isArray(data) || data.length !== 0)) {
+        qv_tooltipTableRow(parent.append("table"),null,data);
+        empty = false;
+    }
+    return !empty;
 }
+
+function qv_tooltipShow(event, data, doFilter) {
+
+    var boundaries = d3.select("body").node().getBoundingClientRect()
+
+    var x = Math.min (event.pageX + 28, boundaries.right-100)
+    var y = Math.min (event.pageY - 28, boundaries.bottom-50)
+    
+    var tooltip = d3.select("#tooltip")
+        .style("left", x + "px")
+        .style("top", y + "px");
+    tooltip.html("");
+    if(qv_tooltipContents(tooltip,data,doFilter))
+        tooltip.transition().duration(200).style("opacity", .9);
+}
+
+function qv_tooltipHide(event) {
+    var tooltip = d3.select("#tooltip");
+    tooltip.transition()
+        .duration(500)		
+        .style("opacity", 0);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Cost Display
 
 function qv_cost(div, percent) {
     var rect = svg.append("g")
@@ -398,7 +456,6 @@ function qv_displayCost(metrics, cost, maxcost) {
             ry= qv_box.lineHeight
             i++;
             parent.append("text")
-                .style("font-size", qv_box.font)
                 .attr("text-anchor",  "middle")
                 .attr("x", tx )
                 .attr("y", ty)
@@ -419,6 +476,17 @@ function qv_displayCost(metrics, cost, maxcost) {
     return parent.node()
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Node display
+
+function qv_title(div, title, tooltip) {
+    var para = div.append("xhtml:p")
+        .attr("class", "node-title")
+        .text(title);
+    qv_tooltipEvents(para,tooltip,true);
+    return para;
+}
+
 function qv_parseCardinalities(cardinalities) {
     if (cardinalities) {
         if (cardinalities.startsWith("(")) {
@@ -428,37 +496,115 @@ function qv_parseCardinalities(cardinalities) {
     } else return []
 }   
 
-function qv_tripleInfo(table, type, value, cardinalities) {
-    value = qv_decode(value)
-    var v= parseInt(value.split(' ')[0])
-    if (v >= 0) {
-        var colors = null;
-        var tooltip = value;
-        if (cardinalities[v]) {
-            colors = cardinalities[v].map( (x) =>  qv_palettes.magnitude(Math.round(Math.log10(parseFloat(x)))));
-            tooltip = { value : value, cardinality: cardinalities[v].join(",") };
+function qv_nodeLines(value,insideArray) {
+    var result = 0;
+    if(!insideArray && Array.isArray(value)) {
+        var max = value.length==qv_box.maxRowRepeats ? qv_box.maxRowRepeats :
+            value.length > qv_box.maxRowRepeats ? qv_box.maxRowRepeats-1 :
+            value.length;
+        for(var i = 0; i<max; i++) result += qv_nodeLines(value[i],true);
+        if(value.length>max) result += qv_nodeLines("…",true);
+    }
+    else {
+        if(value===null) {
+            result += 1;
         }
-        return qv_row(table,type,value,tooltip,colors);
-    }     
-    else return qv_row(table, type, value, value)
+        else if(Array.isArray(value)) {
+            if(value.length===0) {
+                result += 1;
+            } else {
+                value.forEach(v => result += qv_nodeLines(v,true));
+            }
+        }
+        else if(typeof(value)==="object") {
+            Object.keys(value).forEach((key) => result += qv_nodeLines(value[key],false));
+        } else {
+            result += 1;
+        }
+    }
+    return result;
 }
 
-function qv_decode(str) {
-    const res =  
-    str.replace(
-      /\n|\t|&amp;|&lt;|&gt;|&#39;|&quot;/g,
-      tag =>
-        ({
-          '\n': ' ',
-          '\s': ' ',
-          '&amp;': '&',
-          '&lt;': '<',
-          '&gt;': '>',
-          '&#39;': "'",
-          '&quot;': '"'
-        }[tag] || tag)
-    )
-    return res.replace(/\s\s+/g,' ');
+function qv_innerRow(table, key, value, insideArray) {
+    if(!insideArray && Array.isArray(value)) {
+        var max = value.length==qv_box.maxRowRepeats ? qv_box.maxRowRepeats :
+            value.length > qv_box.maxRowRepeats ? qv_box.maxRowRepeats-1 : value.length;
+        for(var i = 0; i<max; i++) qv_innerRow(table,key,value[i],true);
+        if(value.length>max) qv_innerRow(table,key,"…",true);
+        return;
+    }
+
+    var tr = table.append("tr");
+    if(key!==null) tr.append("th").text(key);
+    if(value===null) {
+        tr.append("td").append("span").style("font-style","italic").text("null");
+    }
+    else if(Array.isArray(value)) {
+        if(value.length===0) {
+            tr.append("td").append("span").style("font-style","italic").text("empty");
+        } else {
+            var inner = tr.append("td").append("table")
+                .attr("class", "node-table node-inner-table");
+            value.forEach(v => qv_innerRow(inner,null,v,true));
+        }
+    }
+    else if(typeof(value)==="object") {
+        var inner = tr.append("td").append("table")
+            .attr("class", "node-table node-inner-table");
+        Object.keys(value).forEach((key) => qv_innerRow(inner,key,value[key],false));
+    }
+    else {
+        tr.append("td").text(qv_decode(value));
+    }
+}
+
+function qv_nodeRow(table, key, value, tooltip, insideArray, cardinalities) {
+    if(!insideArray && Array.isArray(value)) {
+        var max = value.length==qv_box.maxRowRepeats ? qv_box.maxRowRepeats :
+            value.length > qv_box.maxRowRepeats ? qv_box.maxRowRepeats-1 : value.length;
+        for(var i = 0; i<max; i++) qv_nodeRow(table,key,value[i],value[i],true,cardinalities);
+        if(value.length>max) {
+            var newtooltip = {}; newtooltip[key] = value.slice(max,value.length);
+            qv_nodeRow(table,key,"…",newtooltip,true);
+        }
+        return;
+    }
+
+    var colors = null;
+    if(cardinalities && typeof(value)==="string") {
+        var v = parseInt(value.split(' ')[0])
+        if(v>=0 && cardinalities[v]) {
+            colors = cardinalities[v].map(x => qv_palettes.magnitude(Math.round(Math.log10(parseFloat(x)))));
+            tooltip = { value : value, cardinality: cardinalities[v].join(",") };
+        }
+    }
+
+    var tr = table.append("tr");
+    var td0 = tr.append("td");
+    if(colors!==null) colors.map((x) => td0.append("span").style("color",x).text("\u25A0"));
+    if(key!==null) tr.append("th").text(key);
+    if(value===null) {
+        tr.append("td").append("span").style("font-style","italic").text("null");
+    }
+    else if(Array.isArray(value)) {
+        if(value.length===0) {
+            tr.append("td").append("span").style("font-style","italic").text("empty");
+        } else {
+            var inner = tr.append("td").append("table")
+                .attr("class", "node-table node-inner-table");
+            value.forEach(v => qv_innerRow(inner,null,v,true));
+        }
+    }
+    else if(typeof(value)==="object") {
+        var inner = tr.append("td").append("table")
+            .attr("class", "node-table node-inner-table");
+        Object.keys(value).forEach((key) => qv_innerRow(inner,key,value[key],false));
+    }
+    else {
+        tr.append("td").text(qv_decode(value));
+    }
+
+    qv_tooltipEvents(tr,tooltip,false);
 }
 
 function qv_node(node) {
@@ -477,113 +623,47 @@ function qv_node(node) {
         }
       }) 
     
-    var table = div.append("xhtml:table")
-        .attr("class", "tree-node")
-        .style("border","0px")
-        .style("font-size", qv_box.font);
+    var table = div.append("table")
+        .attr("class", "node-table node-outer-table");
 
     var cardinalities = qv_parseCardinalities(data.cardinalities)
    
     qv_cardInfo
         .filter((key) => data.hasOwnProperty(key))
-        .forEach((key) => qv_tripleInfo(table,key,data[key],cardinalities));
+        .forEach((key) => qv_nodeRow(table,key,data[key],data[key],false,cardinalities));
     qv_boxInfo
         .filter((key) => data.hasOwnProperty(key))
-        .forEach((key) =>  qv_row(table,key,data[key],data[key]));
+        .forEach((key) =>  qv_nodeRow(table,key,data[key],data[key],false));
     return div.node()
 }
 
-function qv_nodeHeight(data) {
+function qv_nodeTextHeight(data) {
     var linesize = qv_box.lineHeight;
     var size = linesize * 3;
     qv_cardInfo
         .filter((key) => data.hasOwnProperty(key))
-        .forEach((key) => { size += linesize });
+        .forEach((key) => { size += qv_nodeLines(data[key]) * linesize });
     qv_boxInfo
         .filter((key) => data.hasOwnProperty(key))
-        .forEach((key) => { size += linesize });
-    if(qv_costInfo.some((v) => data.hasOwnProperty(v)))
-        size = size + 2 * linesize
-    if(qv_executionInfo.some((v) => data.hasOwnProperty(v)))
-        size = size + 2 * linesize
+        .forEach((key) => { size += qv_nodeLines(data[key]) * linesize });
     return size
 }
 
-function qv_tooltipTableRow(table, key, value) {
-    if(Array.isArray(value)) {
-        value.forEach((v) => qv_tooltipTableRow(table,key,v));
-    }
-    else if(typeof(value)==="object") {
-        var tr = table.append("tr");
-        if(key!==null) tr.append("th").text(key);
-        var table2 = tr.append("td").append("table");
-        Object.keys(value).forEach((key) => qv_tooltipTableRow(table2,key,value[key]));
-    }
-    else {
-        var tr = table.append("tr");
-        if(key!==null) tr.append("th").text(key);
-        if(typeof(value)==="string") value = qv_decode(value);
-        tr.append("td").text(value);
-    }
+function qv_nodeCostHeight(data) {
+    var size = 0;
+    if(qv_costInfo.some((v) => data.hasOwnProperty(v)))
+        size = size + 2 * qv_box.lineHeight
+    if(qv_executionInfo.some((v) => data.hasOwnProperty(v)))
+        size = size + 2 * qv_box.lineHeight
+    return size
 }
 
-function qv_tooltipContents(parent, data, doFilter) {
-    var empty = true;
-
-    if(!Array.isArray(data) && typeof(data)==="object") {
-        var seen = {};
-        if(doFilter) {
-            Object.keys(data).filter((key) => key.charAt(0)=='_')
-                .forEach((key) => { seen[key] = true });
-            qv_cardInfo.forEach((key) => { seen[key] = true });
-            qv_boxInfo.forEach((key) => { seen[key] = true });
-            qv_costInfo.forEach((key) => { seen[key] = true });
-            qv_executionInfo.forEach((key) => { seen[key] = true });
-        }
-
-        var seenFilter = (key) => {
-            if(seen[key]) return false;
-            seen[key] = true;
-            return data.hasOwnProperty(key);
-        };
-
-        var table = parent.append("table");
-        var display = (key) => {
-            qv_tooltipTableRow(table,key,data[key]);
-            empty = false;
-        }
-
-        qv_tooltipPriority.filter(seenFilter).forEach(display);
-        Object.keys(data).filter(seenFilter).forEach(display);
-    }
-    else if(data && (!Array.isArray(data) || data.length !== 0)) {
-        qv_tooltipTableRow(parent.append("table"),null,data);
-        empty = false;
-    }
-    return !empty;
+function qv_nodeHeight(data) {
+    return qv_nodeTextHeight(data) + qv_nodeCostHeight(data);
 }
 
-function qv_tooltipShow(event, data, doFilter) {
-
-    var boundaries = d3.select("body").node().getBoundingClientRect()
-
-    var x = Math.min (event.pageX + 28, boundaries.right-100)
-    var y = Math.min (event.pageY - 28, boundaries.bottom-50)
-    
-    var tooltip = d3.select("#tooltip")
-        .style("left", x + "px")
-        .style("top", y + "px");
-    tooltip.html("");
-    if(qv_tooltipContents(tooltip,data,doFilter))
-        tooltip.transition().duration(200).style("opacity", .9);
-}
-
-function qv_tooltipHide(event) {
-    var tooltip = d3.select("#tooltip");
-    tooltip.transition()
-        .duration(500)		
-        .style("opacity", 0);
-}
+////////////////////////////////////////////////////////////////////////////////
+// Sub-Tree Visibility
 
 function qv_isVisible(node) {
     var id=node.data.id
@@ -599,6 +679,25 @@ function qv_toggle(nodes, visibility) {
         d3.select("#node_" + id).attr("visibility", visibility)
         d3.select("#label_" + id).attr("visibility", visibility)        
     })
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Plan Display
+
+function qv_hierarchy(json) {
+    var data = d3.stratify()
+        .id(function (d) { return d._id; })
+        .parentId(function (d) { if (d._parent) return d._parent; else return "" })
+        (json);
+    return d3.hierarchy(data);
+}
+
+function qv_buildTree(nodes, width, height) {
+    var treemap = d3.flextree()
+        .nodeSize(node => [qv_box.width * 1.1, (qv_nodeHeight(node.data.data) * 1.1) + 20])
+        .spacing((a, b) => qv_box.width * 0.25);
+    var nnodes = nodes.copy().sort((a, b) =>  d3.ascending(a.data.data._parentLabel,b.data.data._parentLabel))
+    return treemap(nnodes)
 }
 
 function qv_showPlan(containerid, json) {
@@ -622,7 +721,7 @@ function qv_showPlan(containerid, json) {
     var zoom = d3.zoom()
         .scaleExtent([0.1, 10])
         .on('zoom', function (event) {
-        g.attr('transform', event.transform);
+            g.attr('transform', event.transform);
         });
     // Initial position and scale: center root, 80% zoom.
     svg.call(zoom.transform, d3.zoomIdentity.translate(width/2, 50).scale(.80))
@@ -636,8 +735,7 @@ function qv_showPlan(containerid, json) {
     var links = g
         .selectAll("path")
         .data(nodes.links())
-        .join("g")
-        .style("color", "red");
+        .join("g");
 
     // Add the link path
     links.append("path")
@@ -704,9 +802,7 @@ function qv_showPlan(containerid, json) {
         .attr("rx",5)
         .attr("fill", "white")
         .attr("width", qv_box.width)
-        .attr("height", function (d) { 
-            var h = qv_nodeHeight(d.data.data) 
-            return  h})
+        .attr("height", d => qv_nodeHeight(d.data.data));
        
     // add cost banner
     var maxcost = null;
@@ -726,18 +822,9 @@ function qv_showPlan(containerid, json) {
     });
   
     // add text box
-    var fo = node.append("foreignObject")
-        .attr("y", (d) => {
-            var result = 0;
-            if(qv_costInfo.some((v) => d.data.data.hasOwnProperty(v)))
-                result += qv_box.lineHeight * 2;
-            if(qv_executionInfo.some((v) => d.data.data.hasOwnProperty(v)))
-                result += qv_box.lineHeight * 2;
-            return result;
-        })
-        .attr("height", function (d) { return qv_nodeHeight(d.data.data) })
+    node.append("foreignObject")
+        .attr("y", d => qv_nodeCostHeight(d.data.data))
+        .attr("height", d => qv_nodeTextHeight(d.data.data))
         .attr("width", qv_box.width)
-    fo.append((d) => {
-        return qv_node(d, maxcost);
-    })
+        .append(qv_node);
 }
