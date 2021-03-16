@@ -782,7 +782,7 @@ function qv_showPlan(containerid, json) {
                   d.source.x + (qv_box.width / 2),
                   d.source.y + qv_nodeHeight(d.source.data.data)
               ])
-              // End the node in the middle of the top of the node
+              // End the link in the middle of the top of the node
               .target(d => [
                   d.target.x + (qv_box.width / 2),
                   d.target.y

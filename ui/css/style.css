@@ -55,7 +55,7 @@ background: #F8F8F8;
 }
 
 .node rect {   
-    stroke-width: 1px;   
+    stroke-width: 1px;
     stroke:#DCDCDC;
     fill-opacity: 1.0;
 }
