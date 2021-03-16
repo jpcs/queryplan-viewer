@@ -368,8 +368,8 @@ function qv_proportion(value, max) {
 }
 
 function qv_max(a,b) {
-    if(!a) return b;
-    if(!b) return a;
+    if(a===null) return b;
+    if(b===null) return a;
     if(typeof a === "object") {
         var result = {};
         Object.keys(a).forEach((k) => {
@@ -378,6 +378,19 @@ function qv_max(a,b) {
         return result;
     }
     return Math.max(a,b);
+}
+
+function qv_min(a,b) {
+    if(a===null) return b;
+    if(b===null) return a;
+    if(typeof a === "object") {
+        var result = {};
+        Object.keys(a).forEach((k) => {
+            result[k] = qv_min(a[k],b[k]);
+        });
+        return result;
+    }
+    return Math.min(a,b);
 }
 
 function qv_parseMemory(str) {
@@ -692,7 +705,7 @@ function qv_hierarchy(json) {
     return d3.hierarchy(data);
 }
 
-function qv_buildTree(nodes, width, height) {
+function qv_buildTree(nodes) {
     var treemap = d3.flextree()
         .nodeSize(node => [qv_box.width * 1.1, (qv_nodeHeight(node.data.data) * 1.1) + 20])
         .spacing((a, b) => qv_box.width * 0.25);
@@ -703,18 +716,19 @@ function qv_buildTree(nodes, width, height) {
 function qv_showPlan(containerid, json) {
     qv_debug(json)
     var container = d3.select(containerid);
-    var margin = { top: 20, right: 0, bottom: 0, left: 0 }
+    var margin = { top: 20, right: 20, bottom: 20, left: 20 }
     var nodes = qv_hierarchy(json)
 
-    const box = container.node().getBoundingClientRect()
-    var width = box.width
-    var height = box.height - 40
+    var tabs = container.select(".qv-tabs").node();    
+    const box = container.node().getBoundingClientRect();
+    var width = box.width;
+    var height = box.height - (tabs!==null ? tabs.getBoundingClientRect().height : 0)
 
-    nodes = qv_buildTree(nodes,width,height)
+    nodes = qv_buildTree(nodes)
     qv_debug(nodes);
     var svg = container.append("svg")
-         .attr("width", width + margin.left + margin.right)
-         .attr("height", height + margin.top + margin.bottom)
+        .attr("width", width)
+        .attr("height", height);
 
     // set up transform and zoom
     var g = svg.append("g")
@@ -723,9 +737,29 @@ function qv_showPlan(containerid, json) {
         .on('zoom', function (event) {
             g.attr('transform', event.transform);
         });
-    // Initial position and scale: center root, 80% zoom.
-    svg.call(zoom.transform, d3.zoomIdentity.translate(width/2, 50).scale(.80))
-   
+
+    // Center the diagram and scale it to fit
+    var maxPos = null, minPos = null;
+    nodes.descendants().forEach(n => {
+        maxPos = qv_max({x: n.x + qv_box.width, y: n.y + qv_nodeHeight(n.data.data)},maxPos);
+        minPos = qv_min({x: n.x, y: n.y},minPos);
+    });
+
+    var targetWidth = width - margin.left - margin.right;
+    var targetHeight = height - margin.top - margin.bottom;
+    var actualWidth = maxPos.x - minPos.x;
+    var actualHeight = maxPos.y - minPos.y;
+
+    var scaleX = targetWidth / actualWidth;
+    var scaleY = targetHeight / actualHeight;
+    var scale = Math.max(Math.min(Math.min(scaleX,scaleY),3),0.5);
+
+    svg.call(zoom.transform, d3.zoomIdentity
+             .translate(
+                 targetWidth/2 - actualWidth*scale/2  - minPos.x*scale + margin.left,
+                 targetHeight/2 - actualHeight*scale/2 - minPos.y*scale + margin.top)
+             .scale(scale)
+            );
     svg.call(zoom);
 
     //links
