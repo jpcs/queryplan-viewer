@@ -645,10 +645,19 @@ function qv_showPlan(containerid, json) {
         .attr("id", function (d) { return "link_" +d.target.data.id })
         .attr("visibility", "visible")
         .attr("d", d3.linkVertical()
-              .x(d => d.x + qv_box.width / 2)
-              .y(d => d.y + qv_box.lineHeight * 3 ));
+              // Start the link in the middle of the bottom of the node
+              .source(d => [
+                  d.source.x + (qv_box.width / 2),
+                  d.source.y + qv_nodeHeight(d.source.data.data)
+              ])
+              // End the node in the middle of the top of the node
+              .target(d => [
+                  d.target.x + (qv_box.width / 2),
+                  d.target.y
+              ])
+        );
 
-    // Add the link label, using (non-moving) animation to place it 60% along the path
+    // Add the link label, using (non-moving) animation to place it 70% along the path
     links.append("text")
         .attr("class", "link-label")
         .attr("id", function (d) { return "label_" +d.target.data.id })
@@ -670,7 +679,7 @@ function qv_showPlan(containerid, json) {
         .append("animateMotion")
         .attr("calcMode","linear")
         .attr("rotate","auto")
-        .attr("keyPoints","0.6;0.6")
+        .attr("keyPoints","0.7;0.7")
         .attr("keyTimes","0.0;1.0")
         .append("mpath")
         .attr("href", function(d) { return "#link_" +d.target.data.id; });
