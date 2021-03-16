@@ -179,6 +179,10 @@ declare function makeExpr($node)
     string-join($node/plan:* ! makeExpr(.),", ") ||
     ")"
   )
+  (: String Concat :)
+  case exists($node/self::plan:string-concat) return (
+    string-join($node/plan:* ! makeExpr(.)," || ")
+  )
   (: Sequences :)
   case exists($node/self::plan:expr-sequence) return (
     let $children := $node/plan:*

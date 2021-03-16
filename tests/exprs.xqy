@@ -2329,5 +2329,1429 @@ map:entry("name","exprs5")
 '{"order":"5[NULLS_IRRELEVANT],1[NULLS_IRRELEVANT],6[NULLS_IRRELEVANT],0[NULLS_IRRELEVANT]", "_id":"N_1_1_1_1_1_1_R_2", "_parent":"N_1_1_1_1_1_1_R", "condition":"0=0 and 6=6", "_name":"bloom-join"}',
 '{"dedup":"true", "order":"2[NULLS_IRRELEVANT],6[NULLS_IRRELEVANT],4[NULLS_IRRELEVANT],0[NULLS_IRRELEVANT]", "subject":"6 (?keywords1sSubject)", "_name":"triple-index", "is-column":"false", "descending":"false", "_parentLabel":"left", "predicate":"2 (?keywords)", "_id":"N_1_1_1_1_1_1_R_2_L", "_parent":"N_1_1_1_1_1_1_R_2", "permutation":"PSO", "object":"4 (?keywords1s)", "graph":"0 (?keywords1sContainer)"}',
 '{"dedup":"true", "order":"5[NULLS_IRRELEVANT],1[NULLS_IRRELEVANT],6[NULLS_IRRELEVANT],0[NULLS_IRRELEVANT]", "subject":"1 (?s)", "_name":"triple-index", "is-column":"false", "descending":"false", "_parentLabel":"right", "predicate":"5 (?keywordsIntermediate)", "_id":"N_1_1_1_1_1_1_R_2_R", "_parent":"N_1_1_1_1_1_1_R_2", "permutation":"PSO", "object":"6 (?keywords1sSubject)", "graph":"0 (?keywords1sContainer)"}'
+)),
+map:entry("name","badexprs")
+=>map:with("plan",
+<plan:plan xmlns:plan='http://marklogic.com/plan'>
+  <plan:select>
+    <plan:project id='17135780847642430483' order=',singletons(0)'>
+      <plan:column column='ReportDate' column-index='0' column-number='0' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='IsoCntryId' column-index='1' column-number='1' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='Country' column-index='2' column-number='2' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='ProductCode' column-index='3' column-number='3' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='Product' column-index='4' column-number='4' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='BttCode' column-index='5' column-number='5' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='SubBtrRfid' column-index='6' column-number='6' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='RelatedSubBtrRfid' column-index='7' column-number='7' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='BrnCode' column-index='8' column-number='8' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='CountryBrn' column-index='9' column-number='9' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='CurrencyCode' column-index='10' column-number='10' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='LiabilityAmount' column-index='11' column-number='11' static-type='DECIMAL' type='column-def'></plan:column>
+      <plan:column column='AAmount' column-index='12' column-number='12' schema='EXAMPLE' static-type='DECIMAL' type='column-def' view='A'></plan:column>
+      <plan:column column='MiddleRate' column-index='13' column-number='13' static-type='DECIMAL' type='column-def'></plan:column>
+      <plan:column column='RateDate' column-index='14' column-number='14' static-type='DATE' type='column-def'></plan:column>
+      <plan:column column='AmountEur' column-index='15' column-number='15' static-type='DOUBLE' type='column-def'></plan:column>
+      <plan:column column='ValidFromDate' column-index='16' column-number='16' schema='EXAMPLE' static-type='DATE' type='column-def' view='A'></plan:column>
+      <plan:column column='ExpiryDate' column-index='17' column-number='17' schema='EXAMPLE' static-type='DATE' type='column-def' view='A'></plan:column>
+      <plan:column column='H' column-index='18' column-number='18' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='HCountry' column-index='19' column-number='19' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='LiabilityParty' column-index='20' column-number='20' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='G' column-index='21' column-number='21' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='GRef' column-index='22' column-number='22' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='GCountry' column-index='23' column-number='23' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='F' column-index='24' column-number='24' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='FRef' column-index='25' column-number='25' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='FCountry' column-index='26' column-number='26' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='E' column-index='27' column-number='27' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='SendingInstitutionRef' column-index='28' column-number='28' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='SendingInstitutionCountry' column-index='29' column-number='29' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='D' column-index='30' column-number='30' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='DRef' column-index='31' column-number='31' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='DCountry' column-index='32' column-number='32' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='AgreementType' column-index='33' column-number='33' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='BtrReferenceId' column-index='34' column-number='34' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='BtrIdno' column-index='35' column-number='35' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='BteReferenceId' column-index='36' column-number='36' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='BteIdno' column-index='37' column-number='37' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:column>
+      <plan:column column='BteExecutionTimestamp' column-index='38' column-number='38' schema='EXAMPLE' static-type='DATE_TIME' type='column-def' view='A'></plan:column>
+      <plan:column column='CBteRef' column-index='39' column-number='39' static-type='STRING' type='column-def'></plan:column>
+      <plan:column column='CBteTime' column-index='40' column-number='40' static-type='DATE_TIME' type='column-def'></plan:column>
+      <plan:column column='Warning' column-index='41' column-number='41' static-type='STRING' type='column-def'></plan:column>
+      <plan:bind>
+        <plan:column column='Warning' column-index='41' column-number='41' type='column-def'></plan:column>
+        <plan:expr>
+          <plan:switch-expr>
+            <plan:switch>
+              <plan:literal>
+                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:boolean'>true</plan:value>
+              </plan:literal>
+            </plan:switch>
+            <plan:clauses>
+              <plan:switch-clause>
+                <plan:cases>
+                  <plan:builtin name='empty' uri='http://www.w3.org/2005/xpath-functions'>
+                    <plan:column-ref column='Middlerate' column-index='80' column-number='3' in-match='false' schema='EXAMPLE' view='B'>
+                      <plan:qname ltrl='EXAMPLE.B.Middlerate' name='EXAMPLE.B.Middlerate' prfx='' uri=''></plan:qname>
+                    </plan:column-ref>
+                  </plan:builtin>
+                </plan:cases>
+                <plan:literal>
+                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Exchange Rate Missing</plan:value>
+                </plan:literal>
+              </plan:switch-clause>
+            </plan:clauses>
+            <plan:default>
+              <plan:literal>
+                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'></plan:value>
+              </plan:literal>
+            </plan:default>
+          </plan:switch-expr>
+        </plan:expr>
+        <plan:bind>
+          <plan:column column='CBteTime' column-index='40' column-number='40' type='column-def'></plan:column>
+          <plan:expr>
+            <plan:column-ref column='BteExecutionTimestamp' column-index='49' column-number='3' in-match='false' schema='' view='C'>
+              <plan:qname ltrl='C.BteExecutionTimestamp' name='C.BteExecutionTimestamp' prfx='' uri=''></plan:qname>
+            </plan:column-ref>
+          </plan:expr>
+          <plan:bind>
+            <plan:column column='CBteRef' column-index='39' column-number='39' type='column-def'></plan:column>
+            <plan:expr>
+              <plan:column-ref column='BteReferenceId' column-index='48' column-number='2' in-match='false' schema='' view='C'>
+                <plan:qname ltrl='C.BteReferenceId' name='C.BteReferenceId' prfx='' uri=''></plan:qname>
+              </plan:column-ref>
+            </plan:expr>
+            <plan:bind>
+              <plan:column column='DCountry' column-index='32' column-number='32' type='column-def'></plan:column>
+              <plan:expr>
+                <plan:column-ref column='DCountry' column-index='65' column-number='20' in-match='false' schema='' view='C'>
+                  <plan:qname ltrl='C.DCountry' name='C.DCountry' prfx='' uri=''></plan:qname>
+                </plan:column-ref>
+              </plan:expr>
+              <plan:bind>
+                <plan:column column='DRef' column-index='31' column-number='31' type='column-def'></plan:column>
+                <plan:expr>
+                  <plan:column-ref column='DReference' column-index='64' column-number='19' in-match='false' schema='' view='C'>
+                    <plan:qname ltrl='C.DReference' name='C.DReference' prfx='' uri=''></plan:qname>
+                  </plan:column-ref>
+                </plan:expr>
+                <plan:bind>
+                  <plan:column column='D' column-index='30' column-number='30' type='column-def'></plan:column>
+                  <plan:expr>
+                    <plan:switch-expr>
+                      <plan:switch>
+                        <plan:literal>
+                          <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:boolean'>true</plan:value>
+                        </plan:literal>
+                      </plan:switch>
+                      <plan:clauses>
+                        <plan:switch-clause>
+                          <plan:cases>
+                            <plan:builtin name='empty' uri='http://www.w3.org/2005/xpath-functions'>
+                              <plan:column-ref column='NameLine1' column-index='78' column-number='1' in-match='false' schema='' view='D'>
+                                <plan:qname ltrl='D.NameLine1' name='D.NameLine1' prfx='' uri=''></plan:qname>
+                              </plan:column-ref>
+                            </plan:builtin>
+                          </plan:cases>
+                          <plan:column-ref column='DNameLine1' column-index='63' column-number='18' in-match='false' schema='' view='C'>
+                            <plan:qname ltrl='C.DNameLine1' name='C.DNameLine1' prfx='' uri=''></plan:qname>
+                          </plan:column-ref>
+                        </plan:switch-clause>
+                      </plan:clauses>
+                      <plan:default>
+                        <plan:column-ref column='NameLine1' column-index='78' column-number='1' in-match='false' schema='' view='D'>
+                          <plan:qname ltrl='D.NameLine1' name='D.NameLine1' prfx='' uri=''></plan:qname>
+                        </plan:column-ref>
+                      </plan:default>
+                    </plan:switch-expr>
+                  </plan:expr>
+                  <plan:bind>
+                    <plan:column column='SendingInstitutionCountry' column-index='29' column-number='29' type='column-def'></plan:column>
+                    <plan:expr>
+                      <plan:column-ref column='SendingInstitutionCountry' column-index='61' column-number='16' in-match='false' schema='' view='C'>
+                        <plan:qname ltrl='C.SendingInstitutionCountry' name='C.SendingInstitutionCountry' prfx='' uri=''></plan:qname>
+                      </plan:column-ref>
+                    </plan:expr>
+                    <plan:bind>
+                      <plan:column column='SendingInstitutionRef' column-index='28' column-number='28' type='column-def'></plan:column>
+                      <plan:expr>
+                        <plan:column-ref column='SendingInstitutionReference' column-index='60' column-number='15' in-match='false' schema='' view='C'>
+                          <plan:qname ltrl='C.SendingInstitutionReference' name='C.SendingInstitutionReference' prfx='' uri=''></plan:qname>
+                        </plan:column-ref>
+                      </plan:expr>
+                      <plan:bind>
+                        <plan:column column='E' column-index='27' column-number='27' type='column-def'></plan:column>
+                        <plan:expr>
+                          <plan:switch-expr>
+                            <plan:switch>
+                              <plan:literal>
+                                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:boolean'>true</plan:value>
+                              </plan:literal>
+                            </plan:switch>
+                            <plan:clauses>
+                              <plan:switch-clause>
+                                <plan:cases>
+                                  <plan:builtin name='empty' uri='http://www.w3.org/2005/xpath-functions'>
+                                    <plan:column-ref column='NameLine1' column-index='76' column-number='1' in-match='false' schema='' view='E'>
+                                      <plan:qname ltrl='E.NameLine1' name='E.NameLine1' prfx='' uri=''></plan:qname>
+                                    </plan:column-ref>
+                                  </plan:builtin>
+                                </plan:cases>
+                                <plan:column-ref column='SendingInstitutionNameLine1' column-index='59' column-number='14' in-match='false' schema='' view='C'>
+                                  <plan:qname ltrl='C.SendingInstitutionNameLine1' name='C.SendingInstitutionNameLine1' prfx='' uri=''></plan:qname>
+                                </plan:column-ref>
+                              </plan:switch-clause>
+                            </plan:clauses>
+                            <plan:default>
+                              <plan:column-ref column='NameLine1' column-index='76' column-number='1' in-match='false' schema='' view='E'>
+                                <plan:qname ltrl='E.NameLine1' name='E.NameLine1' prfx='' uri=''></plan:qname>
+                              </plan:column-ref>
+                            </plan:default>
+                          </plan:switch-expr>
+                        </plan:expr>
+                        <plan:bind>
+                          <plan:column column='FCountry' column-index='26' column-number='26' type='column-def'></plan:column>
+                          <plan:expr>
+                            <plan:column-ref column='FCountry' column-index='57' column-number='12' in-match='false' schema='' view='C'>
+                              <plan:qname ltrl='C.FCountry' name='C.FCountry' prfx='' uri=''></plan:qname>
+                            </plan:column-ref>
+                          </plan:expr>
+                          <plan:bind>
+                            <plan:column column='FRef' column-index='25' column-number='25' type='column-def'></plan:column>
+                            <plan:expr>
+                              <plan:column-ref column='FReference' column-index='56' column-number='11' in-match='false' schema='' view='C'>
+                                <plan:qname ltrl='C.FReference' name='C.FReference' prfx='' uri=''></plan:qname>
+                              </plan:column-ref>
+                            </plan:expr>
+                            <plan:bind>
+                              <plan:column column='F' column-index='24' column-number='24' type='column-def'></plan:column>
+                              <plan:expr>
+                                <plan:switch-expr>
+                                  <plan:switch>
+                                    <plan:literal>
+                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:boolean'>true</plan:value>
+                                    </plan:literal>
+                                  </plan:switch>
+                                  <plan:clauses>
+                                    <plan:switch-clause>
+                                      <plan:cases>
+                                        <plan:builtin name='empty' uri='http://www.w3.org/2005/xpath-functions'>
+                                          <plan:column-ref column='NameLine1' column-index='74' column-number='1' in-match='false' schema='' view='F'>
+                                            <plan:qname ltrl='F.NameLine1' name='F.NameLine1' prfx='' uri=''></plan:qname>
+                                          </plan:column-ref>
+                                        </plan:builtin>
+                                      </plan:cases>
+                                      <plan:column-ref column='FNameLine1' column-index='55' column-number='10' in-match='false' schema='' view='C'>
+                                        <plan:qname ltrl='C.FNameLine1' name='C.FNameLine1' prfx='' uri=''></plan:qname>
+                                      </plan:column-ref>
+                                    </plan:switch-clause>
+                                  </plan:clauses>
+                                  <plan:default>
+                                    <plan:column-ref column='NameLine1' column-index='74' column-number='1' in-match='false' schema='' view='F'>
+                                      <plan:qname ltrl='F.NameLine1' name='F.NameLine1' prfx='' uri=''></plan:qname>
+                                    </plan:column-ref>
+                                  </plan:default>
+                                </plan:switch-expr>
+                              </plan:expr>
+                              <plan:bind>
+                                <plan:column column='GCountry' column-index='23' column-number='23' type='column-def'></plan:column>
+                                <plan:expr>
+                                  <plan:column-ref column='GCountry' column-index='53' column-number='8' in-match='false' schema='' view='C'>
+                                    <plan:qname ltrl='C.GCountry' name='C.GCountry' prfx='' uri=''></plan:qname>
+                                  </plan:column-ref>
+                                </plan:expr>
+                                <plan:bind>
+                                  <plan:column column='GRef' column-index='22' column-number='22' type='column-def'></plan:column>
+                                  <plan:expr>
+                                    <plan:column-ref column='GReference' column-index='52' column-number='7' in-match='false' schema='' view='C'>
+                                      <plan:qname ltrl='C.GReference' name='C.GReference' prfx='' uri=''></plan:qname>
+                                    </plan:column-ref>
+                                  </plan:expr>
+                                  <plan:bind>
+                                    <plan:column column='G' column-index='21' column-number='21' type='column-def'></plan:column>
+                                    <plan:expr>
+                                      <plan:switch-expr>
+                                        <plan:switch>
+                                          <plan:literal>
+                                            <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:boolean'>true</plan:value>
+                                          </plan:literal>
+                                        </plan:switch>
+                                        <plan:clauses>
+                                          <plan:switch-clause>
+                                            <plan:cases>
+                                              <plan:builtin name='empty' uri='http://www.w3.org/2005/xpath-functions'>
+                                                <plan:column-ref column='NameLine1' column-index='72' column-number='1' in-match='false' schema='' view='G'>
+                                                  <plan:qname ltrl='G.NameLine1' name='G.NameLine1' prfx='' uri=''></plan:qname>
+                                                </plan:column-ref>
+                                              </plan:builtin>
+                                            </plan:cases>
+                                            <plan:column-ref column='GNameLine1' column-index='51' column-number='6' in-match='false' schema='' view='C'>
+                                              <plan:qname ltrl='C.GNameLine1' name='C.GNameLine1' prfx='' uri=''></plan:qname>
+                                            </plan:column-ref>
+                                          </plan:switch-clause>
+                                        </plan:clauses>
+                                        <plan:default>
+                                          <plan:column-ref column='NameLine1' column-index='72' column-number='1' in-match='false' schema='' view='G'>
+                                            <plan:qname ltrl='G.NameLine1' name='G.NameLine1' prfx='' uri=''></plan:qname>
+                                          </plan:column-ref>
+                                        </plan:default>
+                                      </plan:switch-expr>
+                                    </plan:expr>
+                                    <plan:bind>
+                                      <plan:column column='LiabilityParty' column-index='20' column-number='20' type='column-def'></plan:column>
+                                      <plan:expr>
+                                        <plan:column-ref column='LiabilityPartyNameLine1' column-index='45' column-number='27' in-match='false' schema='EXAMPLE' view='A'>
+                                          <plan:qname ltrl='EXAMPLE.A.LiabilityPartyNameLine1' name='EXAMPLE.A.LiabilityPartyNameLine1' prfx='' uri=''></plan:qname>
+                                        </plan:column-ref>
+                                      </plan:expr>
+                                      <plan:bind>
+                                        <plan:column column='HCountry' column-index='19' column-number='19' type='column-def'></plan:column>
+                                        <plan:expr>
+                                          <plan:column-ref column='HCountry' column-index='67' column-number='26' in-match='false' schema='' view='C'>
+                                            <plan:qname ltrl='C.HCountry' name='C.HCountry' prfx='' uri=''></plan:qname>
+                                          </plan:column-ref>
+                                        </plan:expr>
+                                        <plan:bind>
+                                          <plan:column column='H' column-index='18' column-number='18' type='column-def'></plan:column>
+                                          <plan:expr>
+                                            <plan:switch-expr>
+                                              <plan:switch>
+                                                <plan:literal>
+                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:boolean'>true</plan:value>
+                                                </plan:literal>
+                                              </plan:switch>
+                                              <plan:clauses>
+                                                <plan:switch-clause>
+                                                  <plan:cases>
+                                                    <plan:builtin name='empty' uri='http://www.w3.org/2005/xpath-functions'>
+                                                      <plan:column-ref column='NameLine1' column-index='70' column-number='1' in-match='false' schema='' view='H'>
+                                                        <plan:qname ltrl='H.NameLine1' name='H.NameLine1' prfx='' uri=''></plan:qname>
+                                                      </plan:column-ref>
+                                                    </plan:builtin>
+                                                  </plan:cases>
+                                                  <plan:column-ref column='HNameLine1' column-index='66' column-number='25' in-match='false' schema='' view='C'>
+                                                    <plan:qname ltrl='C.HNameLine1' name='C.HNameLine1' prfx='' uri=''></plan:qname>
+                                                  </plan:column-ref>
+                                                </plan:switch-clause>
+                                              </plan:clauses>
+                                              <plan:default>
+                                                <plan:column-ref column='NameLine1' column-index='70' column-number='1' in-match='false' schema='' view='H'>
+                                                  <plan:qname ltrl='H.NameLine1' name='H.NameLine1' prfx='' uri=''></plan:qname>
+                                                </plan:column-ref>
+                                              </plan:default>
+                                            </plan:switch-expr>
+                                          </plan:expr>
+                                          <plan:bind>
+                                            <plan:column column='AmountEur' column-index='15' column-number='15' type='column-def'></plan:column>
+                                            <plan:expr>
+                                              <plan:switch-expr>
+                                                <plan:switch>
+                                                  <plan:literal>
+                                                    <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:boolean'>true</plan:value>
+                                                  </plan:literal>
+                                                </plan:switch>
+                                                <plan:clauses>
+                                                  <plan:switch-clause>
+                                                    <plan:cases>
+                                                      <plan:or>
+                                                        <plan:expr>
+                                                          <plan:builtin name='empty' uri='http://www.w3.org/2005/xpath-functions'>
+                                                            <plan:column-ref column='Middlerate' column-index='80' column-number='3' in-match='false' schema='EXAMPLE' view='B'>
+                                                              <plan:qname ltrl='EXAMPLE.B.Middlerate' name='EXAMPLE.B.Middlerate' prfx='' uri=''></plan:qname>
+                                                            </plan:column-ref>
+                                                          </plan:builtin>
+                                                        </plan:expr>
+                                                        <plan:term>
+                                                          <plan:value-compare op='EQ'>
+                                                            <plan:expr>
+                                                              <plan:column-ref column='Middlerate' column-index='80' column-number='3' in-match='false' schema='EXAMPLE' view='B'>
+                                                                <plan:qname ltrl='EXAMPLE.B.Middlerate' name='EXAMPLE.B.Middlerate' prfx='' uri=''></plan:qname>
+                                                              </plan:column-ref>
+                                                            </plan:expr>
+                                                            <plan:term>
+                                                              <plan:literal>
+                                                                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:integer'>0</plan:value>
+                                                              </plan:literal>
+                                                            </plan:term>
+                                                          </plan:value-compare>
+                                                        </plan:term>
+                                                      </plan:or>
+                                                    </plan:cases>
+                                                    <plan:literal>
+                                                      <value xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:nil='true'></value>
+                                                    </plan:literal>
+                                                  </plan:switch-clause>
+                                                </plan:clauses>
+                                                <plan:default>
+                                                  <plan:multiply op='/'>
+                                                    <plan:expr>
+                                                      <plan:column-ref column='LiabilityAmountAfterDiscount' column-index='44' column-number='21' in-match='false' schema='EXAMPLE' view='A'>
+                                                        <plan:qname ltrl='EXAMPLE.A.LiabilityAmountAfterDiscount' name='EXAMPLE.A.LiabilityAmountAfterDiscount' prfx='' uri=''></plan:qname>
+                                                      </plan:column-ref>
+                                                    </plan:expr>
+                                                    <plan:term>
+                                                      <plan:column-ref column='Middlerate' column-index='80' column-number='3' in-match='false' schema='EXAMPLE' view='B'>
+                                                        <plan:qname ltrl='EXAMPLE.B.Middlerate' name='EXAMPLE.B.Middlerate' prfx='' uri=''></plan:qname>
+                                                      </plan:column-ref>
+                                                    </plan:term>
+                                                  </plan:multiply>
+                                                </plan:default>
+                                              </plan:switch-expr>
+                                            </plan:expr>
+                                            <plan:bind>
+                                              <plan:column column='RateDate' column-index='14' column-number='14' type='column-def'></plan:column>
+                                              <plan:expr>
+                                                <plan:column-ref column='Date' column-index='81' column-number='4' in-match='false' schema='EXAMPLE' view='B'>
+                                                  <plan:qname ltrl='EXAMPLE.B.Date' name='EXAMPLE.B.Date' prfx='' uri=''></plan:qname>
+                                                </plan:column-ref>
+                                              </plan:expr>
+                                              <plan:bind>
+                                                <plan:column column='MiddleRate' column-index='13' column-number='13' type='column-def'></plan:column>
+                                                <plan:expr>
+                                                  <plan:column-ref column='Middlerate' column-index='80' column-number='3' in-match='false' schema='EXAMPLE' view='B'>
+                                                    <plan:qname ltrl='EXAMPLE.B.Middlerate' name='EXAMPLE.B.Middlerate' prfx='' uri=''></plan:qname>
+                                                  </plan:column-ref>
+                                                </plan:expr>
+                                                <plan:bind>
+                                                  <plan:column column='LiabilityAmount' column-index='11' column-number='11' type='column-def'></plan:column>
+                                                  <plan:expr>
+                                                    <plan:column-ref column='LiabilityAmountAfterDiscount' column-index='44' column-number='21' in-match='false' schema='EXAMPLE' view='A'>
+                                                      <plan:qname ltrl='EXAMPLE.A.LiabilityAmountAfterDiscount' name='EXAMPLE.A.LiabilityAmountAfterDiscount' prfx='' uri=''></plan:qname>
+                                                    </plan:column-ref>
+                                                  </plan:expr>
+                                                  <plan:right-join id='9853416769004552522' order=',singletons(0)' sparql-semantics='false' type='right-hash-join'>
+                                                    <plan:hash left='79' op='=' right='10'></plan:hash>
+                                                    <plan:project id='9614305299914322992' order=''>
+                                                      <plan:column column='CurrencyTo' column-index='79' column-number='2' schema='EXAMPLE' static-type='STRING' type='column-def' view='B'></plan:column>
+                                                      <plan:column column='Middlerate' column-index='80' column-number='3' schema='EXAMPLE' static-type='DECIMAL' type='column-def' view='B'></plan:column>
+                                                      <plan:column column='Date' column-index='81' column-number='4' schema='EXAMPLE' static-type='DATE' type='column-def' view='B'></plan:column>
+                                                      <plan:join id='11138499484179249650' order='86' type='bloom-join'>
+                                                        <plan:hash left='82' op='=' right='85'></plan:hash>
+                                                        <plan:hash left='83' op='=' right='81'></plan:hash>
+                                                        <plan:scatter left='85' op='=' right='82'></plan:scatter>
+                                                        <plan:scatter left='81' op='=' right='83'></plan:scatter>
+                                                        <plan:project id='4113909148524426201' order='82'>
+                                                          <plan:column column='CountryPair' column-index='82' column-number='0' static-type='STRING' type='column-def' view='B2'></plan:column>
+                                                          <plan:column column='CDate' column-index='83' column-number='1' static-type='DATE' type='column-def' view='B2'></plan:column>
+                                                          <plan:group id='7733664309655135513' num-sorted='0' order='82' type='sort-group'>
+                                                            <plan:order-spec column='CountryPair' column-index='1' column-number='7' descending='false' nulls-first='false' type='column-ref' view='B2'></plan:order-spec>
+                                                            <plan:aggregate-bind>
+                                                              <plan:aggregate-function distinct='false' name='max'>
+                                                                <plan:column-ref column='Date' column-index='0' column-number='1' in-match='false' schema='' view='B2'>
+                                                                  <plan:qname ltrl='B2.Date' name='B2.Date' prfx='' uri=''></plan:qname>
+                                                                </plan:column-ref>
+                                                              </plan:aggregate-function>
+                                                              <plan:column column='CDate' column-index='83' column-number='1' type='column-def' view='B2'></plan:column>
+                                                            </plan:aggregate-bind>
+                                                            <plan:aggregate-bind>
+                                                              <plan:aggregate-function distinct='false' name='sample'>
+                                                                <plan:column-ref column='CountryPair' column-index='1' column-number='7' in-match='false' schema='' view='B2'>
+                                                                  <plan:qname ltrl='B2.CountryPair' name='B2.CountryPair' prfx='' uri=''></plan:qname>
+                                                                </plan:column-ref>
+                                                              </plan:aggregate-function>
+                                                              <plan:column column='CountryPair' column-index='82' column-number='0' type='column-def' view='B2'></plan:column>
+                                                            </plan:aggregate-bind>
+                                                            <plan:right-join id='9699563205349647461' left-num-sorted='0' order='2' right-num-sorted='1' sparql-semantics='false' type='right-sort-merge-join'>
+                                                              <plan:hash left='2' op='=' right='2'></plan:hash>
+                                                              <plan:triple-index id='4451019118621066769' is-column='true' order='1,2' permutation='POS'>
+                                                                <plan:subject column='rowid' column-index='2' column-number='8' hidden='true' type='column-def' view='B2'></plan:subject>
+                                                                <plan:predicate column='EXAMPLE.B.CountryPair' columnID='15537527196737741554' type='literal'></plan:predicate>
+                                                                <plan:object column='CountryPair' column-index='1' column-number='7' static-type='STRING' type='column-def' view='B2'></plan:object>
+                                                              </plan:triple-index>
+                                                              <plan:template-view allNullable='true' id='13096038055045657709' iri='http://marklogic.com/view/EXAMPLE/B' order='2' schemaID='7877188029877219628' type='row' viewID='9817162264571137580'>
+                                                                <plan:column nullable='true'>
+                                                                  <plan:id column='EXAMPLE.B.Date' columnID='6320562650892043104'></plan:id>
+                                                                  <plan:name column='Date' column-index='0' column-number='1' static-type='DATE' type='column-def' view='B2'></plan:name>
+                                                                </plan:column>
+                                                                <plan:row column='rowid' column-index='2' column-number='8' hidden='true' type='column-def' view='B2'></plan:row>
+                                                              </plan:template-view>
+                                                              <plan:filters></plan:filters>
+                                                              <plan:ljfilters></plan:ljfilters>
+                                                            </plan:right-join>
+                                                          </plan:group>
+                                                        </plan:project>
+                                                        <plan:template-view allNullable='false' id='2763520012678093236' iri='http://marklogic.com/view/EXAMPLE/B' order='86' schemaID='7877188029877219628' type='row' viewID='9817162264571137580'>
+                                                          <plan:column nullable='true'>
+                                                            <plan:id column='EXAMPLE.B.Date' columnID='6320562650892043104'></plan:id>
+                                                            <plan:name column='Date' column-index='81' column-number='1' schema='EXAMPLE' static-type='DATE' type='column-def' view='B'></plan:name>
+                                                          </plan:column>
+                                                          <plan:column nullable='true'>
+                                                            <plan:id column='EXAMPLE.B.CurrencyTo' columnID='12765361024334847626'></plan:id>
+                                                            <plan:name column='CurrencyTo' column-index='79' column-number='3' schema='EXAMPLE' static-type='STRING' type='column-def' view='B'></plan:name>
+                                                          </plan:column>
+                                                          <plan:column nullable='true'>
+                                                            <plan:id column='EXAMPLE.B.Middlerate' columnID='13925432343823206213'></plan:id>
+                                                            <plan:name column='Middlerate' column-index='80' column-number='4' schema='EXAMPLE' static-type='DECIMAL' type='column-def' view='B'></plan:name>
+                                                          </plan:column>
+                                                          <plan:column nullable='false'>
+                                                            <plan:id column='EXAMPLE.B.Country' columnID='14489611266651578610'></plan:id>
+                                                            <plan:name column='Country' column-index='84' column-number='0' schema='EXAMPLE' static-type='STRING' type='column-def' view='B'></plan:name>
+                                                          </plan:column>
+                                                          <plan:column nullable='true'>
+                                                            <plan:id column='EXAMPLE.B.CountryPair' columnID='15537527196737741554'></plan:id>
+                                                            <plan:name column='CountryPair' column-index='85' column-number='7' schema='EXAMPLE' static-type='STRING' type='column-def' view='B'></plan:name>
+                                                          </plan:column>
+                                                          <plan:row column='rowid' column-index='86' column-number='8' hidden='true' schema='EXAMPLE' type='column-def' view='B'></plan:row>
+                                                          <plan:join-filter op='='>
+                                                            <plan:left column='Country' column-index='84' column-number='0' schema='EXAMPLE' type='column-def' view='B'></plan:left>
+                                                            <plan:right-expr>
+                                                              <plan:literal>
+                                                                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>928</plan:value>
+                                                              </plan:literal>
+                                                            </plan:right-expr>
+                                                          </plan:join-filter>
+                                                        </plan:template-view>
+                                                        <plan:filters>
+                                                          <plan:join-filter op='='>
+                                                            <plan:left column='CountryPair' column-index='85' column-number='7' schema='EXAMPLE' type='column-def' view='B'></plan:left>
+                                                            <plan:right column='CountryPair' column-index='82' column-number='0' type='column-def' view='B2'></plan:right>
+                                                          </plan:join-filter>
+                                                          <plan:join-filter op='='>
+                                                            <plan:left column='Date' column-index='81' column-number='4' schema='EXAMPLE' type='column-def' view='B'></plan:left>
+                                                            <plan:right column='CDate' column-index='83' column-number='1' type='column-def' view='B2'></plan:right>
+                                                          </plan:join-filter>
+                                                        </plan:filters>
+                                                      </plan:join>
+                                                    </plan:project>
+                                                    <plan:bind>
+                                                      <plan:column column='CountryBrn' column-index='9' column-number='9' type='column-def'></plan:column>
+                                                      <plan:expr>
+                                                        <plan:string-concat>
+                                                          <plan:column-ref column='IsoCntryId' column-index='1' column-number='1' in-match='false' schema='EXAMPLE' view='A'>
+                                                            <plan:qname ltrl='EXAMPLE.A.IsoCntryId' name='EXAMPLE.A.IsoCntryId' prfx='' uri=''></plan:qname>
+                                                          </plan:column-ref>
+                                                          <plan:literal>
+                                                            <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>-</plan:value>
+                                                          </plan:literal>
+                                                          <plan:column-ref column='BrnCode' column-index='8' column-number='8' in-match='false' schema='EXAMPLE' view='A'>
+                                                            <plan:qname ltrl='EXAMPLE.A.BrnCode' name='EXAMPLE.A.BrnCode' prfx='' uri=''></plan:qname>
+                                                          </plan:column-ref>
+                                                        </plan:string-concat>
+                                                      </plan:expr>
+                                                      <plan:bind>
+                                                        <plan:column column='Product' column-index='4' column-number='4' type='column-def'></plan:column>
+                                                        <plan:expr>
+                                                          <plan:switch-expr>
+                                                            <plan:switch>
+                                                              <plan:literal>
+                                                                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:boolean'>true</plan:value>
+                                                              </plan:literal>
+                                                            </plan:switch>
+                                                            <plan:clauses>
+                                                              <plan:switch-clause>
+                                                                <plan:cases>
+                                                                  <plan:value-compare op='EQ'>
+                                                                    <plan:expr>
+                                                                      <plan:column-ref column='ProductCode' column-index='3' column-number='3' in-match='false' schema='EXAMPLE' view='A'>
+                                                                        <plan:qname ltrl='EXAMPLE.A.ProductCode' name='EXAMPLE.A.ProductCode' prfx='' uri=''></plan:qname>
+                                                                      </plan:column-ref>
+                                                                    </plan:expr>
+                                                                    <plan:term>
+                                                                      <plan:literal>
+                                                                        <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>II</plan:value>
+                                                                      </plan:literal>
+                                                                    </plan:term>
+                                                                  </plan:value-compare>
+                                                                </plan:cases>
+                                                                <plan:literal>
+                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Import Collection</plan:value>
+                                                                </plan:literal>
+                                                              </plan:switch-clause>
+                                                              <plan:switch-clause>
+                                                                <plan:cases>
+                                                                  <plan:value-compare op='EQ'>
+                                                                    <plan:expr>
+                                                                      <plan:column-ref column='ProductCode' column-index='3' column-number='3' in-match='false' schema='EXAMPLE' view='A'>
+                                                                        <plan:qname ltrl='EXAMPLE.A.ProductCode' name='EXAMPLE.A.ProductCode' prfx='' uri=''></plan:qname>
+                                                                      </plan:column-ref>
+                                                                    </plan:expr>
+                                                                    <plan:term>
+                                                                      <plan:literal>
+                                                                        <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>IE</plan:value>
+                                                                      </plan:literal>
+                                                                    </plan:term>
+                                                                  </plan:value-compare>
+                                                                </plan:cases>
+                                                                <plan:literal>
+                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Export Collection</plan:value>
+                                                                </plan:literal>
+                                                              </plan:switch-clause>
+                                                              <plan:switch-clause>
+                                                                <plan:cases>
+                                                                  <plan:value-compare op='EQ'>
+                                                                    <plan:expr>
+                                                                      <plan:column-ref column='ProductCode' column-index='3' column-number='3' in-match='false' schema='EXAMPLE' view='A'>
+                                                                        <plan:qname ltrl='EXAMPLE.A.ProductCode' name='EXAMPLE.A.ProductCode' prfx='' uri=''></plan:qname>
+                                                                      </plan:column-ref>
+                                                                    </plan:expr>
+                                                                    <plan:term>
+                                                                      <plan:literal>
+                                                                        <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>RI</plan:value>
+                                                                      </plan:literal>
+                                                                    </plan:term>
+                                                                  </plan:value-compare>
+                                                                </plan:cases>
+                                                                <plan:literal>
+                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Import LC</plan:value>
+                                                                </plan:literal>
+                                                              </plan:switch-clause>
+                                                              <plan:switch-clause>
+                                                                <plan:cases>
+                                                                  <plan:value-compare op='EQ'>
+                                                                    <plan:expr>
+                                                                      <plan:column-ref column='ProductCode' column-index='3' column-number='3' in-match='false' schema='EXAMPLE' view='A'>
+                                                                        <plan:qname ltrl='EXAMPLE.A.ProductCode' name='EXAMPLE.A.ProductCode' prfx='' uri=''></plan:qname>
+                                                                      </plan:column-ref>
+                                                                    </plan:expr>
+                                                                    <plan:term>
+                                                                      <plan:literal>
+                                                                        <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>RE</plan:value>
+                                                                      </plan:literal>
+                                                                    </plan:term>
+                                                                  </plan:value-compare>
+                                                                </plan:cases>
+                                                                <plan:literal>
+                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Export LC</plan:value>
+                                                                </plan:literal>
+                                                              </plan:switch-clause>
+                                                              <plan:switch-clause>
+                                                                <plan:cases>
+                                                                  <plan:value-compare op='EQ'>
+                                                                    <plan:expr>
+                                                                      <plan:column-ref column='ProductCode' column-index='3' column-number='3' in-match='false' schema='EXAMPLE' view='A'>
+                                                                        <plan:qname ltrl='EXAMPLE.A.ProductCode' name='EXAMPLE.A.ProductCode' prfx='' uri=''></plan:qname>
+                                                                      </plan:column-ref>
+                                                                    </plan:expr>
+                                                                    <plan:term>
+                                                                      <plan:literal>
+                                                                        <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>GI</plan:value>
+                                                                      </plan:literal>
+                                                                    </plan:term>
+                                                                  </plan:value-compare>
+                                                                </plan:cases>
+                                                                <plan:literal>
+                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Outgoing Guarantee</plan:value>
+                                                                </plan:literal>
+                                                              </plan:switch-clause>
+                                                              <plan:switch-clause>
+                                                                <plan:cases>
+                                                                  <plan:value-compare op='EQ'>
+                                                                    <plan:expr>
+                                                                      <plan:column-ref column='ProductCode' column-index='3' column-number='3' in-match='false' schema='EXAMPLE' view='A'>
+                                                                        <plan:qname ltrl='EXAMPLE.A.ProductCode' name='EXAMPLE.A.ProductCode' prfx='' uri=''></plan:qname>
+                                                                      </plan:column-ref>
+                                                                    </plan:expr>
+                                                                    <plan:term>
+                                                                      <plan:literal>
+                                                                        <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>GU</plan:value>
+                                                                      </plan:literal>
+                                                                    </plan:term>
+                                                                  </plan:value-compare>
+                                                                </plan:cases>
+                                                                <plan:literal>
+                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Incoming Guarantee</plan:value>
+                                                                </plan:literal>
+                                                              </plan:switch-clause>
+                                                              <plan:switch-clause>
+                                                                <plan:cases>
+                                                                  <plan:value-compare op='EQ'>
+                                                                    <plan:expr>
+                                                                      <plan:column-ref column='ProductCode' column-index='3' column-number='3' in-match='false' schema='EXAMPLE' view='A'>
+                                                                        <plan:qname ltrl='EXAMPLE.A.ProductCode' name='EXAMPLE.A.ProductCode' prfx='' uri=''></plan:qname>
+                                                                      </plan:column-ref>
+                                                                    </plan:expr>
+                                                                    <plan:term>
+                                                                      <plan:literal>
+                                                                        <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>RS</plan:value>
+                                                                      </plan:literal>
+                                                                    </plan:term>
+                                                                  </plan:value-compare>
+                                                                </plan:cases>
+                                                                <plan:literal>
+                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Reimbursement Authorisation</plan:value>
+                                                                </plan:literal>
+                                                              </plan:switch-clause>
+                                                            </plan:clauses>
+                                                            <plan:default>
+                                                              <plan:literal>
+                                                                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Other</plan:value>
+                                                              </plan:literal>
+                                                            </plan:default>
+                                                          </plan:switch-expr>
+                                                        </plan:expr>
+                                                        <plan:bind>
+                                                          <plan:column column='Country' column-index='2' column-number='2' type='column-def'></plan:column>
+                                                          <plan:expr>
+                                                            <plan:switch-expr>
+                                                              <plan:switch>
+                                                                <plan:literal>
+                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:boolean'>true</plan:value>
+                                                                </plan:literal>
+                                                              </plan:switch>
+                                                              <plan:clauses>
+                                                                <plan:switch-clause>
+                                                                  <plan:cases>
+                                                                    <plan:value-compare op='EQ'>
+                                                                      <plan:expr>
+                                                                        <plan:column-ref column='IsoCntryId' column-index='1' column-number='1' in-match='false' schema='EXAMPLE' view='A'>
+                                                                          <plan:qname ltrl='EXAMPLE.A.IsoCntryId' name='EXAMPLE.A.IsoCntryId' prfx='' uri=''></plan:qname>
+                                                                        </plan:column-ref>
+                                                                      </plan:expr>
+                                                                      <plan:term>
+                                                                        <plan:literal>
+                                                                          <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>156</plan:value>
+                                                                        </plan:literal>
+                                                                      </plan:term>
+                                                                    </plan:value-compare>
+                                                                  </plan:cases>
+                                                                  <plan:literal>
+                                                                    <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>CN</plan:value>
+                                                                  </plan:literal>
+                                                                </plan:switch-clause>
+                                                                <plan:switch-clause>
+                                                                  <plan:cases>
+                                                                    <plan:value-compare op='EQ'>
+                                                                      <plan:expr>
+                                                                        <plan:column-ref column='IsoCntryId' column-index='1' column-number='1' in-match='false' schema='EXAMPLE' view='A'>
+                                                                          <plan:qname ltrl='EXAMPLE.A.IsoCntryId' name='EXAMPLE.A.IsoCntryId' prfx='' uri=''></plan:qname>
+                                                                        </plan:column-ref>
+                                                                      </plan:expr>
+                                                                      <plan:term>
+                                                                        <plan:literal>
+                                                                          <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>276</plan:value>
+                                                                        </plan:literal>
+                                                                      </plan:term>
+                                                                    </plan:value-compare>
+                                                                  </plan:cases>
+                                                                  <plan:literal>
+                                                                    <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>EU</plan:value>
+                                                                  </plan:literal>
+                                                                </plan:switch-clause>
+                                                                <plan:switch-clause>
+                                                                  <plan:cases>
+                                                                    <plan:value-compare op='EQ'>
+                                                                      <plan:expr>
+                                                                        <plan:column-ref column='IsoCntryId' column-index='1' column-number='1' in-match='false' schema='EXAMPLE' view='A'>
+                                                                          <plan:qname ltrl='EXAMPLE.A.IsoCntryId' name='EXAMPLE.A.IsoCntryId' prfx='' uri=''></plan:qname>
+                                                                        </plan:column-ref>
+                                                                      </plan:expr>
+                                                                      <plan:term>
+                                                                        <plan:literal>
+                                                                          <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>344</plan:value>
+                                                                        </plan:literal>
+                                                                      </plan:term>
+                                                                    </plan:value-compare>
+                                                                  </plan:cases>
+                                                                  <plan:literal>
+                                                                    <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>HK</plan:value>
+                                                                  </plan:literal>
+                                                                </plan:switch-clause>
+                                                                <plan:switch-clause>
+                                                                  <plan:cases>
+                                                                    <plan:value-compare op='EQ'>
+                                                                      <plan:expr>
+                                                                        <plan:column-ref column='IsoCntryId' column-index='1' column-number='1' in-match='false' schema='EXAMPLE' view='A'>
+                                                                          <plan:qname ltrl='EXAMPLE.A.IsoCntryId' name='EXAMPLE.A.IsoCntryId' prfx='' uri=''></plan:qname>
+                                                                        </plan:column-ref>
+                                                                      </plan:expr>
+                                                                      <plan:term>
+                                                                        <plan:literal>
+                                                                          <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>702</plan:value>
+                                                                        </plan:literal>
+                                                                      </plan:term>
+                                                                    </plan:value-compare>
+                                                                  </plan:cases>
+                                                                  <plan:literal>
+                                                                    <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>SG</plan:value>
+                                                                  </plan:literal>
+                                                                </plan:switch-clause>
+                                                                <plan:switch-clause>
+                                                                  <plan:cases>
+                                                                    <plan:value-compare op='EQ'>
+                                                                      <plan:expr>
+                                                                        <plan:column-ref column='IsoCntryId' column-index='1' column-number='1' in-match='false' schema='EXAMPLE' view='A'>
+                                                                          <plan:qname ltrl='EXAMPLE.A.IsoCntryId' name='EXAMPLE.A.IsoCntryId' prfx='' uri=''></plan:qname>
+                                                                        </plan:column-ref>
+                                                                      </plan:expr>
+                                                                      <plan:term>
+                                                                        <plan:literal>
+                                                                          <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>840</plan:value>
+                                                                        </plan:literal>
+                                                                      </plan:term>
+                                                                    </plan:value-compare>
+                                                                  </plan:cases>
+                                                                  <plan:literal>
+                                                                    <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>US</plan:value>
+                                                                  </plan:literal>
+                                                                </plan:switch-clause>
+                                                                <plan:switch-clause>
+                                                                  <plan:cases>
+                                                                    <plan:value-compare op='EQ'>
+                                                                      <plan:expr>
+                                                                        <plan:column-ref column='IsoCntryId' column-index='1' column-number='1' in-match='false' schema='EXAMPLE' view='A'>
+                                                                          <plan:qname ltrl='EXAMPLE.A.IsoCntryId' name='EXAMPLE.A.IsoCntryId' prfx='' uri=''></plan:qname>
+                                                                        </plan:column-ref>
+                                                                      </plan:expr>
+                                                                      <plan:term>
+                                                                        <plan:literal>
+                                                                          <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>928</plan:value>
+                                                                        </plan:literal>
+                                                                      </plan:term>
+                                                                    </plan:value-compare>
+                                                                  </plan:cases>
+                                                                  <plan:literal>
+                                                                    <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>NL</plan:value>
+                                                                  </plan:literal>
+                                                                </plan:switch-clause>
+                                                              </plan:clauses>
+                                                              <plan:default>
+                                                                <plan:literal>
+                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>Other</plan:value>
+                                                                </plan:literal>
+                                                              </plan:default>
+                                                            </plan:switch-expr>
+                                                          </plan:expr>
+                                                          <plan:bind>
+                                                            <plan:column column='ReportDate' column-index='0' column-number='0' type='column-def'></plan:column>
+                                                            <plan:expr>
+                                                              <plan:literal>
+                                                                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>asd</plan:value>
+                                                              </plan:literal>
+                                                            </plan:expr>
+                                                            <plan:right-join id='16070242304967024886' order='' sparql-semantics='false' type='right-hash-join'>
+                                                              <plan:hash left='77' op='=' right='62'></plan:hash>
+                                                              <plan:project id='17190678049729668290' order=''>
+                                                                <plan:column column='PartyIdfc' column-index='77' column-number='0' static-type='STRING' type='column-def' view='D'></plan:column>
+                                                                <plan:column column='NameLine1' column-index='78' column-number='1' static-type='STRING' type='column-def' view='D'></plan:column>
+                                                                <plan:template-view allNullable='true' id='3313591486575183522' iri='http://marklogic.com/view/EXAMPLE/I' order='79' schemaID='7877188029877219628' type='row' viewID='13057747591221220163'>
+                                                                  <plan:column nullable='true'>
+                                                                    <plan:id column='EXAMPLE.I.PartyIdfc' columnID='16549893125671051651'></plan:id>
+                                                                    <plan:name column='PartyIdfc' column-index='77' column-number='1' static-type='STRING' type='column-def' view='D'></plan:name>
+                                                                  </plan:column>
+                                                                  <plan:column nullable='true'>
+                                                                    <plan:id column='EXAMPLE.I.NameLine1' columnID='4382495798774900125'></plan:id>
+                                                                    <plan:name column='NameLine1' column-index='78' column-number='4' static-type='STRING' type='column-def' view='D'></plan:name>
+                                                                  </plan:column>
+                                                                  <plan:row column='rowid' column-index='79' column-number='40' hidden='true' schema='EXAMPLE' type='column-def' view='I'></plan:row>
+                                                                </plan:template-view>
+                                                              </plan:project>
+                                                              <plan:right-join id='7632087219710475963' order='' sparql-semantics='false' type='right-hash-join'>
+                                                                <plan:hash left='75' op='=' right='58'></plan:hash>
+                                                                <plan:project id='7878926515319585526' order=''>
+                                                                  <plan:column column='PartyIdfc' column-index='75' column-number='0' static-type='STRING' type='column-def' view='E'></plan:column>
+                                                                  <plan:column column='NameLine1' column-index='76' column-number='1' static-type='STRING' type='column-def' view='E'></plan:column>
+                                                                  <plan:template-view allNullable='true' id='6914002615831912798' iri='http://marklogic.com/view/EXAMPLE/I' order='77' schemaID='7877188029877219628' type='column' viewID='13057747591221220163'>
+                                                                    <plan:column nullable='true'>
+                                                                      <plan:id column='EXAMPLE.I.PartyIdfc' columnID='16549893125671051651'></plan:id>
+                                                                      <plan:name column='PartyIdfc' column-index='75' column-number='1' static-type='STRING' type='column-def' view='E'></plan:name>
+                                                                    </plan:column>
+                                                                    <plan:column nullable='true'>
+                                                                      <plan:id column='EXAMPLE.I.NameLine1' columnID='4382495798774900125'></plan:id>
+                                                                      <plan:name column='NameLine1' column-index='76' column-number='4' static-type='STRING' type='column-def' view='E'></plan:name>
+                                                                    </plan:column>
+                                                                    <plan:row column='rowid' column-index='77' column-number='40' hidden='true' schema='EXAMPLE' type='column-def' view='I'></plan:row>
+                                                                  </plan:template-view>
+                                                                </plan:project>
+                                                                <plan:right-join id='18341585133943467386' order='' sparql-semantics='false' type='right-hash-join'>
+                                                                  <plan:hash left='73' op='=' right='54'></plan:hash>
+                                                                  <plan:project id='2875280771221126754' order=''>
+                                                                    <plan:column column='PartyIdfc' column-index='73' column-number='0' static-type='STRING' type='column-def' view='F'></plan:column>
+                                                                    <plan:column column='NameLine1' column-index='74' column-number='1' static-type='STRING' type='column-def' view='F'></plan:column>
+                                                                    <plan:template-view allNullable='true' id='4680089565021629011' iri='http://marklogic.com/view/EXAMPLE/I' order='75' schemaID='7877188029877219628' type='row' viewID='13057747591221220163'>
+                                                                      <plan:column nullable='true'>
+                                                                        <plan:id column='EXAMPLE.I.PartyIdfc' columnID='16549893125671051651'></plan:id>
+                                                                        <plan:name column='PartyIdfc' column-index='73' column-number='1' static-type='STRING' type='column-def' view='F'></plan:name>
+                                                                      </plan:column>
+                                                                      <plan:column nullable='true'>
+                                                                        <plan:id column='EXAMPLE.I.NameLine1' columnID='4382495798774900125'></plan:id>
+                                                                        <plan:name column='NameLine1' column-index='74' column-number='4' static-type='STRING' type='column-def' view='F'></plan:name>
+                                                                      </plan:column>
+                                                                      <plan:row column='rowid' column-index='75' column-number='40' hidden='true' schema='EXAMPLE' type='column-def' view='I'></plan:row>
+                                                                    </plan:template-view>
+                                                                  </plan:project>
+                                                                  <plan:right-join id='14642695399846043972' order='' sparql-semantics='false' type='parallel-right-hash-join'>
+                                                                    <plan:hash left='71' op='=' right='50'></plan:hash>
+                                                                    <plan:project id='18104214828596526827' order=''>
+                                                                      <plan:column column='PartyIdfc' column-index='71' column-number='0' static-type='STRING' type='column-def' view='G'></plan:column>
+                                                                      <plan:column column='NameLine1' column-index='72' column-number='1' static-type='STRING' type='column-def' view='G'></plan:column>
+                                                                      <plan:template-view allNullable='true' id='17602232926918786252' iri='http://marklogic.com/view/EXAMPLE/I' order='73' schemaID='7877188029877219628' type='row' viewID='13057747591221220163'>
+                                                                        <plan:column nullable='true'>
+                                                                          <plan:id column='EXAMPLE.I.PartyIdfc' columnID='16549893125671051651'></plan:id>
+                                                                          <plan:name column='PartyIdfc' column-index='71' column-number='1' static-type='STRING' type='column-def' view='G'></plan:name>
+                                                                        </plan:column>
+                                                                        <plan:column nullable='true'>
+                                                                          <plan:id column='EXAMPLE.I.NameLine1' columnID='4382495798774900125'></plan:id>
+                                                                          <plan:name column='NameLine1' column-index='72' column-number='4' static-type='STRING' type='column-def' view='G'></plan:name>
+                                                                        </plan:column>
+                                                                        <plan:row column='rowid' column-index='73' column-number='40' hidden='true' schema='EXAMPLE' type='column-def' view='I'></plan:row>
+                                                                      </plan:template-view>
+                                                                    </plan:project>
+                                                                    <plan:right-join id='16605679826298326321' order='' sparql-semantics='false' type='parallel-right-hash-join'>
+                                                                      <plan:hash left='69' op='=' right='68'></plan:hash>
+                                                                      <plan:project id='1771860535108147997' order=''>
+                                                                        <plan:column column='PartyIdfc' column-index='69' column-number='0' static-type='INT' type='column-def' view='H'></plan:column>
+                                                                        <plan:column column='NameLine1' column-index='70' column-number='1' static-type='STRING' type='column-def' view='H'></plan:column>
+                                                                        <plan:template-view allNullable='true' id='17076666854041483359' iri='http://marklogic.com/view/EXAMPLE/I' order='71' schemaID='7877188029877219628' type='column' viewID='13057747591221220163'>
+                                                                          <plan:column nullable='true'>
+                                                                            <plan:id column='EXAMPLE.I.PartyIdfc' columnID='16549893125671051651'></plan:id>
+                                                                            <plan:name column='PartyIdfc' column-index='69' column-number='1' static-type='STRING' type='column-def' view='H'></plan:name>
+                                                                          </plan:column>
+                                                                          <plan:column nullable='true'>
+                                                                            <plan:id column='EXAMPLE.I.NameLine1' columnID='4382495798774900125'></plan:id>
+                                                                            <plan:name column='NameLine1' column-index='70' column-number='4' static-type='STRING' type='column-def' view='H'></plan:name>
+                                                                          </plan:column>
+                                                                          <plan:row column='rowid' column-index='71' column-number='40' hidden='true' schema='EXAMPLE' type='column-def' view='I'></plan:row>
+                                                                        </plan:template-view>
+                                                                      </plan:project>
+                                                                      <plan:join id='6493596891509412419' order='' type='hash-join'>
+                                                                        <plan:hash left='42' op='=' right='34'></plan:hash>
+                                                                        <plan:hash left='43' op='=' right='38'></plan:hash>
+                                                                        <plan:project id='708045292281126464' order=''>
+                                                                          <plan:column column='BtrReferenceId' column-index='42' column-number='0' static-type='STRING' type='column-def' view='J'></plan:column>
+                                                                          <plan:column column='ExecutionTimestamp' column-index='43' column-number='1' static-type='DATE_TIME' type='column-def' view='J'></plan:column>
+                                                                          <plan:group id='721998238538737519' order='' type='hash-group'>
+                                                                            <plan:order-spec column='BtrReferenceId' column-index='4' column-number='55' descending='false' nulls-first='false' schema='EXAMPLE' type='column-ref' view='A'></plan:order-spec>
+                                                                            <plan:aggregate-bind>
+                                                                              <plan:aggregate-function distinct='false' name='max'>
+                                                                                <plan:column-ref column='BteExecutionTimestamp' column-index='2' column-number='7' in-match='false' schema='EXAMPLE' view='A'>
+                                                                                  <plan:qname ltrl='EXAMPLE.A.BteExecutionTimestamp' name='EXAMPLE.A.BteExecutionTimestamp' prfx='' uri=''></plan:qname>
+                                                                                </plan:column-ref>
+                                                                              </plan:aggregate-function>
+                                                                              <plan:column column='ExecutionTimestamp' column-index='43' column-number='1' type='column-def' view='J'></plan:column>
+                                                                            </plan:aggregate-bind>
+                                                                            <plan:aggregate-bind>
+                                                                              <plan:aggregate-function distinct='false' name='sample'>
+                                                                                <plan:column-ref column='BtrReferenceId' column-index='4' column-number='55' in-match='false' schema='EXAMPLE' view='A'>
+                                                                                  <plan:qname ltrl='EXAMPLE.A.BtrReferenceId' name='EXAMPLE.A.BtrReferenceId' prfx='' uri=''></plan:qname>
+                                                                                </plan:column-ref>
+                                                                              </plan:aggregate-function>
+                                                                              <plan:column column='BtrReferenceId' column-index='42' column-number='0' type='column-def' view='J'></plan:column>
+                                                                            </plan:aggregate-bind>
+                                                                            <plan:template-view allNullable='false' id='13664369577307752416' iri='http://marklogic.com/view/EXAMPLE/A' order='5' schemaID='7877188029877219628' type='column' viewID='13607306339470133666'>
+                                                                              <plan:column nullable='true'>
+                                                                                <plan:id column='EXAMPLE.A.BteStatus' columnID='15671908051551006681'></plan:id>
+                                                                                <plan:name column='BteStatus' column-index='1' column-number='4' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                              </plan:column>
+                                                                              <plan:column nullable='false'>
+                                                                                <plan:id column='EXAMPLE.A.BteExecutionTimestamp' columnID='4009019662701183539'></plan:id>
+                                                                                <plan:name column='BteExecutionTimestamp' column-index='2' column-number='7' schema='EXAMPLE' static-type='DATE_TIME' type='column-def' view='A'></plan:name>
+                                                                              </plan:column>
+                                                                              <plan:column nullable='false'>
+                                                                                <plan:id column='EXAMPLE.A.BtrReferenceId' columnID='10445995951745876522'></plan:id>
+                                                                                <plan:name column='BtrReferenceId' column-index='4' column-number='55' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                              </plan:column>
+                                                                              <plan:column nullable='false'>
+                                                                                <plan:id column='EXAMPLE.A.BteExecutionDate' columnID='15149688605779497712'></plan:id>
+                                                                                <plan:name column='BteExecutionDate' column-index='3' column-number='8' schema='EXAMPLE' static-type='DATE' type='column-def' view='A'></plan:name>
+                                                                              </plan:column>
+                                                                              <plan:column nullable='false'>
+                                                                                <plan:id column='EXAMPLE.A.BteCode' columnID='4825445845377061051'></plan:id>
+                                                                                <plan:name column='BteCode' column-index='0' column-number='3' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                              </plan:column>
+                                                                              <plan:row column='rowid' column-index='5' column-number='104' hidden='true' schema='EXAMPLE' type='column-def' view='A'></plan:row>
+                                                                              <plan:join-filter null-status='or-null' op='='>
+                                                                                <plan:left column='BteStatus' column-index='1' column-number='4' schema='EXAMPLE' type='column-def' view='A'></plan:left>
+                                                                                <plan:right-expr>
+                                                                                  <plan:literal>
+                                                                                    <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>0</plan:value>
+                                                                                  </plan:literal>
+                                                                                </plan:right-expr>
+                                                                              </plan:join-filter>
+                                                                              <plan:join-filter op='&lt;='>
+                                                                                <plan:left column='BteExecutionDate' column-index='3' column-number='8' schema='EXAMPLE' type='column-def' view='A'></plan:left>
+                                                                                <plan:right-expr>
+                                                                                  <plan:literal>
+                                                                                    <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:date'>2021-01-08</plan:value>
+                                                                                  </plan:literal>
+                                                                                </plan:right-expr>
+                                                                              </plan:join-filter>
+                                                                              <plan:join-filter op='universal_ne'>
+                                                                                <plan:left column='BteCode' column-index='0' column-number='3' schema='EXAMPLE' type='column-def' view='A'></plan:left>
+                                                                                <plan:right-expr>
+                                                                                  <plan:expr-sequence>
+                                                                                    <plan:literal>
+                                                                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>IRB</plan:value>
+                                                                                    </plan:literal>
+                                                                                    <plan:literal>
+                                                                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>CRB</plan:value>
+                                                                                    </plan:literal>
+                                                                                    <plan:literal>
+                                                                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>IBP</plan:value>
+                                                                                    </plan:literal>
+                                                                                    <plan:literal>
+                                                                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>QAC</plan:value>
+                                                                                    </plan:literal>
+                                                                                    <plan:literal>
+                                                                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>ATC</plan:value>
+                                                                                    </plan:literal>
+                                                                                    <plan:literal>
+                                                                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>ATD</plan:value>
+                                                                                    </plan:literal>
+                                                                                    <plan:literal>
+                                                                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>ACG</plan:value>
+                                                                                    </plan:literal>
+                                                                                    <plan:literal>
+                                                                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>TRC</plan:value>
+                                                                                    </plan:literal>
+                                                                                    <plan:literal>
+                                                                                      <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>SCG</plan:value>
+                                                                                    </plan:literal>
+                                                                                  </plan:expr-sequence>
+                                                                                </plan:right-expr>
+                                                                              </plan:join-filter>
+                                                                            </plan:template-view>
+                                                                          </plan:group>
+                                                                        </plan:project>
+                                                                        <plan:join id='15053003101821340343' order='' type='hash-join'>
+                                                                          <plan:hash left='34' op='=' right='47'></plan:hash>
+                                                                          <plan:template-view allNullable='false' id='17720174463526255926' iri='http://marklogic.com/view/EXAMPLE/A' order='46' schemaID='7877188029877219628' type='column' viewID='13607306339470133666'>
+                                                                            <plan:column nullable='false'>
+                                                                              <plan:id column='EXAMPLE.A.BteReferenceId' columnID='9386446393393778990'></plan:id>
+                                                                              <plan:name column='BteReferenceId' column-index='36' column-number='1' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='false'>
+                                                                              <plan:id column='EXAMPLE.A.BteIdno' columnID='6174486266041117102'></plan:id>
+                                                                              <plan:name column='BteIdno' column-index='37' column-number='2' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='false'>
+                                                                              <plan:id column='EXAMPLE.A.BteExecutionTimestamp' columnID='4009019662701183539'></plan:id>
+                                                                              <plan:name column='BteExecutionTimestamp' column-index='38' column-number='7' schema='EXAMPLE' static-type='DATE_TIME' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.IsoCntryId' columnID='1474873736305447648'></plan:id>
+                                                                              <plan:name column='IsoCntryId' column-index='1' column-number='13' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.SubBtrRfid' columnID='14660846072694517151'></plan:id>
+                                                                              <plan:name column='SubBtrRfid' column-index='6' column-number='14' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.RelatedSubBtrRfid' columnID='1479822449677331162'></plan:id>
+                                                                              <plan:name column='RelatedSubBtrRfid' column-index='7' column-number='15' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.BrnCode' columnID='5619270283324765589'></plan:id>
+                                                                              <plan:name column='BrnCode' column-index='8' column-number='17' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.AgreementType' columnID='2994029752730481848'></plan:id>
+                                                                              <plan:name column='AgreementType' column-index='33' column-number='18' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.CurrencyCode' columnID='6403254439217750686'></plan:id>
+                                                                              <plan:name column='CurrencyCode' column-index='10' column-number='19' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.LiabilityAmountAfterDiscount' columnID='6208939795375657521'></plan:id>
+                                                                              <plan:name column='LiabilityAmountAfterDiscount' column-index='44' column-number='21' schema='EXAMPLE' static-type='DECIMAL' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.ValidFromDate' columnID='6525034665521610637'></plan:id>
+                                                                              <plan:name column='ValidFromDate' column-index='16' column-number='22' schema='EXAMPLE' static-type='DATE' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.ExpiryDate' columnID='10424955681055231185'></plan:id>
+                                                                              <plan:name column='ExpiryDate' column-index='17' column-number='23' schema='EXAMPLE' static-type='DATE' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.LiabilityPartyNameLine1' columnID='13602970435202800505'></plan:id>
+                                                                              <plan:name column='LiabilityPartyNameLine1' column-index='45' column-number='27' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='false'>
+                                                                              <plan:id column='EXAMPLE.A.BtrReferenceId' columnID='10445995951745876522'></plan:id>
+                                                                              <plan:name column='BtrReferenceId' column-index='34' column-number='55' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='false'>
+                                                                              <plan:id column='EXAMPLE.A.BtrIdno' columnID='2246659544244391099'></plan:id>
+                                                                              <plan:name column='BtrIdno' column-index='35' column-number='56' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='false'>
+                                                                              <plan:id column='EXAMPLE.A.ProductCode' columnID='15145451544346854643'></plan:id>
+                                                                              <plan:name column='ProductCode' column-index='3' column-number='57' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='true'>
+                                                                              <plan:id column='EXAMPLE.A.BttCode' columnID='7408867897537919272'></plan:id>
+                                                                              <plan:name column='BttCode' column-index='5' column-number='83' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:column nullable='false'>
+                                                                              <plan:id column='EXAMPLE.A.AAmount' columnID='14831842129813300307'></plan:id>
+                                                                              <plan:name column='AAmount' column-index='12' column-number='20' schema='EXAMPLE' static-type='DECIMAL' type='column-def' view='A'></plan:name>
+                                                                            </plan:column>
+                                                                            <plan:row column='rowid' column-index='46' column-number='104' hidden='true' schema='EXAMPLE' type='column-def' view='A'></plan:row>
+                                                                            <plan:join-filter op='!='>
+                                                                              <plan:left column='AAmount' column-index='12' column-number='12' schema='EXAMPLE' type='column-def' view='A'></plan:left>
+                                                                              <plan:right-expr>
+                                                                                <plan:literal>
+                                                                                  <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:integer'>0</plan:value>
+                                                                                </plan:literal>
+                                                                              </plan:right-expr>
+                                                                            </plan:join-filter>
+                                                                          </plan:template-view>
+                                                                          <plan:distinct>
+                                                                            <plan:project id='11040484816564130054' order=''>
+                                                                              <plan:column column='BtrReferenceId' column-index='47' column-number='0' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='BteReferenceId' column-index='48' column-number='2' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='BteExecutionTimestamp' column-index='49' column-number='3' static-type='DATE_TIME' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='GIdfc' column-index='50' column-number='5' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='GNameLine1' column-index='51' column-number='6' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='GReference' column-index='52' column-number='7' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='GCountry' column-index='53' column-number='8' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='FIdfc' column-index='54' column-number='9' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='FNameLine1' column-index='55' column-number='10' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='FReference' column-index='56' column-number='11' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='FCountry' column-index='57' column-number='12' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='SendingInstitutionIdfc' column-index='58' column-number='13' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='SendingInstitutionNameLine1' column-index='59' column-number='14' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='SendingInstitutionReference' column-index='60' column-number='15' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='SendingInstitutionCountry' column-index='61' column-number='16' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='DIdfc' column-index='62' column-number='17' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='DNameLine1' column-index='63' column-number='18' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='DReference' column-index='64' column-number='19' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='DCountry' column-index='65' column-number='20' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='HNameLine1' column-index='66' column-number='25' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='HCountry' column-index='67' column-number='26' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:column column='HIdfc' column-index='68' column-number='27' static-type='STRING' type='column-def' view='C'></plan:column>
+                                                                              <plan:bind>
+                                                                                <plan:column column='HCountry' column-index='67' column-number='26' type='column-def' view='C'></plan:column>
+                                                                                <plan:expr>
+                                                                                  <plan:column-ref column='HAdressLine3' column-index='74' column-number='99' in-match='false' schema='EXAMPLE' view='A'>
+                                                                                    <plan:qname ltrl='EXAMPLE.A.HAdressLine3' name='EXAMPLE.A.HAdressLine3' prfx='' uri=''></plan:qname>
+                                                                                  </plan:column-ref>
+                                                                                </plan:expr>
+                                                                                <plan:bind>
+                                                                                  <plan:column column='DCountry' column-index='65' column-number='20' type='column-def' view='C'></plan:column>
+                                                                                  <plan:expr>
+                                                                                    <plan:column-ref column='DAdressLine3' column-index='73' column-number='82' in-match='false' schema='EXAMPLE' view='A'>
+                                                                                      <plan:qname ltrl='EXAMPLE.A.DAdressLine3' name='EXAMPLE.A.DAdressLine3' prfx='' uri=''></plan:qname>
+                                                                                    </plan:column-ref>
+                                                                                  </plan:expr>
+                                                                                  <plan:bind>
+                                                                                    <plan:column column='SendingInstitutionCountry' column-index='61' column-number='16' type='column-def' view='C'></plan:column>
+                                                                                    <plan:expr>
+                                                                                      <plan:column-ref column='SendingInstitutionAdressLine3' column-index='72' column-number='77' in-match='false' schema='EXAMPLE' view='A'>
+                                                                                        <plan:qname ltrl='EXAMPLE.A.SendingInstitutionAdressLine3' name='EXAMPLE.A.SendingInstitutionAdressLine3' prfx='' uri=''></plan:qname>
+                                                                                      </plan:column-ref>
+                                                                                    </plan:expr>
+                                                                                    <plan:bind>
+                                                                                      <plan:column column='FCountry' column-index='57' column-number='12' type='column-def' view='C'></plan:column>
+                                                                                      <plan:expr>
+                                                                                        <plan:column-ref column='FAdressLine3' column-index='70' column-number='61' in-match='false' schema='EXAMPLE' view='A'>
+                                                                                          <plan:qname ltrl='EXAMPLE.A.FAdressLine3' name='EXAMPLE.A.FAdressLine3' prfx='' uri=''></plan:qname>
+                                                                                        </plan:column-ref>
+                                                                                      </plan:expr>
+                                                                                      <plan:bind>
+                                                                                        <plan:column column='GCountry' column-index='53' column-number='8' type='column-def' view='C'></plan:column>
+                                                                                        <plan:expr>
+                                                                                          <plan:column-ref column='GAdressLine3' column-index='71' column-number='69' in-match='false' schema='EXAMPLE' view='A'>
+                                                                                            <plan:qname ltrl='EXAMPLE.A.GAdressLine3' name='EXAMPLE.A.GAdressLine3' prfx='' uri=''></plan:qname>
+                                                                                          </plan:column-ref>
+                                                                                        </plan:expr>
+                                                                                        <plan:template-view allNullable='false' id='8726891356250655372' iri='http://marklogic.com/view/EXAMPLE/A' order='46' schemaID='7877188029877219628' type='column' viewID='13607306339470133666'>
+                                                                                          <plan:column nullable='false'>
+                                                                                            <plan:id column='EXAMPLE.A.BteReferenceId' columnID='9386446393393778990'></plan:id>
+                                                                                            <plan:name column='BteReferenceId' column-index='48' column-number='1' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.GReference' columnID='9707821804540342938'></plan:id>
+                                                                                            <plan:name column='GReference' column-index='52' column-number='5' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.FReference' columnID='4528122405956630836'></plan:id>
+                                                                                            <plan:name column='FReference' column-index='56' column-number='6' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='false'>
+                                                                                            <plan:id column='EXAMPLE.A.BteExecutionTimestamp' columnID='4009019662701183539'></plan:id>
+                                                                                            <plan:name column='BteExecutionTimestamp' column-index='49' column-number='7' static-type='DATE_TIME' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='false'>
+                                                                                            <plan:id column='EXAMPLE.A.BtrReferenceId' columnID='10445995951745876522'></plan:id>
+                                                                                            <plan:name column='BtrReferenceId' column-index='47' column-number='55' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.FNameLine1' columnID='13243332642765903380'></plan:id>
+                                                                                            <plan:name column='FNameLine1' column-index='55' column-number='60' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.FAdressLine3' columnID='3488268717299209994'></plan:id>
+                                                                                            <plan:name column='FAdressLine3' column-index='70' column-number='61' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.GIdfc' columnID='2814813549499185140'></plan:id>
+                                                                                            <plan:name column='GIdfc' column-index='50' column-number='63' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.GNameLine1' columnID='4588035249472045947'></plan:id>
+                                                                                            <plan:name column='GNameLine1' column-index='51' column-number='65' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.GAdressLine3' columnID='17099239605617651862'></plan:id>
+                                                                                            <plan:name column='GAdressLine3' column-index='71' column-number='69' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.SendingInstitutionIdfc' columnID='17565501019869708816'></plan:id>
+                                                                                            <plan:name column='SendingInstitutionIdfc' column-index='58' column-number='75' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.SendingInstitutionNameLine1' columnID='14991299718928600106'></plan:id>
+                                                                                            <plan:name column='SendingInstitutionNameLine1' column-index='59' column-number='76' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.SendingInstitutionAdressLine3' columnID='2729359607262293272'></plan:id>
+                                                                                            <plan:name column='SendingInstitutionAdressLine3' column-index='72' column-number='77' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.DIdfc' columnID='13122962657381520428'></plan:id>
+                                                                                            <plan:name column='DIdfc' column-index='62' column-number='80' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.DNameLine1' columnID='6927867513614609150'></plan:id>
+                                                                                            <plan:name column='DNameLine1' column-index='63' column-number='81' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.DAdressLine3' columnID='16265848413083659141'></plan:id>
+                                                                                            <plan:name column='DAdressLine3' column-index='73' column-number='82' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.DReference' columnID='17236082246064692497'></plan:id>
+                                                                                            <plan:name column='DReference' column-index='64' column-number='84' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.SendingInstitutionReference' columnID='6852629399260086090'></plan:id>
+                                                                                            <plan:name column='SendingInstitutionReference' column-index='60' column-number='86' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.FIdfc' columnID='16510715811138783468'></plan:id>
+                                                                                            <plan:name column='FIdfc' column-index='54' column-number='94' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.HIdfc' columnID='13967300118063347396'></plan:id>
+                                                                                            <plan:name column='HIdfc' column-index='68' column-number='96' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.HNameLine1' columnID='9377955139469146326'></plan:id>
+                                                                                            <plan:name column='HNameLine1' column-index='66' column-number='98' static-type='STRING' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='true'>
+                                                                                            <plan:id column='EXAMPLE.A.HAdressLine3' columnID='8385567650798426592'></plan:id>
+                                                                                            <plan:name column='HAdressLine3' column-index='74' column-number='99' schema='EXAMPLE' static-type='STRING' type='column-def' view='A'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:column nullable='false'>
+                                                                                            <plan:id column='EXAMPLE.A.IsCRelevant' columnID='1130343295432585828'></plan:id>
+                                                                                            <plan:name column='IsCRelevant' column-index='69' column-number='10' static-type='INT' type='column-def' view='C'></plan:name>
+                                                                                          </plan:column>
+                                                                                          <plan:row column='rowid' column-index='46' column-number='104' hidden='true' schema='EXAMPLE' type='column-def' view='A'></plan:row>
+                                                                                          <plan:join-filter op='='>
+                                                                                            <plan:left column='IsCRelevant' column-index='69' column-number='4' type='column-def' view='C'></plan:left>
+                                                                                            <plan:right-expr>
+                                                                                              <plan:literal>
+                                                                                                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:integer'>1</plan:value>
+                                                                                              </plan:literal>
+                                                                                            </plan:right-expr>
+                                                                                          </plan:join-filter>
+                                                                                        </plan:template-view>
+                                                                                      </plan:bind>
+                                                                                    </plan:bind>
+                                                                                  </plan:bind>
+                                                                                </plan:bind>
+                                                                              </plan:bind>
+                                                                            </plan:project>
+                                                                          </plan:distinct>
+                                                                          <plan:filters>
+                                                                            <plan:join-filter op='='>
+                                                                              <plan:left column='BtrReferenceId' column-index='34' column-number='34' schema='EXAMPLE' type='column-def' view='A'></plan:left>
+                                                                              <plan:right column='BtrReferenceId' column-index='47' column-number='0' type='column-def' view='C'></plan:right>
+                                                                            </plan:join-filter>
+                                                                          </plan:filters>
+                                                                        </plan:join>
+                                                                        <plan:filters>
+                                                                          <plan:join-filter op='='>
+                                                                            <plan:left column='BtrReferenceId' column-index='34' column-number='34' schema='EXAMPLE' type='column-def' view='A'></plan:left>
+                                                                            <plan:right column='BtrReferenceId' column-index='42' column-number='0' type='column-def' view='J'></plan:right>
+                                                                          </plan:join-filter>
+                                                                          <plan:join-filter op='='>
+                                                                            <plan:left column='BteExecutionTimestamp' column-index='38' column-number='38' schema='EXAMPLE' type='column-def' view='A'></plan:left>
+                                                                            <plan:right column='ExecutionTimestamp' column-index='43' column-number='1' type='column-def' view='J'></plan:right>
+                                                                          </plan:join-filter>
+                                                                          <plan:join-filter op='='>
+                                                                            <plan:left column='BtrReferenceId' column-index='42' column-number='0' type='column-def' view='J'></plan:left>
+                                                                            <plan:right-expr>
+                                                                              <plan:literal>
+                                                                                <plan:value xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='xs:string'>NLFG2376796</plan:value>
+                                                                              </plan:literal>
+                                                                            </plan:right-expr>
+                                                                          </plan:join-filter>
+                                                                        </plan:filters>
+                                                                      </plan:join>
+                                                                      <plan:filters></plan:filters>
+                                                                      <plan:ljfilters>
+                                                                        <plan:value-compare op='EQ'>
+                                                                          <plan:expr>
+                                                                            <plan:column-ref column='PartyIdfc' column-index='69' column-number='0' in-match='false' schema='' view='H'>
+                                                                              <plan:qname ltrl='H.PartyIdfc' name='H.PartyIdfc' prfx='' uri=''></plan:qname>
+                                                                            </plan:column-ref>
+                                                                          </plan:expr>
+                                                                          <plan:term>
+                                                                            <plan:column-ref column='HIdfc' column-index='68' column-number='27' in-match='false' schema='' view='C'>
+                                                                              <plan:qname ltrl='C.HIdfc' name='C.HIdfc' prfx='' uri=''></plan:qname>
+                                                                            </plan:column-ref>
+                                                                          </plan:term>
+                                                                        </plan:value-compare>
+                                                                      </plan:ljfilters>
+                                                                    </plan:right-join>
+                                                                    <plan:filters></plan:filters>
+                                                                    <plan:ljfilters>
+                                                                      <plan:value-compare op='EQ'>
+                                                                        <plan:expr>
+                                                                          <plan:column-ref column='PartyIdfc' column-index='71' column-number='0' in-match='false' schema='' view='G'>
+                                                                            <plan:qname ltrl='G.PartyIdfc' name='G.PartyIdfc' prfx='' uri=''></plan:qname>
+                                                                          </plan:column-ref>
+                                                                        </plan:expr>
+                                                                        <plan:term>
+                                                                          <plan:column-ref column='GIdfc' column-index='50' column-number='5' in-match='false' schema='' view='C'>
+                                                                            <plan:qname ltrl='C.GIdfc' name='C.GIdfc' prfx='' uri=''></plan:qname>
+                                                                          </plan:column-ref>
+                                                                        </plan:term>
+                                                                      </plan:value-compare>
+                                                                    </plan:ljfilters>
+                                                                  </plan:right-join>
+                                                                  <plan:filters></plan:filters>
+                                                                  <plan:ljfilters>
+                                                                    <plan:value-compare op='EQ'>
+                                                                      <plan:expr>
+                                                                        <plan:column-ref column='PartyIdfc' column-index='73' column-number='0' in-match='false' schema='' view='F'>
+                                                                          <plan:qname ltrl='F.PartyIdfc' name='F.PartyIdfc' prfx='' uri=''></plan:qname>
+                                                                        </plan:column-ref>
+                                                                      </plan:expr>
+                                                                      <plan:term>
+                                                                        <plan:column-ref column='FIdfc' column-index='54' column-number='9' in-match='false' schema='' view='C'>
+                                                                          <plan:qname ltrl='C.FIdfc' name='C.FIdfc' prfx='' uri=''></plan:qname>
+                                                                        </plan:column-ref>
+                                                                      </plan:term>
+                                                                    </plan:value-compare>
+                                                                  </plan:ljfilters>
+                                                                </plan:right-join>
+                                                                <plan:filters></plan:filters>
+                                                                <plan:ljfilters>
+                                                                  <plan:value-compare op='EQ'>
+                                                                    <plan:expr>
+                                                                      <plan:column-ref column='PartyIdfc' column-index='75' column-number='0' in-match='false' schema='' view='E'>
+                                                                        <plan:qname ltrl='E.PartyIdfc' name='E.PartyIdfc' prfx='' uri=''></plan:qname>
+                                                                      </plan:column-ref>
+                                                                    </plan:expr>
+                                                                    <plan:term>
+                                                                      <plan:column-ref column='SendingInstitutionIdfc' column-index='58' column-number='13' in-match='false' schema='' view='C'>
+                                                                        <plan:qname ltrl='C.SendingInstitutionIdfc' name='C.SendingInstitutionIdfc' prfx='' uri=''></plan:qname>
+                                                                      </plan:column-ref>
+                                                                    </plan:term>
+                                                                  </plan:value-compare>
+                                                                </plan:ljfilters>
+                                                              </plan:right-join>
+                                                              <plan:filters></plan:filters>
+                                                              <plan:ljfilters>
+                                                                <plan:value-compare op='EQ'>
+                                                                  <plan:expr>
+                                                                    <plan:column-ref column='PartyIdfc' column-index='77' column-number='0' in-match='false' schema='' view='D'>
+                                                                      <plan:qname ltrl='D.PartyIdfc' name='D.PartyIdfc' prfx='' uri=''></plan:qname>
+                                                                    </plan:column-ref>
+                                                                  </plan:expr>
+                                                                  <plan:term>
+                                                                    <plan:column-ref column='DIdfc' column-index='62' column-number='17' in-match='false' schema='' view='C'>
+                                                                      <plan:qname ltrl='C.DIdfc' name='C.DIdfc' prfx='' uri=''></plan:qname>
+                                                                    </plan:column-ref>
+                                                                  </plan:term>
+                                                                </plan:value-compare>
+                                                              </plan:ljfilters>
+                                                            </plan:right-join>
+                                                          </plan:bind>
+                                                        </plan:bind>
+                                                      </plan:bind>
+                                                    </plan:bind>
+                                                    <plan:filters></plan:filters>
+                                                    <plan:ljfilters>
+                                                      <plan:value-compare op='EQ'>
+                                                        <plan:expr>
+                                                          <plan:column-ref column='CurrencyTo' column-index='79' column-number='2' in-match='false' schema='EXAMPLE' view='B'>
+                                                            <plan:qname ltrl='EXAMPLE.B.CurrencyTo' name='EXAMPLE.B.CurrencyTo' prfx='' uri=''></plan:qname>
+                                                          </plan:column-ref>
+                                                        </plan:expr>
+                                                        <plan:term>
+                                                          <plan:column-ref column='CurrencyCode' column-index='10' column-number='10' in-match='false' schema='EXAMPLE' view='A'>
+                                                            <plan:qname ltrl='EXAMPLE.A.CurrencyCode' name='EXAMPLE.A.CurrencyCode' prfx='' uri=''></plan:qname>
+                                                          </plan:column-ref>
+                                                        </plan:term>
+                                                      </plan:value-compare>
+                                                    </plan:ljfilters>
+                                                  </plan:right-join>
+                                                </plan:bind>
+                                              </plan:bind>
+                                            </plan:bind>
+                                          </plan:bind>
+                                        </plan:bind>
+                                      </plan:bind>
+                                    </plan:bind>
+                                  </plan:bind>
+                                </plan:bind>
+                              </plan:bind>
+                            </plan:bind>
+                          </plan:bind>
+                        </plan:bind>
+                      </plan:bind>
+                    </plan:bind>
+                  </plan:bind>
+                </plan:bind>
+              </plan:bind>
+            </plan:bind>
+          </plan:bind>
+        </plan:bind>
+      </plan:bind>
+    </plan:project>
+  </plan:select>
+</plan:plan>
+)
+=>map:with("expected",(
+'{"_id":"N", "_name":"select"}',
+'{"_id":"N_1", "_name":"project", "_parent":"N", "column":["0 (ReportDate)", "1 (EXAMPLE.A.IsoCntryId)", "2 (Country)", "3 (EXAMPLE.A.ProductCode)", "4 (Product)", "5 (EXAMPLE.A.BttCode)", "6 (EXAMPLE.A.SubBtrRfid)", "7 (EXAMPLE.A.RelatedSubBtrRfid)", "8 (EXAMPLE.A.BrnCode)", "9 (CountryBrn)", "10 (EXAMPLE.A.CurrencyCode)", "11 (LiabilityAmount)", "12 (EXAMPLE.A.AAmount)", "13 (MiddleRate)", "14 (RateDate)", "15 (AmountEur)", "16 (EXAMPLE.A.ValidFromDate)", "17 (EXAMPLE.A.ExpiryDate)", "18 (H)", "19 (HCountry)", "20 (LiabilityParty)", "21 (G)", "22 (GRef)", "23 (GCountry)", "24 (F)", "25 (FRef)", "26 (FCountry)", "27 (E)", "28 (SendingInstitutionRef)", "29 (SendingInstitutionCountry)", "30 (D)", "31 (DRef)", "32 (DCountry)", "33 (EXAMPLE.A.AgreementType)", "34 (EXAMPLE.A.BtrReferenceId)", "35 (EXAMPLE.A.BtrIdno)", "36 (EXAMPLE.A.BteReferenceId)", "37 (EXAMPLE.A.BteIdno)", "38 (EXAMPLE.A.BteExecutionTimestamp)", "39 (CBteRef)", "40 (CBteTime)", "41 (Warning)"], "id":"17135780847642430483", "order":",singletons(0)"}',
+'{"_id":"N_1_1", "_name":"bind", "_parent":"N_1", "expr":["switch(xs:boolean(\"true\")) case fn:empty(EXAMPLE.B.Middlerate) return \"Exchange Rate Missing\" default return \"\" as Warning", "C.BteExecutionTimestamp as CBteTime", "C.BteReferenceId as CBteRef", "C.DCountry as DCountry", "C.DReference as DRef", "switch(xs:boolean(\"true\")) case fn:empty(D.NameLine1) return C.DNameLine1 default return D.NameLine1 as D", "C.SendingInstitutionCountry as SendingInstitutionCountry", "C.SendingInstitutionReference as SendingInstitutionRef", "switch(xs:boolean(\"true\")) case fn:empty(E.NameLine1) return C.SendingInstitutionNameLine1 default return E.NameLine1 as E", "C.FCountry as FCountry", "C.FReference as FRef", "switch(xs:boolean(\"true\")) case fn:empty(F.NameLine1) return C.FNameLine1 default return F.NameLine1 as F", "C.GCountry as GCountry", "C.GReference as GRef", "switch(xs:boolean(\"true\")) case fn:empty(G.NameLine1) return C.GNameLine1 default return G.NameLine1 as G", "EXAMPLE.A.LiabilityPartyNameLine1 as LiabilityParty", "C.HCountry as HCountry", "switch(xs:boolean(\"true\")) case fn:empty(H.NameLine1) return C.HNameLine1 default return H.NameLine1 as H", "switch(xs:boolean(\"true\")) case fn:empty(EXAMPLE.B.Middlerate) or EXAMPLE.B.Middlerate eq 0 return () default return EXAMPLE.A.LiabilityAmountAfterDiscount div EXAMPLE.B.Middlerate as AmountEur", "EXAMPLE.B.Date as RateDate", "EXAMPLE.B.Middlerate as MiddleRate", "EXAMPLE.A.LiabilityAmountAfterDiscount as LiabilityAmount"]}',
+'{"_id":"N_1_1_1", "_name":"right-hash-join", "_parent":"N_1_1", "condition":"79=10", "id":"9853416769004552522", "join-filter":"EXAMPLE.B.CurrencyTo eq EXAMPLE.A.CurrencyCode", "order":",singletons(0)", "sparql-semantics":"false"}',
+'{"_id":"N_1_1_1_L", "_name":"project", "_parent":"N_1_1_1", "_parentLabel":"left", "column":["79 (EXAMPLE.B.CurrencyTo)", "80 (EXAMPLE.B.Middlerate)", "81 (EXAMPLE.B.Date)"], "id":"9614305299914322992", "order":""}',
+'{"_id":"N_1_1_1_L_1", "_name":"bloom-join", "_parent":"N_1_1_1_L", "condition":"82=85 and 83=81", "id":"11138499484179249650", "join-filter":["EXAMPLE.B.CountryPair=B2.CountryPair", "EXAMPLE.B.Date=B2.CDate"], "order":"86"}',
+'{"_id":"N_1_1_1_L_1_L", "_name":"project", "_parent":"N_1_1_1_L_1", "_parentLabel":"left", "column":["82 (B2.CountryPair)", "83 (B2.CDate)"], "id":"4113909148524426201", "order":"82"}',
+'{"_id":"N_1_1_1_L_1_L_1", "_name":"group", "_parent":"N_1_1_1_L_1_L", "aggregate":["max(B2.Date) as B2.CDate", "sample(B2.CountryPair) as B2.CountryPair"], "id":"7733664309655135513", "num-sorted":"0", "order":"82", "order-spec":"1 (B2.CountryPair)", "type":"sort-group"}',
+'{"_id":"N_1_1_1_L_1_L_1_1", "_name":"right-sort-merge-join", "_parent":"N_1_1_1_L_1_L_1", "condition":"2=2", "id":"9699563205349647461", "left-num-sorted":"0", "order":"2", "right-num-sorted":"1", "sparql-semantics":"false"}',
+'{"_id":"N_1_1_1_L_1_L_1_1_L", "_name":"triple-index", "_parent":"N_1_1_1_L_1_L_1_1", "_parentLabel":"left", "id":"4451019118621066769", "is-column":"true", "object":"1 (B2.CountryPair)", "order":"1,2", "permutation":"POS", "predicate":"EXAMPLE.B.CountryPair (15537527196737741554)", "subject":"2 (B2.rowid)"}',
+'{"_id":"N_1_1_1_L_1_L_1_1_R", "_name":"template-view", "_parent":"N_1_1_1_L_1_L_1_1", "_parentLabel":"right", "allNullable":"true", "column":"0 (B2.Date) [nullable]", "id":"13096038055045657709", "iri":"http://marklogic.com/view/EXAMPLE/B", "order":"2", "row":"2 (B2.rowid)", "schemaID":"7877188029877219628", "type":"row", "viewID":"9817162264571137580"}',
+'{"_id":"N_1_1_1_L_1_R", "_name":"template-view", "_parent":"N_1_1_1_L_1", "_parentLabel":"right", "allNullable":"false", "column":["81 (EXAMPLE.B.Date) [nullable]", "79 (EXAMPLE.B.CurrencyTo) [nullable]", "80 (EXAMPLE.B.Middlerate) [nullable]", "84 (EXAMPLE.B.Country)", "85 (EXAMPLE.B.CountryPair) [nullable]"], "id":"2763520012678093236", "iri":"http://marklogic.com/view/EXAMPLE/B", "order":"86", "row":"86 (EXAMPLE.B.rowid)", "schemaID":"7877188029877219628", "type":"row", "viewID":"9817162264571137580"}',
+'{"_id":"N_1_1_1_L_1_R_1", "_name":"join-filter", "_parent":"N_1_1_1_L_1_R", "condition":"EXAMPLE.B.Country=\"928\"", "left":{"column":"Country", "column-index":"84", "schema":"EXAMPLE", "type":"column-def", "view":"B"}, "op":"="}',
+'{"_id":"N_1_1_1_R", "_name":"bind", "_parent":"N_1_1_1", "_parentLabel":"right", "expr":["EXAMPLE.A.IsoCntryId || \"-\" || EXAMPLE.A.BrnCode as CountryBrn", "switch(xs:boolean(\"true\")) case EXAMPLE.A.ProductCode eq \"II\" return \"Import Collection\" case EXAMPLE.A.ProductCode eq \"IE\" return \"Export Collection\" case EXAMPLE.A.ProductCode eq \"RI\" return \"Import LC\" case EXAMPLE.A.ProductCode eq \"RE\" return \"Export LC\" case EXAMPLE.A.ProductCode eq \"GI\" return \"Outgoing Guarantee\" case EXAMPLE.A.ProductCode eq \"GU\" return \"Incoming Guarantee\" case EXAMPLE.A.ProductCode eq \"RS\" return \"Reimbursement Authorisation\" default return \"Other\" as Product", "switch(xs:boolean(\"true\")) case EXAMPLE.A.IsoCntryId eq \"156\" return \"CN\" case EXAMPLE.A.IsoCntryId eq \"276\" return \"EU\" case EXAMPLE.A.IsoCntryId eq \"344\" return \"HK\" case EXAMPLE.A.IsoCntryId eq \"702\" return \"SG\" case EXAMPLE.A.IsoCntryId eq \"840\" return \"US\" case EXAMPLE.A.IsoCntryId eq \"928\" return \"NL\" default return \"Other\" as Country", "\"asd\" as ReportDate"]}',
+'{"_id":"N_1_1_1_R_1", "_name":"right-hash-join", "_parent":"N_1_1_1_R", "condition":"77=62", "id":"16070242304967024886", "join-filter":"D.PartyIdfc eq C.DIdfc", "order":"", "sparql-semantics":"false"}',
+'{"_id":"N_1_1_1_R_1_L", "_name":"project", "_parent":"N_1_1_1_R_1", "_parentLabel":"left", "column":["77 (D.PartyIdfc)", "78 (D.NameLine1)"], "id":"17190678049729668290", "order":""}',
+'{"_id":"N_1_1_1_R_1_L_1", "_name":"template-view", "_parent":"N_1_1_1_R_1_L", "allNullable":"true", "column":["77 (D.PartyIdfc) [nullable]", "78 (D.NameLine1) [nullable]"], "id":"3313591486575183522", "iri":"http://marklogic.com/view/EXAMPLE/I", "order":"79", "row":"79 (EXAMPLE.I.rowid)", "schemaID":"7877188029877219628", "type":"row", "viewID":"13057747591221220163"}',
+'{"_id":"N_1_1_1_R_1_R", "_name":"right-hash-join", "_parent":"N_1_1_1_R_1", "_parentLabel":"right", "condition":"75=58", "id":"7632087219710475963", "join-filter":"E.PartyIdfc eq C.SendingInstitutionIdfc", "order":"", "sparql-semantics":"false"}',
+'{"_id":"N_1_1_1_R_1_R_L", "_name":"project", "_parent":"N_1_1_1_R_1_R", "_parentLabel":"left", "column":["75 (E.PartyIdfc)", "76 (E.NameLine1)"], "id":"7878926515319585526", "order":""}',
+'{"_id":"N_1_1_1_R_1_R_L_1", "_name":"template-view", "_parent":"N_1_1_1_R_1_R_L", "allNullable":"true", "column":["75 (E.PartyIdfc) [nullable]", "76 (E.NameLine1) [nullable]"], "id":"6914002615831912798", "iri":"http://marklogic.com/view/EXAMPLE/I", "order":"77", "row":"77 (EXAMPLE.I.rowid)", "schemaID":"7877188029877219628", "type":"column", "viewID":"13057747591221220163"}',
+'{"_id":"N_1_1_1_R_1_R_R", "_name":"right-hash-join", "_parent":"N_1_1_1_R_1_R", "_parentLabel":"right", "condition":"73=54", "id":"18341585133943467386", "join-filter":"F.PartyIdfc eq C.FIdfc", "order":"", "sparql-semantics":"false"}',
+'{"_id":"N_1_1_1_R_1_R_R_L", "_name":"project", "_parent":"N_1_1_1_R_1_R_R", "_parentLabel":"left", "column":["73 (F.PartyIdfc)", "74 (F.NameLine1)"], "id":"2875280771221126754", "order":""}',
+'{"_id":"N_1_1_1_R_1_R_R_L_1", "_name":"template-view", "_parent":"N_1_1_1_R_1_R_R_L", "allNullable":"true", "column":["73 (F.PartyIdfc) [nullable]", "74 (F.NameLine1) [nullable]"], "id":"4680089565021629011", "iri":"http://marklogic.com/view/EXAMPLE/I", "order":"75", "row":"75 (EXAMPLE.I.rowid)", "schemaID":"7877188029877219628", "type":"row", "viewID":"13057747591221220163"}',
+'{"_id":"N_1_1_1_R_1_R_R_R", "_name":"parallel-right-hash-join", "_parent":"N_1_1_1_R_1_R_R", "_parentLabel":"right", "condition":"71=50", "id":"14642695399846043972", "join-filter":"G.PartyIdfc eq C.GIdfc", "order":"", "sparql-semantics":"false"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_L", "_name":"project", "_parent":"N_1_1_1_R_1_R_R_R", "_parentLabel":"left", "column":["71 (G.PartyIdfc)", "72 (G.NameLine1)"], "id":"18104214828596526827", "order":""}',
+'{"_id":"N_1_1_1_R_1_R_R_R_L_1", "_name":"template-view", "_parent":"N_1_1_1_R_1_R_R_R_L", "allNullable":"true", "column":["71 (G.PartyIdfc) [nullable]", "72 (G.NameLine1) [nullable]"], "id":"17602232926918786252", "iri":"http://marklogic.com/view/EXAMPLE/I", "order":"73", "row":"73 (EXAMPLE.I.rowid)", "schemaID":"7877188029877219628", "type":"row", "viewID":"13057747591221220163"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R", "_name":"parallel-right-hash-join", "_parent":"N_1_1_1_R_1_R_R_R", "_parentLabel":"right", "condition":"69=68", "id":"16605679826298326321", "join-filter":"H.PartyIdfc eq C.HIdfc", "order":"", "sparql-semantics":"false"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_L", "_name":"project", "_parent":"N_1_1_1_R_1_R_R_R_R", "_parentLabel":"left", "column":["69 (H.PartyIdfc)", "70 (H.NameLine1)"], "id":"1771860535108147997", "order":""}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_L_1", "_name":"template-view", "_parent":"N_1_1_1_R_1_R_R_R_R_L", "allNullable":"true", "column":["69 (H.PartyIdfc) [nullable]", "70 (H.NameLine1) [nullable]"], "id":"17076666854041483359", "iri":"http://marklogic.com/view/EXAMPLE/I", "order":"71", "row":"71 (EXAMPLE.I.rowid)", "schemaID":"7877188029877219628", "type":"column", "viewID":"13057747591221220163"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R", "_name":"hash-join", "_parent":"N_1_1_1_R_1_R_R_R_R", "_parentLabel":"right", "condition":"42=34 and 43=38", "id":"6493596891509412419", "join-filter":["EXAMPLE.A.BtrReferenceId=J.BtrReferenceId", "EXAMPLE.A.BteExecutionTimestamp=J.ExecutionTimestamp", "J.BtrReferenceId=\"NLFG2376796\""], "order":""}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_L", "_name":"project", "_parent":"N_1_1_1_R_1_R_R_R_R_R", "_parentLabel":"left", "column":["42 (J.BtrReferenceId)", "43 (J.ExecutionTimestamp)"], "id":"708045292281126464", "order":""}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_L_1", "_name":"group", "_parent":"N_1_1_1_R_1_R_R_R_R_R_L", "aggregate":["max(EXAMPLE.A.BteExecutionTimestamp) as J.ExecutionTimestamp", "sample(EXAMPLE.A.BtrReferenceId) as J.BtrReferenceId"], "id":"721998238538737519", "order":"", "order-spec":"4 (EXAMPLE.A.BtrReferenceId)", "type":"hash-group"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_L_1_1", "_name":"template-view", "_parent":"N_1_1_1_R_1_R_R_R_R_R_L_1", "allNullable":"false", "column":["1 (EXAMPLE.A.BteStatus) [nullable]", "2 (EXAMPLE.A.BteExecutionTimestamp)", "4 (EXAMPLE.A.BtrReferenceId)", "3 (EXAMPLE.A.BteExecutionDate)", "0 (EXAMPLE.A.BteCode)"], "id":"13664369577307752416", "iri":"http://marklogic.com/view/EXAMPLE/A", "order":"5", "row":"5 (EXAMPLE.A.rowid)", "schemaID":"7877188029877219628", "type":"column", "viewID":"13607306339470133666"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_L_1_1_1", "_name":"join-filter", "_parent":"N_1_1_1_R_1_R_R_R_R_R_L_1_1", "condition":"EXAMPLE.A.BteStatus=\"0\"", "left":{"column":"BteStatus", "column-index":"1", "schema":"EXAMPLE", "type":"column-def", "view":"A"}, "null-status":"or-null", "op":"="}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_L_1_1_2", "_name":"join-filter", "_parent":"N_1_1_1_R_1_R_R_R_R_R_L_1_1", "condition":"EXAMPLE.A.BteExecutionDate<=xs:date(\"2021-01-08\")", "left":{"column":"BteExecutionDate", "column-index":"3", "schema":"EXAMPLE", "type":"column-def", "view":"A"}, "op":"<="}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_L_1_1_3", "_name":"join-filter", "_parent":"N_1_1_1_R_1_R_R_R_R_R_L_1_1", "condition":"EXAMPLE.A.BteCodeuniversal_ne(\"IRB\", \"CRB\", \"IBP\", \"QAC\", \"ATC\", \"ATD\", \"ACG\", \"TRC\", \"SCG\")", "left":{"column":"BteCode", "column-index":"0", "schema":"EXAMPLE", "type":"column-def", "view":"A"}, "op":"universal_ne"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_R", "_name":"hash-join", "_parent":"N_1_1_1_R_1_R_R_R_R_R", "_parentLabel":"right", "condition":"34=47", "id":"15053003101821340343", "join-filter":"EXAMPLE.A.BtrReferenceId=C.BtrReferenceId", "order":""}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_R_L", "_name":"template-view", "_parent":"N_1_1_1_R_1_R_R_R_R_R_R", "_parentLabel":"left", "allNullable":"false", "column":["36 (EXAMPLE.A.BteReferenceId)", "37 (EXAMPLE.A.BteIdno)", "38 (EXAMPLE.A.BteExecutionTimestamp)", "1 (EXAMPLE.A.IsoCntryId) [nullable]", "6 (EXAMPLE.A.SubBtrRfid) [nullable]", "7 (EXAMPLE.A.RelatedSubBtrRfid) [nullable]", "8 (EXAMPLE.A.BrnCode) [nullable]", "33 (EXAMPLE.A.AgreementType) [nullable]", "10 (EXAMPLE.A.CurrencyCode) [nullable]", "44 (EXAMPLE.A.LiabilityAmountAfterDiscount) [nullable]", "16 (EXAMPLE.A.ValidFromDate) [nullable]", "17 (EXAMPLE.A.ExpiryDate) [nullable]", "45 (EXAMPLE.A.LiabilityPartyNameLine1) [nullable]", "34 (EXAMPLE.A.BtrReferenceId)", "35 (EXAMPLE.A.BtrIdno)", "3 (EXAMPLE.A.ProductCode)", "5 (EXAMPLE.A.BttCode) [nullable]", "12 (EXAMPLE.A.AAmount)"], "id":"17720174463526255926", "iri":"http://marklogic.com/view/EXAMPLE/A", "order":"46", "row":"46 (EXAMPLE.A.rowid)", "schemaID":"7877188029877219628", "type":"column", "viewID":"13607306339470133666"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_R_L_1", "_name":"join-filter", "_parent":"N_1_1_1_R_1_R_R_R_R_R_R_L", "condition":"EXAMPLE.A.AAmount!=0", "left":{"column":"AAmount", "column-index":"12", "schema":"EXAMPLE", "type":"column-def", "view":"A"}, "op":"!="}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_R_R", "_name":"distinct", "_parent":"N_1_1_1_R_1_R_R_R_R_R_R", "_parentLabel":"right"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_R_R_1", "_name":"project", "_parent":"N_1_1_1_R_1_R_R_R_R_R_R_R", "column":["47 (C.BtrReferenceId)", "48 (C.BteReferenceId)", "49 (C.BteExecutionTimestamp)", "50 (C.GIdfc)", "51 (C.GNameLine1)", "52 (C.GReference)", "53 (C.GCountry)", "54 (C.FIdfc)", "55 (C.FNameLine1)", "56 (C.FReference)", "57 (C.FCountry)", "58 (C.SendingInstitutionIdfc)", "59 (C.SendingInstitutionNameLine1)", "60 (C.SendingInstitutionReference)", "61 (C.SendingInstitutionCountry)", "62 (C.DIdfc)", "63 (C.DNameLine1)", "64 (C.DReference)", "65 (C.DCountry)", "66 (C.HNameLine1)", "67 (C.HCountry)", "68 (C.HIdfc)"], "id":"11040484816564130054", "order":""}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_R_R_1_1", "_name":"bind", "_parent":"N_1_1_1_R_1_R_R_R_R_R_R_R_1", "expr":["EXAMPLE.A.HAdressLine3 as C.HCountry", "EXAMPLE.A.DAdressLine3 as C.DCountry", "EXAMPLE.A.SendingInstitutionAdressLine3 as C.SendingInstitutionCountry", "EXAMPLE.A.FAdressLine3 as C.FCountry", "EXAMPLE.A.GAdressLine3 as C.GCountry"]}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_R_R_1_1_1", "_name":"template-view", "_parent":"N_1_1_1_R_1_R_R_R_R_R_R_R_1_1", "allNullable":"false", "column":["48 (C.BteReferenceId)", "52 (C.GReference) [nullable]", "56 (C.FReference) [nullable]", "49 (C.BteExecutionTimestamp)", "47 (C.BtrReferenceId)", "55 (C.FNameLine1) [nullable]", "70 (EXAMPLE.A.FAdressLine3) [nullable]", "50 (C.GIdfc) [nullable]", "51 (C.GNameLine1) [nullable]", "71 (EXAMPLE.A.GAdressLine3) [nullable]", "58 (C.SendingInstitutionIdfc) [nullable]", "59 (C.SendingInstitutionNameLine1) [nullable]", "72 (EXAMPLE.A.SendingInstitutionAdressLine3) [nullable]", "62 (C.DIdfc) [nullable]", "63 (C.DNameLine1) [nullable]", "73 (EXAMPLE.A.DAdressLine3) [nullable]", "64 (C.DReference) [nullable]", "60 (C.SendingInstitutionReference) [nullable]", "54 (C.FIdfc) [nullable]", "68 (C.HIdfc) [nullable]", "66 (C.HNameLine1) [nullable]", "74 (EXAMPLE.A.HAdressLine3) [nullable]", "69 (C.IsCRelevant)"], "id":"8726891356250655372", "iri":"http://marklogic.com/view/EXAMPLE/A", "order":"46", "row":"46 (EXAMPLE.A.rowid)", "schemaID":"7877188029877219628", "type":"column", "viewID":"13607306339470133666"}',
+'{"_id":"N_1_1_1_R_1_R_R_R_R_R_R_R_1_1_1_1", "_name":"join-filter", "_parent":"N_1_1_1_R_1_R_R_R_R_R_R_R_1_1_1", "condition":"C.IsCRelevant=1", "left":{"column":"IsCRelevant", "column-index":"69", "type":"column-def", "view":"C"}, "op":"="}'
 ))
 };
