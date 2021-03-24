@@ -1,8 +1,8 @@
-** Query Plan Viewer
+# Query Plan Viewer
 
 The Query Plan Viewer displays in a graphical interface optimization and diagnostic plans produced by the MarkLogic Optic and SPARQL engine.
 
-** Setup
+## Setup
 
 On the host where MarkLogic server is running, execute:
 
