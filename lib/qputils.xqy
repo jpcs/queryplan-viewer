@@ -442,11 +442,23 @@ declare function makeLiteralGraph($node as element(), $id as xs:string)
 
 declare function makeJoinFilterExpr($node as element())
 {
-  makeGraphNodeExpr($node/(plan:left|plan:left-graph-node/plan:graph-node)) ||
-  $node/@op ||
-  (if($node/(plan:right|plan:right-graph-node))
-  then makeGraphNodeExpr($node/(plan:right|plan:right-graph-node/plan:graph-node))
-  else makeExpr($node/plan:right-expr/plan:*))
+  let $op := if($node/@op) then (
+      makeGraphNodeExpr($node/(plan:left|plan:left-graph-node/plan:graph-node)) ||
+      $node/@op ||
+      (if($node/(plan:right|plan:right-graph-node))
+      then makeGraphNodeExpr($node/(plan:right|plan:right-graph-node/plan:graph-node))
+      else makeExpr($node/plan:right-expr/plan:*))
+    ) else ()
+  let $null := if($node/@null-status = ("not-null","is-null","or-null")) then (
+      if($node/@null-status = "not-null") then "fn:exists(" else "fn:empty(" ||
+      makeGraphNodeExpr($node/(plan:left|plan:left-graph-node/plan:graph-node)) ||
+      ")"
+    ) else ()
+  return (
+    $op || 
+    (if($op and $null) then " or " else ()) ||
+    $null
+  )
 };
 
 declare function makeJoinFilterGraph($node as element(), $id as xs:string)
