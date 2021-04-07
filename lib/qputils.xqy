@@ -170,7 +170,9 @@ declare function makeExpr($node)
   case exists($node/self::plan:aggregate-function) return (
     $node/@name || "(" ||
     (if($node/@distinct = "true") then "distinct " else ()) ||
-    (if(empty($node/plan:*)) then "*" else makeExpr($node/plan:*)) ||
+    (if(empty($node/plan:*)) then "*"
+     else if($node/plan:expr) then makeExpr($node/plan:expr/plan:*)
+     else makeExpr($node/plan:*)) ||
     ")"
   )
   (: Function Calls :)
