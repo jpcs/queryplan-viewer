@@ -605,6 +605,10 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
     if(local-name($node) = ("sql-exists-join","sparql-exists-join")
       and fn:not(fn:contains($node/@type,"exists")))
     then string($node/@type) || "-exists-join"
+    (: Historically in join @type didn't mention "in" :)
+    else if(local-name($node) = ("sql-in-join")
+      and fn:not(fn:contains($node/@type,"in")))
+    then string($node/@type) || "-in-join"
     else string($node/(@type|@join-type)))
   =>(function($m) {
     if(starts-with(local-name($node),"sql-")) then $m=>map:with("lang","sql")
