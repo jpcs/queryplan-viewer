@@ -649,28 +649,59 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
       if(contains($node/@type,"right")) then $node!((plan:optional|plan:exists|plan:negation-expr)/plan:*,plan:expr/plan:*)
       else $node!(plan:expr/plan:*,(plan:optional|plan:exists|plan:negation-expr)/plan:*)
     )
-    default return $node/*[not(local-name(.) = ("hash","scatter"))]
+    default return $node/*[not(local-name(.) = ("hash","scatter","left-sort","right-sort"))]
   let $lhs := $subs[1]
   let $lhsID := $id || "_L"
   let $rhs := $subs[2]
   let $rhsID := $id || "_R"
   return (
-    let $maps := makeGraph($lhs,$lhsID)
-    return (
-      head($maps)=>map:with("_parent",$id)=>map:with("_parentLabel","left"),
-      tail($maps)
-    ),
-    let $maps := makeGraph($rhs,$rhsID)
-    return (
-      head($maps)=>map:with("_parent",$id)=>map:with("_parentLabel","right"),
-      tail($maps)
-    )
+      makeEmbeddedSortGraph($node/plan:left-sort,$lhs,$id,$lhsID),
+      makeEmbeddedSortGraph($node/plan:right-sort,$rhs,$id,$rhsID)
   )
 };
 
 declare function map-append($map,$key,$val)
 {
   $map=>map:with($key,($map=>map:get($key),$val))
+};
+
+declare function makeEmbeddedSortGraph($node as element()?, $children as element()*, $parentID as xs:string, $id as xs:string)
+{
+  if($node) then (
+    map:map()
+    =>map:with("_id",$id)
+    =>map:with("_parent",$parentID)
+    =>map:with("_name","sort")
+    =>attrs($node)
+    =>(
+      fn:fold-left(function($map,$n) {
+        $map=>map-append("order-spec",
+          (if($n/plan:graph-node) then makeGraphNodeInfo($n/plan:graph-node) else makeGraphNodeInfo($n)) ||
+          (if($n/@descending = "true") then " [desc]" else "") ||
+          (if($n/@nulls-first = "true") then " [nulls-first]" else ""))
+      },?,$node/plan:order-spec)
+    )(),
+
+    for $c at $pos in $children
+    let $newID := concat($id, "_", $pos)
+    return (
+      let $maps := makeGraph($c,$newID)
+      return (
+        head($maps)=>map:with("_parent",$id),
+        tail($maps)
+      )
+    )
+  ) else (
+    for $c at $pos in $children
+    let $newID := concat($parentID, "_", $pos)
+    return (
+      let $maps := makeGraph($c,$newID)
+      return (
+        head($maps)=>map:with("_parent",$parentID),
+        tail($maps)
+      )
+    )
+  )
 };
 
 declare function makeGroupGraph($node as element(), $id as xs:string)
@@ -702,17 +733,8 @@ declare function makeGroupGraph($node as element(), $id as xs:string)
     },?,$node/plan:aggregate-bind)
   )(),
 
-  let $children := $node/*[not(self::plan:order-spec|self::plan:aggregate-bind|self::plan:grouping-set)]
-
-  for $c at $pos in $children
-  let $newID := concat($id, "_", $pos)
-  return (
-    let $maps := makeGraph($c,$newID)
-    return (
-      head($maps)=>map:with("_parent",$id),
-      tail($maps)
-    )
-  )
+  let $children := $node/*[not(self::plan:order-spec|self::plan:aggregate-bind|self::plan:grouping-set|self::plan:sort)]
+  return makeEmbeddedSortGraph($node/plan:sort,$children,$id,concat($id,"_1"))
 };
 
 declare function gatherBinds($map, $node as element())

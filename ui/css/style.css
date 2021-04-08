@@ -54,10 +54,19 @@ background: #F8F8F8;
     font-size: 4pt;
 }
 
-.node rect {   
+.node > rect {
     stroke-width: 1px;
-    stroke:#DCDCDC;
     fill-opacity: 1.0;
+}
+
+.node.enode > rect {
+    stroke:#DDDDDD;
+    fill: #FFFFFF;
+}
+
+.node.dnode > rect {
+    stroke: #9999DD;
+    fill: #EEEEFF;
 }
 
 .node-title {

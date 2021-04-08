@@ -822,10 +822,10 @@ function qv_showPlan(containerid, json) {
         .enter().append("g")
         .attr("id", function (d) {  return "node_" + d.data.id })
         .attr("visibility", "visible")
-        .attr("class", function (d) {
-            return "node" +
-                (d.children ? " node--internal" : " node--leaf");
-        })
+        .attr("class", d => "node" +
+              (d.children ? " node--internal" : " node--leaf") +
+              (d.data.data.dnode==="true" ? " dnode" : " enode")
+             )
         .attr("transform", function (d) {
             return "translate(" + (d.x) + "," + d.y + ")";
         });
