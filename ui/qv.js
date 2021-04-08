@@ -834,7 +834,6 @@ function qv_showPlan(containerid, json) {
     node.append("rect")
         .attr("y", 0)
         .attr("rx",5)
-        .attr("fill", "white")
         .attr("width", qv_box.width)
         .attr("height", d => qv_nodeHeight(d.data.data));
        
