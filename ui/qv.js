@@ -213,7 +213,6 @@ function qv_scanLogForPlans  (containerid, fileid, startid, traceid,viewerid) {
     fetch(url).then(response => {
         if (!response.ok) {
           response.json().then(data => {
-            console.log(data)
             qv_displayError(response.statusText, data.errorResponse);
             })
           
@@ -235,7 +234,7 @@ function qv_loadFromLog  (viewerid,file, id, type) {
     fetch(url).then(response => {
         if (!response.ok) {
             response.json().then(data => {
-              console.log(data)
+            
               qv_displayError(response.statusText, data.errorResponse);
               })
             
@@ -302,8 +301,10 @@ function qv_tooltipContents(parent, data, doFilter) {
 
         var table = parent.append("table");
         var display = (key) => {
+            if (key != "costFunctionValues") {
             qv_tooltipTableRow(table,key,data[key]);
             empty = false;
+            }
         }
 
         qv_tooltipPriority.filter(seenFilter).forEach(display);
@@ -490,6 +491,50 @@ function qv_displayCost(metrics, cost, maxcost) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Line graph
+
+function qv_lineGraph (node) {
+    console.log ("-----")
+  
+  var data  = node.data.data
+  var paddingTop = qv_nodeTextHeight(data) + qv_nodeCostHeight(data) 
+  var paddingSide = 10;
+  var height = 100;
+  
+  var values = data.costFunctionValues
+  
+  var root = d3.create("svg:g")
+  if (values) {
+    
+    var x = d3.scaleLinear()
+        .domain([1, values.length])
+        .range([ paddingSide, qv_box.width - paddingSide]);
+
+    //    root.append("g")
+    //    .attr("transform", "translate(0," + height + ")")
+    //    .call(d3.axisBottom(x));
+
+    var y = d3.scaleLinear()
+        .domain([0, d3.max(values, function(d) { return +d; })])
+        .range([ height , paddingTop ]);
+    //    root.append("g")
+    //    .call(d3.axisLeft(y));
+
+    // Add the line
+    root.append("path")
+        .datum(values)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1)
+        .attr("d", d3.line()
+        .x(function(d,i) {  return x(i) })
+        .y(function(d) { return y(d) })
+        )
+    
+  }  
+  return root.node()
+}
+////////////////////////////////////////////////////////////////////////////////
 // Node display
 
 function qv_title(div, title, tooltip) {
@@ -647,12 +692,15 @@ function qv_node(node) {
     qv_boxInfo
         .filter((key) => data.hasOwnProperty(key))
         .forEach((key) =>  qv_nodeRow(table,key,data[key],data[key],false));
+     
+     
     return div.node()
 }
 
 function qv_nodeTextHeight(data) {
     var linesize = qv_box.lineHeight;
     var size = linesize * 3;
+    
     qv_cardInfo
         .filter((key) => data.hasOwnProperty(key))
         .forEach((key) => { size += qv_nodeLines(data[key]) * linesize });
@@ -671,8 +719,13 @@ function qv_nodeCostHeight(data) {
     return size
 }
 
+function qv_nodeGraphHeight(data) {
+    size=0
+    if (data.hasOwnProperty("costFunctionValues")) size=100
+    return size
+}   
 function qv_nodeHeight(data) {
-    return qv_nodeTextHeight(data) + qv_nodeCostHeight(data);
+    return qv_nodeTextHeight(data) + qv_nodeCostHeight(data) + qv_nodeGraphHeight(data)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -824,7 +877,7 @@ function qv_showPlan(containerid, json) {
         .attr("visibility", "visible")
         .attr("class", d => "node" +
               (d.children ? " node--internal" : " node--leaf") +
-              (d.data.data.dnode==="true" ? " dnode" : " enode")
+              ((d.data.data.dnode==="true"  || d.data.data.best==="true" ) ? " dnode" : " enode")
              )
         .attr("transform", function (d) {
             return "translate(" + (d.x) + "," + d.y + ")";
@@ -836,7 +889,8 @@ function qv_showPlan(containerid, json) {
         .attr("rx",5)
         .attr("width", qv_box.width)
         .attr("height", d => qv_nodeHeight(d.data.data));
-       
+    
+      
     // add cost banner
     var maxcost = null;
     nodes.descendants().forEach(element => {
@@ -853,11 +907,15 @@ function qv_showPlan(containerid, json) {
         qv_debug(cost);
         return qv_displayCost(["ltime","rtime","lmem","rmem","count"],cost,maxcost);
     });
+
   
+    
     // add text box
     node.append("foreignObject")
         .attr("y", d => qv_nodeCostHeight(d.data.data))
         .attr("height", d => qv_nodeTextHeight(d.data.data))
         .attr("width", qv_box.width)
         .append(qv_node);
+
+    node.append(qv_lineGraph);     
 }
