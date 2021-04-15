@@ -655,8 +655,16 @@ declare function makeJoinGraph($node as element(), $id as xs:string)
   let $rhs := $subs[2]
   let $rhsID := $id || "_R"
   return (
-      makeEmbeddedSortGraph($node/plan:left-sort,$lhs,$id,$lhsID),
-      makeEmbeddedSortGraph($node/plan:right-sort,$rhs,$id,$rhsID)
+    let $maps := makeEmbeddedSortGraph($node/plan:left-sort,$lhs,$id,$lhsID)
+    return (
+      head($maps)=>map:with("_parentLabel","left"),
+      tail($maps)
+    ),
+    let $maps := makeEmbeddedSortGraph($node/plan:right-sort,$rhs,$id,$rhsID)
+    return (
+      head($maps)=>map:with("_parentLabel","right"),
+      tail($maps)
+    )
   )
 };
 
@@ -693,7 +701,7 @@ declare function makeEmbeddedSortGraph($node as element()?, $children as element
     )
   ) else (
     for $c at $pos in $children
-    let $newID := concat($parentID, "_", $pos)
+    let $newID := if(empty(tail($children))) then $id else concat($id, "_", $pos)
     return (
       let $maps := makeGraph($c,$newID)
       return (
