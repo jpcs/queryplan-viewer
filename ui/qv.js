@@ -805,7 +805,7 @@ function qv_showPlan(containerid, json) {
 
     var scaleX = targetWidth / actualWidth;
     var scaleY = targetHeight / actualHeight;
-    var scale = Math.max(Math.min(Math.min(scaleX,scaleY),3),0.5);
+    var scale = Math.min(Math.min(scaleX,scaleY),3);
 
     svg.call(zoom.transform, d3.zoomIdentity
              .translate(

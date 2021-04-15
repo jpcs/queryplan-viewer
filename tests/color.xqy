@@ -2765,5 +2765,71 @@ map:entry("name","huge_colored")
 '{"_id":"N_1_1_1_2_2_1_1_R_R_2_1_L_1_1_1", "_name":"template-view", "_parent":"N_1_1_1_2_2_1_1_R_R_2_1_L_1_1", "allNullable":"false", "column":["44 (G.id)", "45 (G.voorletters) [nullable]", "46 (G.voornaam) [nullable]", "47 (G.tussenvoegsel) [nullable]", "48 (G.achternaam) [nullable]", "49 (G.geboortedatum) [nullable]", "50 (G.bsn) [nullable]", "51 (G.gewijzigd_op) [nullable]", "52 (G.woonadres_straat) [nullable]", "53 (G.woonadres_huisnummer) [nullable]", "54 (G.woonadres_huisnummertoevoeging) [nullable]", "55 (G.woonadres_postcode) [nullable]", "56 (G.woonadres_plaats) [nullable]", "57 (G.woonadres_landcode) [nullable]", "58 (G.postadres_straat) [nullable]", "59 (G.postadres_huisnummer) [nullable]", "60 (G.postadres_huisnummertoevoeging) [nullable]", "61 (G.postadres_postcode) [nullable]", "62 (G.postadres_plaats) [nullable]", "63 (G.postadres_landcode) [nullable]"], "count":"2278176", "id":"6142098997108455784", "iri":"http://marklogic.com/view/Schema1/H", "local-max-memory":"10.09Mb", "local-time":"1.99262719E9s", "order":"64", "remote-max-memory":"20.85Mb", "remote-time":"4.02923216E9s", "row":"64 (G.rowid)", "schemaID":"12461121416219388462", "type":"column", "viewID":"13968452873791756530"}',
 '{"_id":"N_1_1_1_2_2_1_1_R_R_2_1_R", "_name":"bind", "_parent":"N_1_1_1_2_2_1_1_R_R_2_1", "_parentLabel":"right", "expr":"C.gewijzigd_op as gewijzigd_op_klant"}',
 '{"_id":"N_1_1_1_2_2_1_1_R_R_2_1_R_1", "_name":"template-view", "_parent":"N_1_1_1_2_2_1_1_R_R_2_1_R", "allNullable":"false", "column":["40 (C.id)", "41 (C.persoon_1_id) [nullable]", "42 (C.gewijzigd_op) [nullable]"], "count":"768370", "id":"5169957886206599373", "iri":"http://marklogic.com/view/Schema1/C", "local-max-memory":"9.28Mb", "local-time":"1.23053971E9s", "order":"43", "remote-max-memory":"19.63Mb", "remote-time":"2.62943136E9s", "row":"43 (C.rowid)", "schemaID":"12461121416219388462", "type":"column", "viewID":"9168834070795060460"}'
+)),
+map:entry("name","sorts_dnode")
+=>map:with("plan",
+<plan:plan xmlns:plan="http://marklogic.com/plan">
+  <plan:select>
+    <plan:project id="11695056386728411730" cost="7146.8" estimated-count="10" io-cost="0/414.35/0/1570.98/0" nw-cost="102/15/0/249/0" cpu-cost="0/100/56.8967/100/56.8967" dcpu-cost="0/1438.4/0/5607.01/0" mem-cost="104" dmem-cost="52.5" cardinalities="(5,5),(10,10),(6,6),(10,10),(5,5),(5,5)" order="">
+      <plan:column type="column-def" schema="main" view="customers" column="customername" column-number="0" column-index="0" static-type="STRING"/>
+      <plan:column type="column-def" schema="main" view="orders" column="orderid" column-number="1" column-index="1" static-type="INT"/>
+      <plan:right-join type="parallel-right-sort-merge-join" sparql-semantics="false" id="7197534804156886223" cost="7146.8" estimated-count="10" io-cost="0/414.35/0/1570.98/0" nw-cost="102/15/0/249/0" cpu-cost="0/100/56.8967/100/56.8967" dcpu-cost="0/1438.4/0/5607.01/0" mem-cost="104" dmem-cost="52.5" cardinalities="(5,5),(10,10),(6,6),(10,10),(5,5),(5,5)" order="first(2)">
+        <plan:hash left="4" right="2" op="="/>
+        <plan:left-sort id="7197534804156886224" cost="4142.71" estimated-count="5" io-cost="0/371.14/0/742.28/0" nw-cost="102/7.5/0/117/0" cpu-cost="0/0/0/0/0" dcpu-cost="0/1387.97/0/2765.81/0" mem-cost="0" dmem-cost="17.5" cardinalities="(5,5),(0,0),(0,0),(0,0),(5,5),(5,5)" dnode="true" num-sorted="0">
+          <plan:order-spec descending="false" nulls-first="true" type="var" name="" column-index="4"/>
+        </plan:left-sort>
+        <plan:right-sort id="7197534804156886225" cost="4406.96" estimated-count="10" io-cost="0/414.35/0/828.7/0" nw-cost="102/15/0/132/0" cpu-cost="0/0/0/0/0" dcpu-cost="0/1438.4/0/2841.2/0" mem-cost="0" dmem-cost="35" cardinalities="(0,0),(10,10),(6,6),(10,10)" dnode="true" num-sorted="0">
+          <plan:order-spec descending="false" nulls-first="true" type="var" name="" column-index="2"/>
+        </plan:right-sort>
+        <plan:template-view type="row" iri="http://marklogic.com/view/main/customers" schema-id="2722964205495519166" view-id="11996112240116166629" all-nullable="false" id="1019068477793694680" cost="3862.07" estimated-count="5" io-cost="0/27.3121/343.828/54.6243/687.656" nw-cost="102/0/7.5/102/15" cpu-cost="0/0/0/0/0" dcpu-cost="0/0/1377.84/0/2755.68" mem-cost="0" dmem-cost="0" cardinalities="(5,5),(0,0),(0,0),(0,0),(5,5),(5,5)" dnode="true" order="5">
+          <plan:column nullable="false">
+            <plan:id column="main.customers.customerid" columnID="8751733685710019224"/>
+            <plan:name type="column-def" schema="main" view="customers" column="customerid" column-number="0" column-index="4" static-type="INT"/>
+          </plan:column>
+          <plan:column nullable="false">
+            <plan:id column="main.customers.customername" columnID="17042510826181904963"/>
+            <plan:name type="column-def" schema="main" view="customers" column="customername" column-number="1" column-index="0" static-type="STRING"/>
+          </plan:column>
+          <plan:row type="column-def" schema="main" view="customers" column="rowid" column-number="7" column-index="5" hidden="true"/>
+        </plan:template-view>
+        <plan:template-view type="row" iri="http://marklogic.com/view/main/orders" schema-id="2722964205495519166" view-id="4334262023644156233" all-nullable="false" id="16573755029673806193" cost="4076.82" estimated-count="10" io-cost="0/27.3121/387.038/54.6243/774.076" nw-cost="102/0/15/102/30" cpu-cost="0/0/0/0/0" dcpu-cost="0/0/1402.8/0/2805.6" mem-cost="0" dmem-cost="0" cardinalities="(0,0),(10,10),(6,6),(10,10)" dnode="true" order="3">
+          <plan:column nullable="false">
+            <plan:id column="main.orders.orderid" columnID="18140363045301344500"/>
+            <plan:name type="column-def" schema="main" view="orders" column="orderid" column-number="0" column-index="1" static-type="INT"/>
+          </plan:column>
+          <plan:column nullable="false">
+            <plan:id column="main.orders.customerid" columnID="8605223195972118200"/>
+            <plan:name type="column-def" schema="main" view="orders" column="customerid" column-number="1" column-index="2" static-type="INT"/>
+          </plan:column>
+          <plan:row type="column-def" schema="main" view="orders" column="rowid" column-number="4" column-index="3" hidden="true"/>
+        </plan:template-view>
+        <plan:filters/>
+        <plan:ljfilters>
+          <plan:value-compare op="EQ">
+            <plan:expr>
+              <plan:column-ref schema="main" view="customers" column="customerid" column-index="4" column-number="0" in-match="false">
+                <plan:qname name="main.customers.customerid" uri="" prfx="" ltrl="main.customers.customerid"/>
+              </plan:column-ref>
+            </plan:expr>
+            <plan:term>
+              <plan:column-ref schema="main" view="orders" column="customerid" column-index="2" column-number="1" in-match="false">
+                <plan:qname name="main.orders.customerid" uri="" prfx="" ltrl="main.orders.customerid"/>
+              </plan:column-ref>
+            </plan:term>
+          </plan:value-compare>
+        </plan:ljfilters>
+      </plan:right-join>
+    </plan:project>
+  </plan:select>
+</plan:plan>
+)
+=>map:with("expected",(
+'{"_id":"N", "_name":"select"}',
+'{"_id":"N_1", "_name":"project", "_parent":"N", "cardinalities":"(5,5),(10,10),(6,6),(10,10),(5,5),(5,5)", "column":["0 (main.customers.customername)", "1 (main.orders.orderid)"], "cost":"7146.8", "cpu-cost":"0/100/56.8967/100/56.8967", "dcpu-cost":"0/1438.4/0/5607.01/0", "dmem-cost":"52.5", "estimated-count":"10", "id":"11695056386728411730", "io-cost":"0/414.35/0/1570.98/0", "mem-cost":"104", "nw-cost":"102/15/0/249/0", "order":""}',
+'{"_id":"N_1_1", "_name":"parallel-right-sort-merge-join", "_parent":"N_1", "cardinalities":"(5,5),(10,10),(6,6),(10,10),(5,5),(5,5)", "condition":"4=2", "cost":"7146.8", "cpu-cost":"0/100/56.8967/100/56.8967", "dcpu-cost":"0/1438.4/0/5607.01/0", "dmem-cost":"52.5", "estimated-count":"10", "id":"7197534804156886223", "io-cost":"0/414.35/0/1570.98/0", "join-filter":"main.customers.customerid eq main.orders.customerid", "mem-cost":"104", "nw-cost":"102/15/0/249/0", "order":"first(2)", "sparql-semantics":"false"}',
+'{"_id":"N_1_1_L", "_name":"sort", "_parent":"N_1_1", "_parentLabel":"left", "cardinalities":"(5,5),(0,0),(0,0),(0,0),(5,5),(5,5)", "cost":"4142.71", "cpu-cost":"0/0/0/0/0", "dcpu-cost":"0/1387.97/0/2765.81/0", "dmem-cost":"17.5", "dnode":"true", "estimated-count":"5", "id":"7197534804156886224", "io-cost":"0/371.14/0/742.28/0", "mem-cost":"0", "num-sorted":"0", "nw-cost":"102/7.5/0/117/0", "order-spec":"4 (?) [nulls-first]"}',
+'{"_id":"N_1_1_L_1", "_name":"template-view", "_parent":"N_1_1_L", "all-nullable":"false", "cardinalities":"(5,5),(0,0),(0,0),(0,0),(5,5),(5,5)", "column":["4 (main.customers.customerid)", "0 (main.customers.customername)"], "cost":"3862.07", "cpu-cost":"0/0/0/0/0", "dcpu-cost":"0/0/1377.84/0/2755.68", "dmem-cost":"0", "dnode":"true", "estimated-count":"5", "id":"1019068477793694680", "io-cost":"0/27.3121/343.828/54.6243/687.656", "iri":"http://marklogic.com/view/main/customers", "mem-cost":"0", "nw-cost":"102/0/7.5/102/15", "order":"5", "row":"5 (main.customers.rowid)", "schema-id":"2722964205495519166", "type":"row", "view-id":"11996112240116166629"}',
+'{"_id":"N_1_1_R", "_name":"sort", "_parent":"N_1_1", "_parentLabel":"right", "cardinalities":"(0,0),(10,10),(6,6),(10,10)", "cost":"4406.96", "cpu-cost":"0/0/0/0/0", "dcpu-cost":"0/1438.4/0/2841.2/0", "dmem-cost":"35", "dnode":"true", "estimated-count":"10", "id":"7197534804156886225", "io-cost":"0/414.35/0/828.7/0", "mem-cost":"0", "num-sorted":"0", "nw-cost":"102/15/0/132/0", "order-spec":"2 (?) [nulls-first]"}',
+'{"_id":"N_1_1_R_1", "_name":"template-view", "_parent":"N_1_1_R", "all-nullable":"false", "cardinalities":"(0,0),(10,10),(6,6),(10,10)", "column":["1 (main.orders.orderid)", "2 (main.orders.customerid)"], "cost":"4076.82", "cpu-cost":"0/0/0/0/0", "dcpu-cost":"0/0/1402.8/0/2805.6", "dmem-cost":"0", "dnode":"true", "estimated-count":"10", "id":"16573755029673806193", "io-cost":"0/27.3121/387.038/54.6243/774.076", "iri":"http://marklogic.com/view/main/orders", "mem-cost":"0", "nw-cost":"102/0/15/102/30", "order":"3", "row":"3 (main.orders.rowid)", "schema-id":"2722964205495519166", "type":"row", "view-id":"4334262023644156233"}'
 ))
 };
