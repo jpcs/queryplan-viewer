@@ -39,7 +39,7 @@ background: #F8F8F8;
 
 .link {
     fill: none;
-    stroke: steelblue;
+    stroke: gray;
     stroke-width: 1px;
 }
 
@@ -59,15 +59,11 @@ background: #F8F8F8;
     fill-opacity: 1.0;
 }
 
-.node.enode > rect {
+.node > rect {
     stroke:#DDDDDD;
     fill: #FFFFFF;
 }
 
-.node.dnode > rect {
-    stroke: #9999DD;
-    fill: #EEEEFF;
-}
 
 .node-title {
     padding: 4px;
