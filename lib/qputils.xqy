@@ -989,14 +989,12 @@ declare function qputils:parseCost ($line, $obj) {
    return () 
 };
 
-declare function qputils:parseOptimization ($lines) {
- for $line at $j in $lines
+declare function qputils:parseOptimizationLine ($line, $linenum) {
  let $tokens := fn:tokenize($line, " ")
- let $name := if (fn:contains($line, "initialCost")) then "start"
-              else if (fn:contains($line, "bestCost")) then "end"
-              else "iteration " || ( $j - 1)
- let $obj := map:new() => map:with("_id", "node_" || $j) => map:with("_name", $name)
- let $_ := if ($j gt 1) then map:put($obj,"_parent", "node_" || $j - 1) else ()
+ let $name := if (fn:contains($line, "initialCost")) then "initial"
+              else "thread " || ( $linenum - 1)
+ let $obj := map:new() => map:with("_id", "node_" || $linenum) => map:with("_name", $name)
+ let $_ := if ($linenum gt 1) then map:put($obj,"_parent", "node_" ||  1) else ()
  
  let $res :=
     for $token in $tokens 
@@ -1011,4 +1009,29 @@ declare function qputils:parseOptimization ($lines) {
     where fn:matches($name, "^\w")
     return  if (fn:starts-with($t[2], "(")) then qputils:parseCost($t[2], $obj) else  map:put($obj,$tagname,$t[2])
  return ($obj)
+};
+
+declare function qputils:parseCostFunctionValues ($file) {
+  let $options :=
+     <options xmlns="xdmp:document-get">
+        <format>text</format>
+      </options>
+  for $line in  fn:tokenize(xdmp:document-get($file,$options), "&#xa;")
+  let $tokens := fn:tokenize($line, "&#x9;")
+  let $time := $tokens[1]
+  let $cost := $tokens[2]
+  where $time castable as xs:integer and $time != "0"
+  return xs:float($cost)
+
+};
+declare function qputils:parseOptimization ($lines, $paths) {
+ 
+ let $best := fn:subsequence($lines, fn:count($lines))
+ let $best_cost := qputils:parseOptimizationLine ($best, fn:count($lines))
+ for $line at $j in fn:subsequence($lines, 1, fn:count($lines) -1)
+ let $obj :=  qputils:parseOptimizationLine ($line, $j)
+ let $sa := $paths [ fn:ends-with(. , "_" || $j  - 2)]
+ let $sa := if ($sa) then map:put($obj, "costFunctionValues", json:to-array(qputils:parseCostFunctionValues ($sa))) else ()
+ let $isbest := if (map:get($best_cost, "cost") = map:get($obj, "cost")) then map:put($obj, "best", "true") else ()
+ return $obj
 };
