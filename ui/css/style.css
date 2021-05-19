@@ -145,85 +145,77 @@ table.node-inner-table > * > td:last-child {
     max-width: 500px;
     position: absolute;			
     text-align: left;			
-    word-wrap: break-word;			
-    padding: 2px;				
+    word-wrap: break-word;					
     font-size: 12px;
     font-family: monospace;
-    background:lightgoldenrodyellow;	
-    border: 1px solid goldenrod;
-    border-radius: 8px;			
+    background:white;	
+  
+    border-radius: 10px;		
+   
     pointer-events: none;	
-    z-index: 5
+    z-index: 5;
+    box-shadow: gray 5px 5px;
 }
 
-.tooltip table {
+.tooltip-main  {
+  border-radius: 10px;		
   border-collapse: collapse;
   white-space: pre-wrap;
   font-size: 1em;
 }
-.tooltip table > tr > * {
-  border: 1px solid goldenrod;
+.tooltip-main  tbody>  tr > * {
+  border-bottom: 1px solid #F0F0F0;
+  text-align: right;
+  margin: 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
-.tooltip table > tr:first-child > * {
-  border-top: 0;
+
+.tooltip-main  tbody>tr:first-child > *:first-child  {
+  border-top-left-radius: 10px;
 }
-.tooltip table > tr > *:first-child {
-  border-left: 0;
+.tooltip-main  tbody>tr:last-child > *:first-child {
+  border-bottom: 0px;
+  border-bottom-left-radius: 10px;
 }
-.tooltip table > tr:last-child > * {
+.tooltip-main  tbody>tr > *:first-child {
+  background: #F0F0F0;	
+  text-align: left;
+}
+
+.tooltip-main tbody > tr:last-child > * {
+  border-bottom: 0px;
+}
+
+.tooltip-inner  {
+  white-space: pre-wrap;
+  font-size: 1em;
+  padding: 0px;
+}
+
+.tooltip-inner  tbody> tr > *:first-child {
+  border-right: 1px solid #E0E0E0;
+  background:white;	
+  text-align: left;
+}
+
+
+.tooltip-inner tbody > tr > *:last-child  {
+  
+  background:white;	
+  text-align: right;
+  width:100%
+
+}
+
+.tooltip-inner  tr > * {
+  border-bottom: 1px solid #F0F0F0;
+  border-left: 0px;
+}
+
+.tooltip-inner tbody > tr:last-child  > *{
   border-bottom: 0;
 }
-.tooltip table > * > td:last-child {
-  border-right: 0;
-}
 
-
-/* .banner  { */
-/*     stroke-width: 0px; */
-/* } */
-
-/* .node--internal text { */
-/*     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff; */
-/* } */
-
-/* pre { */
-/*   white-space: pre-wrap; */
-/*   font-size: .80em; */
-/* } */
-
-/* table.plantable { */
-/*   background-color: #FFFFFF; */
-/*   border-collapse: collapse; */
-/*   border-width: 1px; */
-/*   border-color: steelblue; */
-/*   border-style: solid; */
-/*   color: #000000; */
-/* } */
-
-/* table.plantable td, table.plantable th { */
-/*   border-width: 1px; */
-/*   border-color: steelblue; */
-/*   border-style: solid; */
-/*   padding: 5px; */
-/* } */
-
-/* table.plantable thead { */
-/*   background-color: whitesmoke; */
-/* } */
-
-/* table.criteria td, table.criteria th { */
-/*   padding: 5px; */
-/* }   */
-
-/* .qv-tabs { */
-/*   height: 34px; */
-/* } */
-/* .qv-banner { */
-/*   height: 100%; */
-/* } */
-
-/* .qv-vertical-center { */
-/*   margin: 0; */
-/*   position: absolute; */
-/*   top: 70px; */
-/* } */

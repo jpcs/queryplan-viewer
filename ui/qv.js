@@ -268,6 +268,14 @@ function qv_tooltipEvents(element, tooltip, doFilter) {
         });
 }
 
+function qv_tooltipValue (key, value) {
+    if (key == null) return qv_decode(value)
+    else if (key === "id" || key.endsWith("-id") || key === "statusCode") return value
+    else if (key === "lmem" || key === "rmem") return (Math.round(value / 1024 )  + " KB")
+    else if (key === "ltime" || key === "time") return (Math.round(value)  + " ms")
+    else if (typeof value === "number") return  value.toExponential(2)
+    else return qv_decode(value)
+}
 function qv_tooltipTableRow(table, key, value) {
     if(Array.isArray(value)) {
         value.forEach((v) => qv_tooltipTableRow(table,key,v));
@@ -275,13 +283,18 @@ function qv_tooltipTableRow(table, key, value) {
     else if(value!==null && typeof(value)==="object") {
         var tr = table.append("tr");
         if(key!==null) tr.append("th").text(key);
-        var table2 = tr.append("td").append("table");
+        var table2 = tr.append("td").style("padding", "0px").append("table").attr("class","tooltip-inner").append("tbody");
         Object.keys(value).forEach((key) => qv_tooltipTableRow(table2,key,value[key]));
     }
     else {
         var tr = table.append("tr");
-        if(key!==null) tr.append("th").text(key);
-        tr.append("td").text(qv_decode(value));
+        if(key!==null) {
+            var label = key;
+            if (key === "parallel") {label= "\u2B25\u00A0" + key}
+            else if (key === "serial") {label= "\u25CF\u00A0" + key}
+            tr.append("th").text(label);
+        }    
+        tr.append("td").text(qv_tooltipValue(key, value));
     }
 }
 
@@ -305,7 +318,7 @@ function qv_tooltipContents(parent, data, doFilter) {
             return data.hasOwnProperty(key);
         };
 
-        var table = parent.append("table");
+        var table = parent.append("table").attr("class","tooltip-main").append("tbody");
         var display = (key) => {
             if (key != "costFunctionValues") {
             qv_tooltipTableRow(table,key,data[key]);
@@ -317,7 +330,7 @@ function qv_tooltipContents(parent, data, doFilter) {
         Object.keys(data).filter(seenFilter).forEach(display);
     }
     else if(data && (!Array.isArray(data) || data.length !== 0)) {
-        qv_tooltipTableRow(parent.append("table"),null,data);
+        qv_tooltipTableRow(parent.append("table").attr("class","tooltip-main").append("tbody"),null,data);
         empty = false;
     }
     return !empty;
@@ -335,7 +348,7 @@ function qv_tooltipShow(event, data, doFilter) {
         .style("top", y + "px");
     tooltip.html("");
     if(qv_tooltipContents(tooltip,data,doFilter))
-        tooltip.transition().duration(200).style("opacity", .9);
+        tooltip.transition().duration(200).style("opacity", 1);
 }
 
 function qv_tooltipHide(event) {
@@ -551,17 +564,21 @@ function qv_lineGraph (node) {
 // Node display
 
 function qv_dnodeLabel (dnode) {
+
+
+
     if (dnode != null) {    
         dnode.append("circle")
-            .attr("cx",25)
-            .attr("cy",25)
-            .attr("r",20)
-            .attr("fill","gray")
+            .attr("cx",17)
+            .attr("cy",17)
+            .attr("r",13.5)
+            .attr("stroke","#505050")
+            .attr("stroke-width","3")
+            .attr("fill", "white")
         dnode.append("path")
-            .attr("d", "M20,14 C40,14 40,36 20,36z")
-            .attr("stroke", "white")
-            .attr("stroke-width", 4)
-            .attr("fill", "gray")
+            .attr("d", "M12.4107 18.904C12.4107 18.296 12.4747 17.704 12.6027 17.128C12.7307 16.552 12.9387 16.04 13.2267 15.592C13.5147 15.144 13.8987 14.784 14.3787 14.512C14.8587 14.24 15.4427 14.104 16.1307 14.104C16.8347 14.104 17.4347 14.24 17.9307 14.512C18.4267 14.768 18.8267 15.112 19.1307 15.544C19.4507 15.976 19.6827 16.48 19.8267 17.056C19.9707 17.616 20.0427 18.2 20.0427 18.808C20.0427 19.384 19.9707 19.952 19.8267 20.512C19.6987 21.072 19.4827 21.576 19.1787 22.024C18.8747 22.456 18.4827 22.808 18.0027 23.08C17.5227 23.352 16.9387 23.488 16.2507 23.488C15.5947 23.488 15.0187 23.36 14.5227 23.104C14.0427 22.848 13.6427 22.504 13.3227 22.072C13.0187 21.64 12.7867 21.152 12.6267 20.608C12.4827 20.048 12.4107 19.48 12.4107 18.904ZM22.0107 25V7.864H19.9707V14.248H19.9227C19.6987 13.88 19.4187 13.576 19.0827 13.336C18.7627 13.08 18.4187 12.88 18.0507 12.736C17.6827 12.576 17.3147 12.464 16.9467 12.4C16.5787 12.336 16.2347 12.304 15.9147 12.304C14.9707 12.304 14.1387 12.48 13.4187 12.832C12.7147 13.168 12.1227 13.632 11.6427 14.224C11.1787 14.8 10.8267 15.48 10.5867 16.264C10.3627 17.048 10.2507 17.88 10.2507 18.76C10.2507 19.64 10.3707 20.472 10.6107 21.256C10.8507 22.04 11.2027 22.728 11.6667 23.32C12.1467 23.912 12.7387 24.384 13.4427 24.736C14.1627 25.088 15.0027 25.264 15.9627 25.264C16.8267 25.264 17.6187 25.112 18.3387 24.808C19.0587 24.504 19.5867 24.008 19.9227 23.32H19.9707V25H22.0107Z")
+            .attr("fill", "#505050")
+          
         
     }  
 }
@@ -668,7 +685,7 @@ function qv_nodeRow(table, key, value, tooltip, insideArray, cardinalities) {
     
     var tr = table.append("tr");
     var td0 = tr.append("td");
-    if(magnitude!==null)  td0.append("span").style("color",magnitude).text("\u2588\u2588");
+    if(magnitude!==null)  td0.append("span").style("color",magnitude).text("\u25AC");
     if(key!==null) tr.append("th").text(key);
     if(value===null) {
         tr.append("td").append("span").style("font-style","italic").text("null");
