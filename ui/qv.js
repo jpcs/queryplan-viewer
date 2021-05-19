@@ -272,7 +272,7 @@ function qv_tooltipValue (key, value) {
     if (key == null) return qv_decode(value)
     else if (key === "id" || key.endsWith("-id") || key === "statusCode") return value
     else if (key === "lmem" || key === "rmem") return (Math.round(value / 1024 )  + " KB")
-    else if (key === "ltime" || key === "time") return (Math.round(value)  + " ms")
+    else if (key === "ltime" || key === "rtime") return (Math.round(value)  + " ms")
     else if (typeof value === "number") return  value.toExponential(2)
     else return qv_decode(value)
 }
