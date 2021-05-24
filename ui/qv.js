@@ -271,7 +271,7 @@ function qv_tooltipEvents(element, tooltip, doFilter) {
 function qv_tooltipValue (key, value) {
     if (key == null) return qv_decode(value)
     else if (key === "id" || key.endsWith("-id") || key === "statusCode") return value
-    else if (key === "lmem" || key === "rmem") return (Math.round(value / 1024 )  + " KB")
+    else if (key === "lmem" || key === "rmem") return (Math.round(value / 1024 )  + " kB")
     else if (key === "ltime" || key === "rtime") return (Math.round(value)  + " ms")
     else if (typeof value === "number") return  value.toExponential(2)
     else return qv_decode(value)
@@ -290,9 +290,10 @@ function qv_tooltipTableRow(table, key, value) {
         var tr = table.append("tr");
         if(key!==null) {
             var label = key;
-            if (key === "parallel") {label= "\u2B25\u00A0" + key}
-            else if (key === "serial") {label= "\u25CF\u00A0" + key}
-            tr.append("th").text(label);
+            var el = "th";
+            if (key === "parallel") {label= "\u2B25\u00A0" + key; el="td"}
+            else if (key === "serial") {label= "\u25CF\u00A0" + key; el="td"}
+            tr.append(el).text(label);
         }    
         tr.append("td").text(qv_tooltipValue(key, value));
     }
@@ -347,6 +348,7 @@ function qv_tooltipShow(event, data, doFilter) {
         .style("left", x + "px")
         .style("top", y + "px");
     tooltip.html("");
+    
     if(qv_tooltipContents(tooltip,data,doFilter))
         tooltip.transition().duration(200).style("opacity", 1);
 }
@@ -564,8 +566,6 @@ function qv_lineGraph (node) {
 // Node display
 
 function qv_dnodeLabel (dnode) {
-
-
 
     if (dnode != null) {    
         dnode.append("circle")
@@ -913,7 +913,7 @@ function qv_showPlan(containerid, json) {
     
     dnode = node.filter((d) =>   d.data.data.dnode==="true" ).append("g")
             .attr( "transform", d => "translate(" + (qv_box.width - 15)
-             + "," + (qv_nodeCostHeight(d.data.data) + 2)  + ") scale(.20)" )
+             + "," + (qv_nodeCostHeight(d.data.data) + 4)  + ") scale(.30)" )
     qv_dnodeLabel(dnode)         
     
     // add cost banner
