@@ -149,12 +149,10 @@ table.node-inner-table > * > td:last-child {
     font-size: 12px;
     font-family: monospace;
     background:white;	
-  
     border-radius: 10px;		
-   
     pointer-events: none;	
     z-index: 5;
-    box-shadow: gray 5px 5px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .tooltip-main  {
@@ -164,11 +162,10 @@ table.node-inner-table > * > td:last-child {
   font-size: 1em;
 }
 .tooltip-main  tbody>  tr > * {
-  border-bottom: 1px solid #F0F0F0;
+  border-bottom: 1px solid #B0B0B0;
   text-align: right;
   margin: 0px;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding: 2px;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
 }
@@ -180,8 +177,9 @@ table.node-inner-table > * > td:last-child {
   border-bottom: 0px;
   border-bottom-left-radius: 10px;
 }
-.tooltip-main  tbody>tr > *:first-child {
+.tooltip-main  tbody>tr > th {
   background: #F0F0F0;	
+  padding: 5px;
   text-align: left;
 }
 
@@ -193,10 +191,11 @@ table.node-inner-table > * > td:last-child {
   white-space: pre-wrap;
   font-size: 1em;
   padding: 0px;
+  border-spacing: 0px;
 }
 
 .tooltip-inner  tbody> tr > *:first-child {
-  border-right: 1px solid #E0E0E0;
+  border-right: 1px solid #B0B0B0;
   background:white;	
   text-align: left;
 }
@@ -211,7 +210,7 @@ table.node-inner-table > * > td:last-child {
 }
 
 .tooltip-inner  tr > * {
-  border-bottom: 1px solid #F0F0F0;
+  border-bottom: 1px solid #B0B0B0;
   border-left: 0px;
 }
 
