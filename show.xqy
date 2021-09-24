@@ -34,7 +34,7 @@ declare function local:makeHTML($out)
   <body onload="qv_showPlan('#viewer',  input);">
     <div id="wrapper" class="full-height">
       <div id="viewer"> 
-        <div id="tooltip" class="tooltip"><!-- --></div>
+        <!-- -->
       </div>
     </div>
     </body>

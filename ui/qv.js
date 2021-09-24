@@ -283,7 +283,7 @@ function qv_tooltipTableRow(table, key, value) {
     else if(value!==null && typeof(value)==="object") {
         var tr = table.append("tr");
         if(key!==null) tr.append("th").text(key);
-        var table2 = tr.append("td").style("padding", "0px").append("table").attr("class","tooltip-inner").append("tbody");
+        var table2 = tr.append("td").style("padding", "0px").append("table").attr("class","qvtooltip-inner").append("tbody");
         Object.keys(value).forEach((key) => qv_tooltipTableRow(table2,key,value[key]));
     }
     else {
@@ -321,7 +321,7 @@ function qv_tooltipContents(parent, data, doFilter) {
             return data.hasOwnProperty(key);
         };
 
-        var table = parent.append("table").attr("class","tooltip-main").append("tbody");
+        var table = parent.append("table").attr("class","qvtooltip-main").append("tbody");
         var display = (key) => {
             if (key != "costFunctionValues") {
             qv_tooltipTableRow(table,key,data[key]);
@@ -333,7 +333,7 @@ function qv_tooltipContents(parent, data, doFilter) {
         Object.keys(data).filter(seenFilter).forEach(display);
     }
     else if(data && (!Array.isArray(data) || data.length !== 0)) {
-        qv_tooltipTableRow(parent.append("table").attr("class","tooltip-main").append("tbody"),null,data);
+        qv_tooltipTableRow(parent.append("table").attr("class","qvtooltip-main").append("tbody"),null,data);
         empty = false;
     }
     return !empty;
@@ -341,12 +341,13 @@ function qv_tooltipContents(parent, data, doFilter) {
 
 function qv_tooltipShow(event, data, doFilter) {
 
-    var boundaries = d3.select("body").node().getBoundingClientRect()
+    const pageWidth = document.body.scrollWidth;
+    const pageHeight = document.body.scrollHeight;
 
-    var x = Math.min (event.pageX + 28, boundaries.right-100)
-    var y = Math.min (event.pageY - 28, boundaries.bottom-50)
+    var x = Math.max(Math.min(event.pageX + 28, pageWidth-100),0)
+    var y = Math.max(Math.min(event.pageY - 28, pageHeight-50),0)
     
-    var tooltip = d3.select("#tooltip")
+    var tooltip = d3.select("#qvtooltip")
         .style("left", x + "px")
         .style("top", y + "px");
     tooltip.html("");
@@ -356,7 +357,7 @@ function qv_tooltipShow(event, data, doFilter) {
 }
 
 function qv_tooltipHide(event) {
-    var tooltip = d3.select("#tooltip");
+    var tooltip = d3.select("#qvtooltip");
     tooltip.transition()
         .duration(500)		
         .style("opacity", 0);
@@ -831,6 +832,12 @@ function qv_showPlan(containerid, json) {
     var svg = container.append("svg")
         .attr("width", width)
         .attr("height", height);
+
+    if(!d3.select('#qvtooltip').node()) {
+        d3.select("body").append('div')
+            .attr('id', 'qvtooltip')
+            .attr('class', 'qvtooltip');
+    }
 
     // set up transform and zoom
     var g = svg.append("g")

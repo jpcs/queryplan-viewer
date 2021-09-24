@@ -140,7 +140,7 @@ table.node-inner-table > * > td:last-child {
 /********************************************************************************/
 /* Tooltip */
 
-.tooltip  {
+.qvtooltip  {
     opacity: 0;
     max-width: 500px;
     position: absolute;			
@@ -151,17 +151,17 @@ table.node-inner-table > * > td:last-child {
     background:white;	
     border-radius: 10px;		
     pointer-events: none;	
-    z-index: 5;
+    z-index: 1000;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
 }
 
-.tooltip-main  {
+.qvtooltip-main  {
   border-radius: 10px;		
   border-collapse: collapse;
   white-space: pre-wrap;
   font-size: 1em;
 }
-.tooltip-main  tbody>  tr > * {
+.qvtooltip-main  tbody>  tr > * {
   border-bottom: 1px solid #B0B0B0;
   text-align: right;
   margin: 0px;
@@ -170,38 +170,38 @@ table.node-inner-table > * > td:last-child {
   border-top-right-radius: 0px;
 }
 
-.tooltip-main  tbody>tr:first-child > *:first-child  {
+.qvtooltip-main  tbody>tr:first-child > *:first-child  {
   border-top-left-radius: 10px;
 }
-.tooltip-main  tbody>tr:last-child > *:first-child {
+.qvtooltip-main  tbody>tr:last-child > *:first-child {
   border-bottom: 0px;
   border-bottom-left-radius: 10px;
 }
-.tooltip-main  tbody>tr > th {
+.qvtooltip-main  tbody>tr > th {
   background: #F0F0F0;	
   padding: 5px;
   text-align: left;
 }
 
-.tooltip-main tbody > tr:last-child > * {
+.qvtooltip-main tbody > tr:last-child > * {
   border-bottom: 0px;
 }
 
-.tooltip-inner  {
+.qvtooltip-inner  {
   white-space: pre-wrap;
   font-size: 1em;
   padding: 0px;
   border-spacing: 0px;
 }
 
-.tooltip-inner  tbody> tr > *:first-child {
+.qvtooltip-inner  tbody> tr > *:first-child {
   border-right: 1px solid #B0B0B0;
   background:white;	
   text-align: left;
 }
 
 
-.tooltip-inner tbody > tr > *:last-child  {
+.qvtooltip-inner tbody > tr > *:last-child  {
   
   background:white;	
   text-align: right;
@@ -209,12 +209,12 @@ table.node-inner-table > * > td:last-child {
 
 }
 
-.tooltip-inner  tr > * {
+.qvtooltip-inner  tr > * {
   border-bottom: 1px solid #B0B0B0;
   border-left: 0px;
 }
 
-.tooltip-inner tbody > tr:last-child  > *{
+.qvtooltip-inner tbody > tr:last-child  > *{
   border-bottom: 0;
 }
 
