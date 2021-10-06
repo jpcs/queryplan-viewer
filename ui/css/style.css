@@ -140,90 +140,81 @@ table.node-inner-table > * > td:last-child {
 /********************************************************************************/
 /* Tooltip */
 
-.tooltip  {
+.qvtooltip  {
     opacity: 0;
     max-width: 500px;
     position: absolute;			
     text-align: left;			
-    word-wrap: break-word;			
-    padding: 2px;				
+    word-wrap: break-word;					
     font-size: 12px;
     font-family: monospace;
-    background:lightgoldenrodyellow;	
-    border: 1px solid goldenrod;
-    border-radius: 8px;			
+    background:white;	
+    border-radius: 10px;		
     pointer-events: none;	
-    z-index: 5
+    z-index: 1000;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
 }
 
-.tooltip table {
+.qvtooltip-main  {
+  border-radius: 10px;		
   border-collapse: collapse;
   white-space: pre-wrap;
   font-size: 1em;
 }
-.tooltip table > tr > * {
-  border: 1px solid goldenrod;
+.qvtooltip-main  tbody>  tr > * {
+  border-bottom: 1px solid #B0B0B0;
+  text-align: right;
+  margin: 0px;
+  padding: 2px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
-.tooltip table > tr:first-child > * {
-  border-top: 0;
+
+.qvtooltip-main  tbody>tr:first-child > *:first-child  {
+  border-top-left-radius: 10px;
 }
-.tooltip table > tr > *:first-child {
-  border-left: 0;
+.qvtooltip-main  tbody>tr:last-child > *:first-child {
+  border-bottom: 0px;
+  border-bottom-left-radius: 10px;
 }
-.tooltip table > tr:last-child > * {
+.qvtooltip-main  tbody>tr > th {
+  background: #F0F0F0;	
+  padding: 5px;
+  text-align: left;
+}
+
+.qvtooltip-main tbody > tr:last-child > * {
+  border-bottom: 0px;
+}
+
+.qvtooltip-inner  {
+  white-space: pre-wrap;
+  font-size: 1em;
+  padding: 0px;
+  border-spacing: 0px;
+}
+
+.qvtooltip-inner  tbody> tr > *:first-child {
+  border-right: 1px solid #B0B0B0;
+  background:white;	
+  text-align: left;
+}
+
+
+.qvtooltip-inner tbody > tr > *:last-child  {
+  
+  background:white;	
+  text-align: right;
+  width:100%
+
+}
+
+.qvtooltip-inner  tr > * {
+  border-bottom: 1px solid #B0B0B0;
+  border-left: 0px;
+}
+
+.qvtooltip-inner tbody > tr:last-child  > *{
   border-bottom: 0;
 }
-.tooltip table > * > td:last-child {
-  border-right: 0;
-}
 
-
-/* .banner  { */
-/*     stroke-width: 0px; */
-/* } */
-
-/* .node--internal text { */
-/*     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff; */
-/* } */
-
-/* pre { */
-/*   white-space: pre-wrap; */
-/*   font-size: .80em; */
-/* } */
-
-/* table.plantable { */
-/*   background-color: #FFFFFF; */
-/*   border-collapse: collapse; */
-/*   border-width: 1px; */
-/*   border-color: steelblue; */
-/*   border-style: solid; */
-/*   color: #000000; */
-/* } */
-
-/* table.plantable td, table.plantable th { */
-/*   border-width: 1px; */
-/*   border-color: steelblue; */
-/*   border-style: solid; */
-/*   padding: 5px; */
-/* } */
-
-/* table.plantable thead { */
-/*   background-color: whitesmoke; */
-/* } */
-
-/* table.criteria td, table.criteria th { */
-/*   padding: 5px; */
-/* }   */
-
-/* .qv-tabs { */
-/*   height: 34px; */
-/* } */
-/* .qv-banner { */
-/*   height: 100%; */
-/* } */
-
-/* .qv-vertical-center { */
-/*   margin: 0; */
-/*   position: absolute; */
-/*   top: 70px; */
-/* } */
