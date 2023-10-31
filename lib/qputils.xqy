@@ -845,10 +845,19 @@ declare function makeZeroOrOneGraph($node as element(), $id as xs:string)
   map:map()
   =>map:with("_id",$id)
   =>nameAndAttrs($node)
-  =>map:with("subject", makeGraphNodeInfo($node/plan:graph-node[1]))
-  =>map:with("object", makeGraphNodeInfo($node/plan:graph-node[2])),
+  =>map:with("subject", makeGraphNodeInfo($node/(plan:graph-node[1]|plan:subject)))
+  =>map:with("object", makeGraphNodeInfo($node/(plan:graph-node[2]|plan:object))),
 
-  for $c at $pos in $node/*[not(self::plan:graph-node)][1]
+  for $c at $pos in (
+    $node/plan:path/*,
+    $node/*[not(self::plan:graph-node)][1]
+  )[1]
+  (: for $c at $pos in ( :)
+  (:   $node/plan:path, :)
+  (:   $node/plan:all-nodes, :)
+  (:   $node/*[not(self::plan:graph-node)][1] ! <plan:path>{ . }</plan:path>, :)
+  (:   $node/*[not(self::plan:graph-node)][2] ! <plan:all-nodes>{ . }</plan:all-nodes> :)
+  (: )[1 to 2] :)
   let $newID := concat($id, "_", $pos)
   return (
     let $maps := makeGraph($c,$newID)
